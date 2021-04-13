@@ -1,17 +1,23 @@
-public class state
-{
+public class State {
     private int numbPlayers;
     private int numbTeams;
     private int day;
-    //falta <Game>
-    public state(){
+    private Game g;
+
+    public State(){
         numbPlayers = 0;
         numbTeams = 0;
         day = 0;
+        g = new Game();
     }
-    public state(int newPlayers, int newTeams, int newDay){
+    public State(int newPlayers, int newTeams, int newDay, Game newGame){
         numbPlayers = newPlayers;
         numbTeams = newTeams;
         day = newDay;
+        g = newGame.clone();
+    }
+
+    public State(State s){
+
     }
 }
