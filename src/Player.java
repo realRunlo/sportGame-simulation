@@ -41,4 +41,16 @@ public class Player {
         s.forEach(a-> background.add(a));
     }
 
+    public Player clone(){
+        return new Player(this);
+    }
+
+    public boolean equals(Object obj){
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Player p = (Player) obj;
+
+        return name.equals(p.getName()) && p.getBackground().equals(background);
+    }
+
 }
