@@ -5,7 +5,7 @@ import sportm.generic.player.Player;
 
 import java.util.List;
 
-public abstract class FootballPlayer extends Player {
+public class FootballPlayer extends Player {
     int speed;
     int resistance;
     int dexterity;
@@ -25,6 +25,18 @@ public abstract class FootballPlayer extends Player {
         this.setKick(0);
         this.setPassing(0);
         this.setCard(Card.NONE);
+    }
+
+    @Override
+    public int calcOverallSkill() {
+        return  this.getSpeed()      +
+                this.getResistance() +
+                this.getDexterity()  +
+                this.getImplosion()  +
+                this.getHeadGame()   +
+                this.getKick()       +
+                this.getPassing()    /
+                7;
     }
 
     public FootballPlayer(String name,
@@ -183,5 +195,9 @@ public abstract class FootballPlayer extends Player {
         ) ret = true;
 
         return ret;
+    }
+
+    public FootballPlayer clone() {
+        return new FootballPlayer(this);
     }
 }
