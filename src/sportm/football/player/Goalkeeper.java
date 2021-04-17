@@ -17,6 +17,11 @@ public class Goalkeeper extends FootballPlayer{
         this.changeElasticity(elasticity);
     }
 
+    public Goalkeeper(Goalkeeper goalkeeper) {
+        super(goalkeeper);
+        this.changeElasticity(goalkeeper.getElasticity());
+    }
+
     public void changeElasticity(int elasticity) {
         setElasticity(elasticity);
         updateOverallSkill();
@@ -49,5 +54,10 @@ public class Goalkeeper extends FootballPlayer{
             ret = true;
 
         return ret;
+    }
+
+    @Override
+    public Goalkeeper clone() {
+        return new Goalkeeper(this);
     }
 }
