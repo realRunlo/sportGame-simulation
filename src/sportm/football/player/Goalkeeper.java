@@ -33,6 +33,7 @@ public class Goalkeeper extends FootballPlayer{
         return this.elasticity;
     }
 
+    // TODO: Better balance the weights on the skills
     @Override
     public int calcOverallSkill() {
         return (int) ((this.getSpeed() * 0.05)      +
