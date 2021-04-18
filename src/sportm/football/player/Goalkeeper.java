@@ -50,8 +50,8 @@ public class Goalkeeper extends FootballPlayer{
                       (this.getElasticity() * 0.30));
     }
 
-    public Boolean equals(Goalkeeper goalkeeper) {
-        Boolean ret = false;
+    public boolean equals(Goalkeeper goalkeeper) {
+        boolean ret = false;
 
         if(this == goalkeeper)
             ret = true;
