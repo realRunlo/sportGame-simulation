@@ -14,7 +14,7 @@ public class Defender extends FootballPlayer {
                     int implosion,
                     int headGame,
                     int kick,
-                    int passing,
+                    int passing
             )
     {
         super(name, team, speed, resistance, dexterity, implosion, headGame, kick, passing);
