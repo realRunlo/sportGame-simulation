@@ -3,8 +3,7 @@ package sportm.football.player;
 public class Defender extends FootballPlayer {
     // Don't know what skill to add here
 
-
-    public Goalkeeper
+    public Defender
             (
                     String name,
                     String team,
@@ -15,8 +14,7 @@ public class Defender extends FootballPlayer {
                     int headGame,
                     int kick,
                     int passing
-            )
-    {
+            ) {
         super(name, team, speed, resistance, dexterity, implosion, headGame, kick, passing);
     }
 
@@ -28,12 +26,12 @@ public class Defender extends FootballPlayer {
     @Override
     public int calcOverallSkill() {
         return (int) (
-                        (this.getSpeed() * 0.15)      +
+                (this.getSpeed() * 0.15) +
                         (this.getResistance() * 0.15) +
-                        (this.getDexterity() * 0.10)  +
-                        (this.getImplosion() * 0.05)  +
-                        (this.getHeadGame() * 0.15)   +
-                        (this.getKick() * 0.10)       +
+                        (this.getDexterity() * 0.10) +
+                        (this.getImplosion() * 0.05) +
+                        (this.getHeadGame() * 0.15) +
+                        (this.getKick() * 0.10) +
                         (this.getPassing() * 0.30)
         );
     }
@@ -41,9 +39,9 @@ public class Defender extends FootballPlayer {
     public boolean equals(Defender defender) {
         boolean ret = false;
 
-        if(this == defender)
+        if (this == defender)
             ret = true;
-        else if(super.equals(defender))
+        else if (super.equals(defender))
             ret = true;
 
         return ret;
@@ -53,3 +51,4 @@ public class Defender extends FootballPlayer {
     public Defender clone() {
         return new Defender(this);
     }
+}
