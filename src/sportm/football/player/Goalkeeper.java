@@ -3,16 +3,20 @@ package sportm.football.player;
 public class Goalkeeper extends FootballPlayer{
     private int elasticity;
 
-    public Goalkeeper(String name,
-                      String team,
-                      int speed,
-                      int resistance,
-                      int dexterity,
-                      int implosion,
-                      int headGame,
-                      int kick,
-                      int passing,
-                      int elasticity) {
+    public Goalkeeper
+            (
+                    String name,
+                    String team,
+                    int speed,
+                    int resistance,
+                    int dexterity,
+                    int implosion,
+                    int headGame,
+                    int kick,
+                    int passing,
+                    int elasticity
+            )
+    {
         super(name, team, speed, resistance, dexterity, implosion, headGame, kick, passing);
         this.changeElasticity(elasticity);
     }

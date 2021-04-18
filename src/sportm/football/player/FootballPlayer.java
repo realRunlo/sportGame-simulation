@@ -27,7 +27,6 @@ public class FootballPlayer extends Player {
         this.setCard(Card.NONE);
     }
 
-    @Override
     public int calcOverallSkill() {
         return  this.getSpeed()      +
                 this.getResistance() +
@@ -197,7 +196,6 @@ public class FootballPlayer extends Player {
         return ret;
     }
 
-    @Override
     public FootballPlayer clone() {
         return new FootballPlayer(this);
     }
