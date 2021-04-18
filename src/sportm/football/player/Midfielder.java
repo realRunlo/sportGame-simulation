@@ -15,7 +15,8 @@ public class Midfielder extends FootballPlayer {
                     int kick,
                     int passing,
                     int ballRecovery
-            ) {
+            )
+    {
         super(name, team, speed, resistance, dexterity, implosion, headGame, kick, passing);
         this.changeBallRecovery(ballRecovery);
     }
@@ -38,6 +39,7 @@ public class Midfielder extends FootballPlayer {
         return this.ballRecovery;
     }
 
+    // TODO: Better balance the weights on the skills
     @Override
     public int calcOverallSkill() {
         return (int) ((this.getSpeed() * 0.20) +
