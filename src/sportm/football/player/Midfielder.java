@@ -32,6 +32,8 @@ public class Midfielder extends FootballPlayer {
     }
 
     private void setBallRecovery(int ballRecovery) {
+        if(ballRecovery > 100) ballRecovery = 100;
+        else if(ballRecovery < 0) ballRecovery = 0;
         this.ballRecovery = ballRecovery;
     }
 

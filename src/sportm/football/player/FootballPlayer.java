@@ -81,6 +81,8 @@ public abstract class FootballPlayer extends Player {
     }
 
     public void setSpeed(int speed) {
+        if(speed > 100) speed = 100;
+        else if(speed < 0) speed = 0;
         this.speed = speed;
     }
     public int getSpeed() {
@@ -92,6 +94,8 @@ public abstract class FootballPlayer extends Player {
     }
 
     public void setResistance(int resistance) {
+        if(resistance > 100) resistance = 100;
+        else if(resistance < 0) resistance = 0;
         this.resistance = resistance;
     }
     public int getResistance() {
@@ -103,6 +107,8 @@ public abstract class FootballPlayer extends Player {
     }
 
     public void setDexterity(int dexterity) {
+        if(dexterity > 100) dexterity = 100;
+        else if(dexterity < 0) dexterity = 0;
         this.dexterity = dexterity;
     }
     public int getDexterity() {
@@ -114,6 +120,8 @@ public abstract class FootballPlayer extends Player {
     }
 
     public void setImplosion(int implosion) {
+        if(implosion > 100) implosion = 100;
+        else if(implosion < 0) implosion = 0;
         this.implosion = implosion;
     }
     public int getImplosion() {
@@ -125,6 +133,8 @@ public abstract class FootballPlayer extends Player {
     }
 
     public void setHeadGame(int headGame) {
+        if(headGame > 100) headGame = 100;
+        else if(headGame < 0) headGame = 0;
         this.headGame = headGame;
     }
     public int getHeadGame() {
@@ -136,6 +146,8 @@ public abstract class FootballPlayer extends Player {
     }
 
     public void setKick(int kick) {
+        if(kick > 100) kick = 100;
+        else if(kick < 0) kick = 0;
         this.kick = kick;
     }
     public int getKick() {
@@ -147,6 +159,8 @@ public abstract class FootballPlayer extends Player {
     }
 
     public void setPassing(int passing) {
+        if(passing > 100) passing = 100;
+        else if(passing < 0) passing = 0;
         this.passing = passing;
     }
     public int getPassing() {

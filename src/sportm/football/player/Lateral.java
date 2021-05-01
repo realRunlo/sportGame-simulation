@@ -27,6 +27,8 @@ public class Lateral extends FootballPlayer {
     }
 
     private void setCrossing(int crossing) {
+        if(crossing > 100) crossing = 100;
+        else if(crossing < 0) crossing = 0;
         this.crossing = crossing;
     }
     public int getCrossing() {
