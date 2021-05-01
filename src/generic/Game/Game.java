@@ -1,8 +1,8 @@
+package generic.Game;
+
 import football.team.FootballTeam;
-import generic.team.Team;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public abstract class Game {
     private boolean g; // information if there is or not a game

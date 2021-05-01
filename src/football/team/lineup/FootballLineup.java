@@ -63,7 +63,10 @@ public class FootballLineup {
         for(FootballPlayer player: substitutes)
             sum += player.getOverallSkill();
 
-        return sum / numPlayers;
+        if(numPlayers > 0)
+            sum /= numPlayers;
+
+        return sum;
     }
 
     public void remPlaying(FootballPlayer player) {
@@ -89,6 +92,7 @@ public class FootballLineup {
         subs.remove(player);
 
         this.setSubstitutes(subs);
+        this.setGlobalSkill(this.calcGlobalSkill());
     }
 
     public void addSubstitute(FootballPlayer player) {
@@ -96,6 +100,7 @@ public class FootballLineup {
 
         subs.add(player);
         this.setSubstitutes(subs);
+        this.setGlobalSkill(this.calcGlobalSkill());
     }
 
     public void substitutePlayer(FootballPlayer player, FootballPlayer sub) {
@@ -104,5 +109,21 @@ public class FootballLineup {
 
         addPlaying(sub);
         addSubstitute(player);
+    }
+
+    public boolean equals(FootballLineup fl) {
+        boolean bool = false;
+
+        if(this == fl)
+            bool = true;
+        else if
+        (
+                this.getGlobalSkill() == fl.getGlobalSkill() &&
+                this.getPlaying().equals(fl.getPlaying())    &&
+                this.getSubstitutes().equals(fl.getSubstitutes())
+        )
+            bool = true;
+
+        return bool;
     }
 }
