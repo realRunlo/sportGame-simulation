@@ -86,6 +86,7 @@ public class Game {
                 game.getTeam2().equals(team2);
     }
 
+    @Override
     public Game clone() {
         return new Game(this);
     }
