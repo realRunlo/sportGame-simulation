@@ -23,7 +23,7 @@ public class State {
         numbTeams = 0;
         day = 0;
     }
-    public State(Map<String, FootballPlayer> newList,Map<String, FootballTeam> newTeams,int newPlayers, int newNumbTeams, int newDay, Game newGame){
+    public State(Map<String, FootballPlayer> newList,Map<String, FootballTeam> newTeams,int newPlayers, int newNumbTeams, int newDay){
         setPlayersList(newList);
         setTeams(newTeams);
         numbPlayers = newPlayers;
