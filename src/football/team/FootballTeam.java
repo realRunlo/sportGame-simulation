@@ -9,23 +9,26 @@ import java.util.stream.Collectors;
 public class FootballTeam extends Team{
     private Map<String, FootballPlayer> players;
     private int AverageOverlSkill;
-
+    private int Nplayers;
     public FootballTeam(){
         super();
         players = new HashMap<>();
         AverageOverlSkill = 0;
+        Nplayers = 0;
     }
 
-    public FootballTeam(String name, int GlobalSkill, Map<String, FootballPlayer> newPlayers, int newAverage){
+    public FootballTeam(String name, int GlobalSkill, Map<String, FootballPlayer> newPlayers, int newAverage,int newNplayers){
         super(name,GlobalSkill);
         setPlayers(newPlayers);
         setAverageOverlSkill(newAverage);
+        Nplayers = newNplayers;
     }
 
     public FootballTeam(FootballTeam newTeam){
         super(newTeam);
         players = newTeam.getPlayers();
         AverageOverlSkill = newTeam.getAverageOverlSkill();
+        Nplayers = newTeam.getNPlayers();
     }
 
     public Map<String, FootballPlayer> getPlayers() {
@@ -44,6 +47,14 @@ public class FootballTeam extends Team{
         AverageOverlSkill = newAverage;
     }
 
+    public int getNPlayers(){
+        return Nplayers;
+    }
+
+    public void setNplayers(int n){
+        Nplayers = n;
+    }
+
     public int calcAverageSkill(){
         return (int) players.values().stream().map(FootballPlayer::calcOverallSkill).count();
     }
@@ -57,14 +68,30 @@ public class FootballTeam extends Team{
     }
 
     public void addPlayer(FootballPlayer p){
-        if(!players.containsKey(p.getName())){ players.put(p.getName(),p.clone());
+        if(!players.containsKey(p.getName())){
+            players.put(p.getName(),p.clone());
+            p.setCurTeam(getName());
+            p.addBackground(getName());
+        }
+        incTeamPlayers();
+    }
+
+    public void removePlayer(String name){
+        if(players.containsKey(name)) {
+            FootballPlayer p = players.get(name);
+            p.setCurTeam("None");
+            players.remove(name);
+            decTeamPlayers();
         }
     }
 
-    public void removePlayer(String nome){
-        players.remove(nome);
+    public void incTeamPlayers(){
+        Nplayers++;
     }
 
+    public void decTeamPlayers(){
+        Nplayers--;
+    }
 
     public boolean equals(Object o){
         if (this == o) return true;
@@ -73,6 +100,7 @@ public class FootballTeam extends Team{
 
         return getName().equals(team.getName())
                 && getAverageOverlSkill() == team.getAverageOverlSkill()
+                && Nplayers == team.getNPlayers()
                 && players.equals(team.getPlayers());
     }
 

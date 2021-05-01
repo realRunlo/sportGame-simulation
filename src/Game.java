@@ -2,6 +2,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Game {
+    private boolean g; // information if there is or not a game
     private int points1;
     private int points2;
     //part
