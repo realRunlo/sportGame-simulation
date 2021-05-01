@@ -1,4 +1,7 @@
-public class Team {
+package generic.team;
+
+
+public abstract class Team {
     private String name;
     private int GlobalSkill;
 
@@ -25,6 +28,7 @@ public class Team {
         name = newName;
     }
 
+
     public int getGlobalSkill(){
         return GlobalSkill;
     }
@@ -41,9 +45,6 @@ public class Team {
         return name.equals(t.getName()) && GlobalSkill == t.getGlobalSkill();
     }
 
-    public Team clone(){
-        return new Team(this);
-    }
 
     public String toString(){
         return "Nome de equipa: " + getName() + "\nGlobal Skill: " + getGlobalSkill() + "\n";
