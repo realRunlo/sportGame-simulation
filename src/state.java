@@ -14,7 +14,6 @@ public class State {
     private int numbPlayers;
     private int numbTeams;
     private int day;
-    private Game g;
 
     private static final int MAX_PLAYER_TEAM = 22;
     public State(){
@@ -23,7 +22,6 @@ public class State {
         numbPlayers = 0;
         numbTeams = 0;
         day = 0;
-        g = new Game();
     }
     public State(Map<String, FootballPlayer> newList,Map<String, FootballTeam> newTeams,int newPlayers, int newNumbTeams, int newDay, Game newGame){
         setPlayersList(newList);
@@ -31,7 +29,6 @@ public class State {
         numbPlayers = newPlayers;
         numbTeams = newNumbTeams;
         day = newDay;
-        g = newGame.clone();
     }
 
     public State(State s){
@@ -40,7 +37,6 @@ public class State {
         numbPlayers = s.getNPlayers();
         numbTeams = s.getNTeams();
         day = s.getDay();
-        g = s.getGame();
     }
 
     public Map<String, FootballPlayer> getPlayersList(){
@@ -83,13 +79,7 @@ public class State {
         day = nDay;
     }
 
-    public Game getGame(){
-        return g.clone();
-    }
 
-    public void setGame(Game newG){
-        g = new Game(newG);
-    }
 
     public void addPlayer(FootballPlayer p){
         if(playersList.containsKey(p.getName())){
@@ -171,7 +161,6 @@ public class State {
             FootballTeam t2 = teams.get(team2);
             if(t1.getNPlayers() >= 11 && t2.getNPlayers() >= 2){
                 LocalDateTime date = LocalDateTime.now();
-                Game g = new Game(true,0,0,date,t1,t2);
             }
         }
     }
@@ -188,7 +177,6 @@ public class State {
                 numbPlayers == s.getNPlayers() &&
                 numbTeams == s.getNTeams() &&
                 day == s.getDay() &&
-                g.equals(s.getGame());
     }
 
     @Override
@@ -201,7 +189,7 @@ public class State {
         sb.append("Estado\n").append("Numero de jogadores: ").append(getNPlayers())
                 .append("\nNumero de equipas: ").append(getNTeams())
                 .append("\nDias: ").append(getDay())
-                .append("\n").append(g.toString());
+                .append("\n");
 
         return sb.toString();
     }

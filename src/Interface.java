@@ -1,9 +1,10 @@
+import football.FootballGame;
 import generic.Game.Game;
 
 public class Interface {
     public static void main(String[] args){
         System.out.println("Hello world!");
-        Game g = new Game();
+        Game g = new FootballGame();
         System.out.println("Teste de novo jogo:\n" + g.toString());
 
         State s = new State();
