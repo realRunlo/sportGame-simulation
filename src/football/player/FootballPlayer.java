@@ -6,14 +6,14 @@ import generic.player.Player;
 import java.util.List;
 
 public abstract class FootballPlayer extends Player {
-    int speed;
-    int resistance;
-    int dexterity;
-    int implosion;
-    int headGame;
-    int kick;
-    int passing;
-    Card card;
+    private int speed;
+    private int resistance;
+    private int dexterity;
+    private int implosion;
+    private int headGame;
+    private int kick;
+    private int passing;
+    private Card card;
 
     public FootballPlayer(String name, String team) {
         super(name, team);

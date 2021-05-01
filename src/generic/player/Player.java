@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Player {
-    String name;
-    String curTeam;
-    List<String> background;
-    int overallSkill;
+    private String name;
+    private String curTeam;
+    private List<String> background;
+    private int overallSkill;
 
     public Player(String name) {
         this.setName(name);
