@@ -1,3 +1,5 @@
+import football.team.FootballTeam;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -7,32 +9,43 @@ public class Game {
     private int points2;
     //part
     private LocalDateTime timer;
-    private String team1;
-    private String team2;
+    private FootballTeam t1;
+    private FootballTeam t2;
 
 
     public Game() {
+        g = false;
         points1 = 0;
         points2 = 0;
         timer = LocalDateTime.now();
-        team1 = "Nao adicionado";
-        team2 = "Nao adicionado";
+        t1 = new FootballTeam();
+        t2 = new FootballTeam();
     }
 
-    public Game(int newP1, int newP2, LocalDateTime newTimer, String newTeam1, String newTeam2) {
+    public Game(boolean b,int newP1, int newP2, LocalDateTime newTimer, FootballTeam newt1, FootballTeam newt2) {
+        g = b;
         points1 = newP1;
         points2 = newP2;
         timer = newTimer;
-        team1 = newTeam1;
-        team2 = newTeam2;
+        t1 = newt1.clone();
+        t2 = newt2.clone();
     }
 
-    public Game(Game g) {
-        points1 = g.getPoints1();
-        points2 = g.getPoints2();
-        timer = g.getTimer();
-        team1 = g.getTeam1();
-        team2 = g.getTeam2();
+    public Game(Game newGame) {
+        g = newGame.getBol();
+        points1 = newGame.getPoints1();
+        points2 = newGame.getPoints2();
+        timer = newGame.getTimer();
+        t1 = newGame.getTeam1();
+        t2 = newGame.getTeam2();
+    }
+
+    public boolean getBol(){
+        return g;
+    }
+
+    public void setBol(boolean b){
+        g = b;
     }
 
     public int getPoints1() {
@@ -59,20 +72,20 @@ public class Game {
         timer = newTimer;
     }
 
-    public String getTeam1() {
-        return team1;
+    public FootballTeam getTeam1() {
+        return t1.clone();
     }
 
-    public void setTeam1(String newTeam) {
-        team1 = newTeam;
+    public void setTeam1(FootballTeam newTeam) {
+        t1 = newTeam.clone();
     }
 
-    public String getTeam2() {
-        return team2;
+    public FootballTeam getTeam2() {
+        return t2.clone();
     }
 
-    public void setTeam2(String newTeam) {
-        team2 = newTeam;
+    public void setTeam2(FootballTeam newTeam) {
+        t2 = newTeam.clone();
     }
 
     public boolean equals(Object o) {
@@ -80,11 +93,12 @@ public class Game {
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
 
-        return game.getPoints1() == points1 &&
+        return g == game.getBol() &&
+                game.getPoints1() == points1 &&
                 game.getPoints2() == points2 &&
                 game.getTimer().equals(timer) &&
-                game.getTeam1().equals(team1) &&
-                game.getTeam2().equals(team2);
+                game.getTeam1().equals(t1) &&
+                game.getTeam2().equals(t2);
     }
 
     @Override
@@ -95,7 +109,7 @@ public class Game {
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("Game: ")
-                .append(team1).append("vs").append(team2)
+                .append(t1.getName()).append("vs").append(t2.getName())
                 .append("(").append(points1).append(",").append(points2).append(")\n")
                 .append(timer.toString()).append("\n");
         return sb.toString();

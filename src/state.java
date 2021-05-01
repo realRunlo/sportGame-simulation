@@ -1,6 +1,7 @@
 import football.player.FootballPlayer;
 import football.team.FootballTeam;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -160,6 +161,17 @@ public class State {
             FootballTeam t = teams.get(team);
             if(t.existsPlayer(name)) {
                 t.removePlayer(name);
+            }
+        }
+    }
+
+    public void createGame(String team1, String team2){
+        if(teams.containsKey(team1) && teams.containsKey(team2)){
+            FootballTeam t1 = teams.get(team1);
+            FootballTeam t2 = teams.get(team2);
+            if(t1.getNPlayers() >= 11 && t2.getNPlayers() >= 2){
+                LocalDateTime date = LocalDateTime.now();
+                Game g = new Game(true,0,0,date,t1,t2);
             }
         }
     }
