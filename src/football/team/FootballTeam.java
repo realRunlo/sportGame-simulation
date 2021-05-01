@@ -48,15 +48,37 @@ public class FootballTeam extends Team{
         return (int) players.values().stream().map(FootballPlayer::calcOverallSkill).count();
     }
 
-    public FootballPlayer getPlayer(String nome){
-        return players.get(nome).clone();
+    public FootballPlayer getPlayer(String name){
+        return players.get(name).clone();
     }
+
+    public boolean existsPlayer(String name){
+        return players.containsKey(name);
+    }
+
+    public void addPlayer(FootballPlayer p){
+        if(!players.containsKey(p.getName())){ players.put(p.getName(),p.clone());
+        }
+    }
+
+    public void removePlayer(String nome){
+        players.remove(nome);
+    }
+
 
     public boolean equals(Object o){
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FootballTeam team = (FootballTeam) o;
 
-        return getName().equals(team.getName()) && 
+        return getName().equals(team.getName())
+                && getAverageOverlSkill() == team.getAverageOverlSkill()
+                && players.equals(team.getPlayers());
+    }
+
+
+    @Override
+    public FootballTeam clone(){
+        return new FootballTeam(this);
     }
 }
