@@ -1,4 +1,4 @@
-package sportm.generic.player;
+package generic.player;
 
 import java.util.ArrayList;
 import java.util.List;

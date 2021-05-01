@@ -1,4 +1,4 @@
-package sportm.football.player;
+package football.player;
 
 public class Defender extends FootballPlayer {
     // Don't know what skill to add here

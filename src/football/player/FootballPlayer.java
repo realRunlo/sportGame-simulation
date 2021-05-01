@@ -1,7 +1,7 @@
-package sportm.football.player;
+package football.player;
 
-import sportm.football.foul.Card;
-import sportm.generic.player.Player;
+import football.foul.Card;
+import generic.player.Player;
 
 import java.util.List;
 
