@@ -11,14 +11,14 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 public class FootballLineupTest {
-    FootballLineup fl1;
-    FootballLineup fl2;
+    private FootballLineup fl1;
+    private FootballLineup fl2;
 
-    FootballPlayer p1;
-    FootballPlayer p2;
-    FootballPlayer p3;
-    FootballPlayer p4;
-    FootballPlayer p5;
+    private FootballPlayer p1;
+    private FootballPlayer p2;
+    private FootballPlayer p3;
+    private FootballPlayer p4;
+    private FootballPlayer p5;
 
     public FootballLineupTest() {
 

@@ -7,8 +7,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class GoalkeeperTest {
-    Goalkeeper g1;
-    Goalkeeper g2;
+    private Goalkeeper g1;
+    private Goalkeeper g2;
 
     public GoalkeeperTest() {
 

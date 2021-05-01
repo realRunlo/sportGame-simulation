@@ -7,9 +7,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class DefenderTest {
-    Defender d1;
-    Defender d2;
-    Defender d3;
+    private Defender d1;
+    private Defender d2;
+    private Defender d3;
 
     public DefenderTest() {
 

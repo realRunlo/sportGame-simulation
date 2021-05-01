@@ -8,8 +8,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class LateralTest {
-    Lateral l1;
-    Lateral l2;
+    private Lateral l1;
+    private Lateral l2;
 
     public LateralTest() {
 

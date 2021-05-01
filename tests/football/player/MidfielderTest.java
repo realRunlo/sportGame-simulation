@@ -8,8 +8,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class MidfielderTest {
-    Midfielder m1;
-    Midfielder m2;
+    private Midfielder m1;
+    private Midfielder m2;
 
     public MidfielderTest() {
 

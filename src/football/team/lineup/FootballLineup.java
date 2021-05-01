@@ -7,8 +7,8 @@ import java.util.Set;
 
 public class FootballLineup {
     private int globalSkill;
-    Set<FootballPlayer> playing;
-    Set<FootballPlayer> substitutes;
+    private Set<FootballPlayer> playing;
+    private Set<FootballPlayer> substitutes;
 
     public FootballLineup() {
         globalSkill = 0;

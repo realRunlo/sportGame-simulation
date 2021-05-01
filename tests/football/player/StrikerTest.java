@@ -7,8 +7,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class StrikerTest {
-    Striker s1;
-    Striker s2;
+    private Striker s1;
+    private Striker s2;
 
     public StrikerTest() {
 
