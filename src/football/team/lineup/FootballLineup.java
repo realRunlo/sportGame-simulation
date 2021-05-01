@@ -31,18 +31,18 @@ public class FootballLineup {
     private void setGlobalSkill(int globalSkill) {
         this.globalSkill = globalSkill;
     }
-    private int getGlobalSkill() {
+    public int getGlobalSkill() {
         return globalSkill;
     }
 
-    public void setPlaying(Set<FootballPlayer> playing) {
+   private void setPlaying(Set<FootballPlayer> playing) {
         this.playing = new HashSet<>(playing);
     }
     public Set<FootballPlayer> getPlaying() {
         return new HashSet<>(playing);
     }
 
-    public void setSubstitutes(Set<FootballPlayer> substitutes) {
+    private void setSubstitutes(Set<FootballPlayer> substitutes) {
         this.substitutes = new HashSet<>(substitutes);
     }
     public Set<FootballPlayer> getSubstitutes() {
