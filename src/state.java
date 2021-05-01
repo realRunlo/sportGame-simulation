@@ -176,7 +176,7 @@ public class State {
                 teams.equals(s.getTeams()) &&
                 numbPlayers == s.getNPlayers() &&
                 numbTeams == s.getNTeams() &&
-                day == s.getDay() &&
+                day == s.getDay();
     }
 
     @Override
