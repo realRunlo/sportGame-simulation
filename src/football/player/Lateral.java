@@ -1,4 +1,4 @@
-package sportm.football.player;
+package football.player;
 
 public class Lateral extends FootballPlayer {
     private int crossing;

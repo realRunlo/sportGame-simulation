@@ -1,4 +1,4 @@
-package sportm.football.foul;
+package football.foul;
 
 public enum Card {
     NONE,

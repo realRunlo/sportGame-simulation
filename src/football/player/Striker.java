@@ -1,4 +1,4 @@
-package sportm.football.player;
+package football.player;
 
 public class Striker extends FootballPlayer {
     // TODO: Add instance variable for this class
