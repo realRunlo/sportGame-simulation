@@ -52,4 +52,8 @@ public class FootballGame extends Game {
 
         return bool;
     }
+
+    public FootballGame clone() {
+        return new FootballGame(this);
+    }
 }
