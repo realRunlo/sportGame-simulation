@@ -31,6 +31,8 @@ public class Goalkeeper extends FootballPlayer{
         updateOverallSkill();
     }
     private void setElasticity(int elasticity) {
+        if(elasticity > 100) elasticity = 100;
+        else if(elasticity < 0) elasticity = 0;
         this.elasticity = elasticity;
     }
     public int getElasticity() {
