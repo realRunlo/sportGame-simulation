@@ -3,13 +3,14 @@ package football.player;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import sportm.football.player.Defender;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DefenderTest {
     Defender d1;
     Defender d2;
+    Defender d3;
 
     public DefenderTest() {
 
@@ -19,6 +20,7 @@ public class DefenderTest {
     public void setUp() {
         d1 = new Defender("António", "Chelsea", 42, 12, 144, -10, 32, 144, 42);
         d2 = new Defender(d1);
+        d3 = new Defender("", "", 0, 0, 0, 0, 0, 0, 0);
     }
 
     @After
@@ -30,5 +32,11 @@ public class DefenderTest {
     public void calcOverallSkill() {
         assertEquals("Wrong overallSkill", (int) 45.5, d1.calcOverallSkill());
         assertEquals("Wrong overallSkill", (int) 45.5, d2.calcOverallSkill());
+    }
+
+    @Test
+    public void loadPlayerTest() {
+        d3.loadPlayer();
+        assertTrue("Different players", d3.equals(d1));
     }
 }
