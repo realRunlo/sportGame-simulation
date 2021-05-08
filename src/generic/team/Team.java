@@ -49,4 +49,6 @@ public abstract class Team {
     public String toString(){
         return "Nome de equipa: " + getName() + "\nGlobal Skill: " + getGlobalSkill() + "\n";
     }
+
+    public abstract Team clone();
 }
