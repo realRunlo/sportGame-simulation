@@ -1,5 +1,6 @@
-package football;
+package football.Game;
 
+import football.team.FootballTeam;
 import football.team.lineup.FootballLineup;
 import generic.Game.Game;
 
@@ -27,6 +28,16 @@ public class FootballGame extends Game {
         super(fg);
         this.setHome(fg.getHome());
         this.setAway(fg.getAway());
+    }
+
+    /**
+     * Dados dois nomes de equipas, automaticamente cria uma lineup para cada uma
+     * @param TeamHome equipa visitada
+     * @param TeamAway equipa visitante
+     */
+    public FootballGame(FootballTeam TeamHome,int strategyHome, FootballTeam TeamAway,int strategyAway){
+            setHome(new FootballLineup(TeamHome,strategyHome));
+            setAway(new FootballLineup(TeamAway,strategyAway));
     }
 
     public void setHome(FootballLineup home) {

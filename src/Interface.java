@@ -1,4 +1,4 @@
-import football.FootballGame;
+import football.Game.FootballGame;
 import generic.Game.Game;
 
 public class Interface {

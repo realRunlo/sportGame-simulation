@@ -1,31 +1,60 @@
 package football.team.lineup;
 
-import football.player.FootballPlayer;
+import football.player.*;
+import football.team.FootballTeam;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class FootballLineup {
+    private int strategy;
     private int globalSkill;
     private Set<FootballPlayer> playing;
     private Set<FootballPlayer> substitutes;
 
     public FootballLineup() {
+        strategy = 1;
         globalSkill = 0;
         this.playing = new HashSet<>();
         this.substitutes = new HashSet<>();
     }
 
-    public FootballLineup(Set<FootballPlayer> playing, Set<FootballPlayer> substitutes) {
+    public FootballLineup(int s,Set<FootballPlayer> playing, Set<FootballPlayer> substitutes) {
+        strategy = strategyNormalize(s);
         this.setPlaying(playing);
         this.substitutes = new HashSet<>(substitutes);
         this.setGlobalSkill(calcGlobalSkill());
     }
 
     public FootballLineup(FootballLineup lineup) {
+        this.setStrategy(lineup.getStrategy());
         this.setPlaying(lineup.getPlaying());
         this.setSubstitutes(lineup.getSubstitutes());
         this.setGlobalSkill(calcGlobalSkill());
+    }
+
+    public FootballLineup(FootballTeam t,int s){
+        setStrategy(s);
+        addPlaying(t.getTypePlayer(Goalkeeper.class,playing,substitutes));
+        int nDefenders = numberOfType(Defender.class);
+        int nMidfilders = numberOfType(Midfielder.class);
+        int nStrikers = numberOfType(Striker.class);
+        for(int i =0; i<nDefenders;i++) addPlaying(t.getTypePlayer(Defender.class,playing,substitutes));
+        for(int i =0; i<nMidfilders;i++) addPlaying(t.getTypePlayer(Midfielder.class,playing,substitutes));
+        for(int i =0; i<nStrikers;i++) addPlaying(t.getTypePlayer(Striker.class,playing,substitutes));
+        addSubstitute(t.getTypePlayer(Goalkeeper.class,playing,substitutes));
+        for(int i =0; i<2;i++) addSubstitute(t.getTypePlayer(Defender.class,playing,substitutes));
+        for(int i =0; i<2;i++) addSubstitute(t.getTypePlayer(Midfielder.class,playing,substitutes));
+        for(int i =0; i<2;i++) addSubstitute(t.getTypePlayer(Striker.class,playing,substitutes));
+        globalSkill = calcGlobalSkill();
+    }
+
+    public int getStrategy(){
+        return strategy;
+    }
+
+    public void setStrategy(int s){
+        strategy = strategyNormalize(s);
     }
 
     private void setGlobalSkill(int globalSkill) {
@@ -111,6 +140,27 @@ public class FootballLineup {
         addSubstitute(player);
     }
 
+    public int numberOfType(Class<?> player_type){
+        if(strategy == 1){
+            if (Defender.class.equals(player_type)) return 4;
+            else if (Midfielder.class.equals(player_type)) return 4;
+            else return 2;
+        }
+        else{
+            if (Defender.class.equals(player_type)) return 4;
+            else if (Midfielder.class.equals(player_type)) return 3;
+            else return 3;
+        }
+    }
+
+
+
+
+    public int strategyNormalize(int strategy){
+        if(strategy == 1) return 1;
+        else if(strategy == 2) return 2;
+            else return 1;
+    }
     public boolean equals(FootballLineup fl) {
         boolean bool = false;
 

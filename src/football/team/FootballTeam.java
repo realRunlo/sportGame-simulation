@@ -1,9 +1,10 @@
 package football.team;
 import football.player.FootballPlayer;
+import football.player.Goalkeeper;
+import generic.player.Player;
 import generic.team.Team;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FootballTeam extends Team{
@@ -93,6 +94,13 @@ public class FootballTeam extends Team{
         Nplayers--;
     }
 
+
+    public FootballPlayer getTypePlayer(Class<?> t,Set<FootballPlayer> Playinglist,Set<FootballPlayer> Substituteslist){
+        Optional<FootballPlayer> p_type = players.values().stream().filter(p -> p.getClass() == t && !Playinglist.contains(p) && !Substituteslist.contains(p)).findFirst();
+        if(p_type.isPresent()) return p_type.get().clone();
+        else return null;
+    }
+
     public boolean equals(Object o){
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -103,6 +111,7 @@ public class FootballTeam extends Team{
                 && Nplayers == team.getNPlayers()
                 && players.equals(team.getPlayers());
     }
+
 
 
     @Override
