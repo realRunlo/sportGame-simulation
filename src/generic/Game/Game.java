@@ -13,7 +13,7 @@ public abstract class Game {
     private Team t2;
     private LocalDateTime timer;
 
-
+    //----------------------------------Construtores------------------------------------------------
     public Game() {
         g = false;
         points1 = 0;
@@ -40,6 +40,7 @@ public abstract class Game {
         timer = newGame.getTimer();
     }
 
+    //----------------------------------Getters e Setters----------------------------------------------------------
     public boolean getBol(){
         return g;
     }

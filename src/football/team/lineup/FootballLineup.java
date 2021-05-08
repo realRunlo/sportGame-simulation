@@ -4,22 +4,26 @@ import football.player.*;
 import football.team.FootballTeam;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class FootballLineup {
+    private String teamName;
     private int strategy;
     private int globalSkill;
     private Set<FootballPlayer> playing;
     private Set<FootballPlayer> substitutes;
 
     public FootballLineup() {
+        teamName = "None";
         strategy = 1;
         globalSkill = 0;
         this.playing = new HashSet<>();
         this.substitutes = new HashSet<>();
     }
 
-    public FootballLineup(int s,Set<FootballPlayer> playing, Set<FootballPlayer> substitutes) {
+    public FootballLineup(String name,int s,Set<FootballPlayer> playing, Set<FootballPlayer> substitutes) {
+        teamName = name;
         strategy = strategyNormalize(s);
         this.setPlaying(playing);
         this.substitutes = new HashSet<>(substitutes);
@@ -27,6 +31,7 @@ public class FootballLineup {
     }
 
     public FootballLineup(FootballLineup lineup) {
+        this.setTeamName(lineup.getTeamName());
         this.setStrategy(lineup.getStrategy());
         this.setPlaying(lineup.getPlaying());
         this.setSubstitutes(lineup.getSubstitutes());
@@ -34,7 +39,10 @@ public class FootballLineup {
     }
 
     public FootballLineup(FootballTeam t,int s){
+        setTeamName(t.getName());
         setStrategy(s);
+        playing = new HashSet<>();
+        substitutes = new HashSet<>();
         addPlaying(t.getTypePlayer(Goalkeeper.class,playing,substitutes));
         int nDefenders = numberOfType(Defender.class);
         int nMidfilders = numberOfType(Midfielder.class);
@@ -47,6 +55,14 @@ public class FootballLineup {
         for(int i =0; i<2;i++) addSubstitute(t.getTypePlayer(Midfielder.class,playing,substitutes));
         for(int i =0; i<2;i++) addSubstitute(t.getTypePlayer(Striker.class,playing,substitutes));
         globalSkill = calcGlobalSkill();
+    }
+
+    public String getTeamName(){
+        return teamName;
+    }
+
+    public void setTeamName(String name){
+        teamName = name;
     }
 
     public int getStrategy(){
@@ -175,5 +191,16 @@ public class FootballLineup {
             bool = true;
 
         return bool;
+    }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(teamName).append("\n")
+                .append("Playing: ");
+        playing.forEach(p-> sb.append(p.getName()).append(", "));
+        sb.append("\nSubstitutes: ");
+        substitutes.forEach(p-> sb.append(p.getName()).append(", "));
+        sb.append("\n");
+        return sb.toString();
     }
 }

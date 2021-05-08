@@ -51,6 +51,10 @@ public class State {
         return teams.entrySet().stream().collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
     }
 
+    public FootballTeam getTeam(String teamName){
+        return teams.get(teamName).clone();
+    }
+
     public void setTeams(Map<String, FootballTeam> newTeams){
         teams = newTeams.entrySet().stream().collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
     }
@@ -82,7 +86,7 @@ public class State {
 
 
     public void addPlayer(FootballPlayer p){
-        if(playersList.containsKey(p.getName())){
+        if(!playersList.containsKey(p.getName())){
             playersList.put(p.getName(),p.clone());
             incNPlayers();
         }
@@ -188,8 +192,7 @@ public class State {
         StringBuilder sb = new StringBuilder();
         sb.append("Estado\n").append("Numero de jogadores: ").append(getNPlayers())
                 .append("\nNumero de equipas: ").append(getNTeams())
-                .append("\nDias: ").append(getDay())
-                .append("\n");
+                .append("\nDias: ").append(getDay());
 
         return sb.toString();
     }

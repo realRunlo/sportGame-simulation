@@ -67,4 +67,12 @@ public class FootballGame extends Game {
     public FootballGame clone() {
         return new FootballGame(this);
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Game \n").append(getPoints1()).append("-").append(getPoints2())
+                .append("\nHome: ").append(home.toString())
+                .append("Away: ").append(away.toString());
+        return sb.toString();
+    }
 }
