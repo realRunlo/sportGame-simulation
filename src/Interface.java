@@ -5,15 +5,16 @@ import football.player.Midfielder;
 import football.player.Striker;
 import football.team.FootballTeam;
 import generic.Game.Game;
+import viewer.SPORTMViewer;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Interface {
 
-    public static void main(String[] args){
-        System.out.println("Welcome to SPORTM!");
-        System.out.println("Made by:\n->Group 68\n" +
-                "->Goncalo Braz Afonso a93178\n" +
-                "->Goncalo Jose Teixeira Pereira a93168\n" +
-                "->Marco Andre Pereira da Costa a93283");
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        SPORTMViewer viewer = new SPORTMViewer();
+        viewer.showWelcome();
         State s = new State();
         FootballTeam t1 = new FootballTeam();
         FootballTeam t2 = new FootballTeam();
@@ -52,9 +53,34 @@ public class Interface {
         s.addTeam(t1);s.addTeam(t2);
         FootballGame game = new FootballGame(s.getTeam("Team1"),1,s.getTeam("Team2"),2);
         System.out.println(s.toString());
-        //System.out.println(s.getTeam("Team1").toString());
-        //System.out.println(s.getTeam("Team2").toString());
         System.out.println(game.toString());
-        System.out.println("Closing the Game\nWe hope you've enjoyed your time.");
-    }
+
+        try{
+            s.saveState("estado.txt");
+        }
+        catch(FileNotFoundException e){
+            System.out.println("File not found.");
+        }
+        catch(IOException e){
+            System.out.println("Error accessing the file");
+        }
+
+        System.out.println("Reading State file...\nNew State:\n");
+        readFile r = new readFile();
+        try{
+             State s2 = r.readState("estado.txt");
+             System.out.println(s2.toString());
+        }
+        catch(ClassNotFoundException e){
+            System.out.println("Class not found");
+        }
+        catch(IOException e){
+            System.out.println("Error accessing the file");
+            e.printStackTrace();
+        }
+
+
+        viewer.showTermination();
+
+        }
 }

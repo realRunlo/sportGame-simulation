@@ -1,6 +1,7 @@
 import football.player.FootballPlayer;
 import football.team.FootballTeam;
 
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.stream.Collectors;
 
 
 
-public class State {
+public class State implements Serializable {
     private Map<String, FootballPlayer> playersList;
     private Map<String, FootballTeam> teams;
     private int numbPlayers;
@@ -168,6 +169,16 @@ public class State {
             }
         }
     }
+
+    public void saveState(String filename) throws IOException {
+        FileOutputStream fos = new FileOutputStream(filename);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(this);
+        oos.flush();
+        oos.close();
+    }
+
+
 
 
     public boolean equals(Object o) {

@@ -1,6 +1,8 @@
 package football.foul;
 
-public enum Card {
+import java.io.Serializable;
+
+public enum Card  implements Serializable {
     NONE,
     YELLOW,
     RED

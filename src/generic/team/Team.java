@@ -1,7 +1,9 @@
 package generic.team;
 
 
-public abstract class Team {
+import java.io.Serializable;
+
+public abstract class Team implements Serializable {
     private String name;
     private int GlobalSkill;
 

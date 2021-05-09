@@ -4,10 +4,11 @@ import football.player.Goalkeeper;
 import generic.player.Player;
 import generic.team.Team;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FootballTeam extends Team{
+public class FootballTeam extends Team  {
     private Map<String, FootballPlayer> players;
     private int AverageOverlSkill;
     private int Nplayers;

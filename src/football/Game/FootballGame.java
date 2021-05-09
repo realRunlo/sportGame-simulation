@@ -64,6 +64,7 @@ public class FootballGame extends Game {
         return bool;
     }
 
+    @Override
     public FootballGame clone() {
         return new FootballGame(this);
     }

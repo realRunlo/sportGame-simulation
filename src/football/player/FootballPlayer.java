@@ -3,6 +3,7 @@ package football.player;
 import football.foul.Card;
 import generic.player.Player;
 
+import java.io.Serializable;
 import java.util.List;
 
 public abstract class FootballPlayer extends Player {
