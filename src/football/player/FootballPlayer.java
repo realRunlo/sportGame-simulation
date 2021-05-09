@@ -30,6 +30,7 @@ public abstract class FootballPlayer extends Player {
 
     public FootballPlayer(String name,
                           String team,
+                          int number,
                           int speed,
                           int resistance,
                           int dexterity,
@@ -37,7 +38,7 @@ public abstract class FootballPlayer extends Player {
                           int headGame,
                           int kick,
                           int passing) {
-        super(name, team);
+        super(name, team,number);
         this.changeSpeed(speed);
         this.changeResistance(resistance);
         this.changeDexterity(dexterity);

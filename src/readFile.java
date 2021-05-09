@@ -16,4 +16,9 @@ public class readFile implements Serializable {
         if((s = (State) ois.readObject())!=null) return s;
         return null;
     }
+
+
+
+
+
 }

@@ -1,9 +1,12 @@
+import football.Game.FootballGame;
 import football.player.FootballPlayer;
 import football.team.FootballTeam;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -12,6 +15,7 @@ import java.util.stream.Collectors;
 public class State implements Serializable {
     private Map<String, FootballPlayer> playersList;
     private Map<String, FootballTeam> teams;
+    private List<FootballGame> gameHistory;
     private int numbPlayers;
     private int numbTeams;
     private int day;
@@ -20,6 +24,7 @@ public class State implements Serializable {
     public State(){
         playersList = new HashMap<>();
         teams = new HashMap<>();
+        gameHistory = new ArrayList<>();
         numbPlayers = 0;
         numbTeams = 0;
         day = 0;
@@ -27,6 +32,7 @@ public class State implements Serializable {
     public State(Map<String, FootballPlayer> newList,Map<String, FootballTeam> newTeams,int newPlayers, int newNumbTeams, int newDay){
         setPlayersList(newList);
         setTeams(newTeams);
+        gameHistory = new ArrayList<>();
         numbPlayers = newPlayers;
         numbTeams = newNumbTeams;
         day = newDay;
@@ -35,6 +41,7 @@ public class State implements Serializable {
     public State(State s){
         playersList = s.getPlayersList();
         teams = s.getTeams();
+        gameHistory = s.getGameHistory();
         numbPlayers = s.getNPlayers();
         numbTeams = s.getNTeams();
         day = s.getDay();
@@ -60,6 +67,14 @@ public class State implements Serializable {
         teams = newTeams.entrySet().stream().collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
     }
 
+    public List<FootballGame> getGameHistory(){
+        return new ArrayList<>(gameHistory);
+    }
+
+    public void setGameHistory(List<FootballGame> newHistory){
+        gameHistory = new ArrayList<>(newHistory);
+    }
+    
     public int getNPlayers(){
         return numbPlayers;
     }
