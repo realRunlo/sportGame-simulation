@@ -1,10 +1,9 @@
-import football.Game.FootballGame;
-import football.player.Defender;
-import football.player.Goalkeeper;
-import football.player.Midfielder;
-import football.player.Striker;
-import football.team.FootballTeam;
-import generic.Game.Game;
+/*import model.football.Game.FootballGame;
+import model.football.player.Defender;
+import model.football.player.Goalkeeper;
+import model.football.player.Midfielder;
+import model.football.player.Striker;
+import model.football.team.FootballTeam;
 import viewer.SPORTMViewer;
 
 import java.io.FileNotFoundException;
@@ -23,7 +22,7 @@ public class Interface {
         int j = 0;
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Goalkeeper g = new Goalkeeper("Goalie" + i, "Team" + j, 1,1,1,1,1,1,1,1);
+            Goalkeeper g = new Goalkeeper("Goalie" + i, "Team" + j, 1,1,1,1,1,1,1,1,1);
             s.addPlayer(g);
             if(i>=5) t2.addPlayer(g);
             else t1.addPlayer(g);
@@ -31,21 +30,21 @@ public class Interface {
         j = 0;
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Defender d = new Defender("Defender" + i, "Team" + j,1,1,1,1,1,1,1);
+            Defender d = new Defender("Defender" + i, "Team" + j,2,1,1,1,1,1,1,1);
             s.addPlayer(d);
             if(i>=5) t2.addPlayer(d);
             else t1.addPlayer(d);
         }
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Midfielder m = new Midfielder("Midfielder" + i, "Team" + j,1,1,1,1,1,1,1,1);
+            Midfielder m = new Midfielder("Midfielder" + i, "Team" + j,3,1,1,1,1,1,1,1,1);
             s.addPlayer(m);
             if(i>=5) t2.addPlayer(m);
             else t1.addPlayer(m);
         }
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Striker st = new Striker("Striker" + i, "Team" + j,1,1,1,1,1,1,1);
+            Striker st = new Striker("Striker" + i, "Team" + j,4,1,1,1,1,1,1,1);
             s.addPlayer(st);
             if(i>=5) t2.addPlayer(st);
             else t1.addPlayer(st);
@@ -84,3 +83,4 @@ public class Interface {
 
         }
 }
+*/
