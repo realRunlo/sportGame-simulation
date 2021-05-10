@@ -70,6 +70,26 @@ public abstract class FootballPlayer extends Player {
         this.setCard(Card.NONE);
     }
 
+    public FootballPlayer(String name,
+                          String team,
+                          int speed,
+                          int resistance,
+                          int dexterity,
+                          int implosion,
+                          int headGame,
+                          int kick,
+                          int passing) {
+        super(name, team);
+        this.changeSpeed(speed);
+        this.changeResistance(resistance);
+        this.changeDexterity(dexterity);
+        this.changeImplosion(implosion);
+        this.changeHeadGame(headGame);
+        this.changeKick(kick);
+        this.changePassing(passing);
+        this.setCard(Card.NONE);
+    }
+
     public FootballPlayer(FootballPlayer player) {
         super(player);
         this.changeSpeed(player.getSpeed());

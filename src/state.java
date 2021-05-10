@@ -74,7 +74,7 @@ public class State implements Serializable {
     public void setGameHistory(List<FootballGame> newHistory){
         gameHistory = new ArrayList<>(newHistory);
     }
-    
+
     public int getNPlayers(){
         return numbPlayers;
     }
@@ -109,12 +109,14 @@ public class State implements Serializable {
     }
 
 
-    public void removePlayer(String name){
+    public void removePlayer(String name,int shirt, String team){
         if(playersList.containsKey(name)){
-            FootballPlayer p = playersList.get(name);
+            FootballPlayer p = playersList.values().stream().filter(e-> e.getName().equals(name)
+                    && e.getNumber() == shirt
+                    && e.getCurTeam().equals(team)).findFirst().get();
             if(!p.getCurTeam().equals("None")) {    //antes de remover o jogador do jogo, remove-o da equipa
                 FootballTeam t = teams.get(p.getCurTeam());
-                t.removePlayer(p.getName());
+                t.removePlayer(p.getName(),p.getNumber());
             }
             playersList.remove(name);
             decNPlayers();
@@ -126,16 +128,28 @@ public class State implements Serializable {
             teams.put(t.getName(), t.clone());
             incNTeams();
             t.getPlayers().forEach((k,v)->{                      //caso a nova equipa introduza jogadores que ainda nao existiam,
-                if(!playersList.containsKey(k)) addPlayer(v);}); //adiciona-os ao estado
+                if(!playersList.containsKey(v.getName())) addPlayer(v);}); //adiciona-os ao estado
         }
     }
 
     public void removeTeam(String team){
         if(teams.containsKey(team)) {
             FootballTeam t = teams.get(team);
+            for(int i = 0;i<getNPlayers();i++) decNPlayers();
             if(t.getNPlayers() > 0){
-                t.getPlayers().forEach((k,v)-> removePlayer(k)); //caso a equipa ainda tenha jogadores,
-            }                                                    //remove-os da equipa
+                t.getPlayers().forEach((k,v)-> removePlayer(v.getName(),v.getNumber(),v.getCurTeam())); //caso a equipa ainda tenha jogadores,
+            }                                                                                           //remove-os da equipa
+            teams.remove(team);
+            decNTeams();
+        }
+    }
+
+    public void removeOnlyTeam(String team){
+        if(teams.containsKey(team)) {
+            FootballTeam t = teams.get(team);
+            if(t.getNPlayers() > 0){
+                t.getPlayers().forEach((k,v)-> t.removePlayer(v.getName(),v.getNumber())); //caso a equipa ainda tenha jogadores,
+}                                                                                          //remove-os da equipa
             teams.remove(team);
             decNTeams();
         }
@@ -160,7 +174,7 @@ public class State implements Serializable {
     public void addPlayer2Team(FootballPlayer p ,String team){
         if(teams.containsKey(team)){
             FootballTeam t = teams.get(team);
-            if(!t.existsPlayer(p.getName()) && t.getNPlayers() < MAX_PLAYER_TEAM){
+            if(!t.existsPlayerNumber(p.getName(),p.getNumber()) && t.getNPlayers() < MAX_PLAYER_TEAM){
                 t.addPlayer(p);
             }
         }
@@ -169,8 +183,11 @@ public class State implements Serializable {
     public void removePlayerFromTeam(String name, String team){
         if(teams.containsKey(team)){
             FootballTeam t = teams.get(team);
-            if(t.existsPlayer(name)) {
-                t.removePlayer(name);
+            if(playersList.containsKey(name)) {
+                FootballPlayer p = playersList.get(name);
+                if (t.existsPlayerNumber(p.getName(),p.getNumber())) {
+                    t.removePlayer(p.getName(),p.getNumber());
+                }
             }
         }
     }

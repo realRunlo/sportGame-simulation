@@ -7,3 +7,15 @@ out
 SPORTM.iml
 fullparser.zip
 logs.txt
+fullparser/proj/Avancado.java
+fullparser/proj/Defesa.java
+fullparser/proj/GuardaRedes.java
+fullparser/proj/Equipa.java
+fullparser/proj/Jogador.java
+fullparser/proj/Jogo.java
+fullparser/proj/Lateral.java
+fullparser/proj/LinhaIncorretaException.java
+fullparser/proj/Main.java
+fullparser/proj/Medio.java
+fullparser/proj/Parser.java
+estado.txt

@@ -9,9 +9,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class FootballTeam extends Team  {
-    private Map<String, FootballPlayer> players;
+    private Map<Integer, FootballPlayer> players;
     private int AverageOverlSkill;
     private int Nplayers;
+    private static final int NumberOfPlayers = 22;
     public FootballTeam(){
         super();
         players = new HashMap<>();
@@ -19,7 +20,7 @@ public class FootballTeam extends Team  {
         Nplayers = 0;
     }
 
-    public FootballTeam(String name, int GlobalSkill, Map<String, FootballPlayer> newPlayers, int newAverage,int newNplayers){
+    public FootballTeam(String name, int GlobalSkill, Map<Integer, FootballPlayer> newPlayers, int newAverage,int newNplayers){
         super(name,GlobalSkill);
         setPlayers(newPlayers);
         setAverageOverlSkill(newAverage);
@@ -33,11 +34,11 @@ public class FootballTeam extends Team  {
         Nplayers = newTeam.getNPlayers();
     }
 
-    public Map<String, FootballPlayer> getPlayers() {
+    public Map<Integer, FootballPlayer> getPlayers() {
         return players.entrySet().stream().collect(Collectors.toMap(e-> e.getKey(), e->e.getValue().clone()));
     }
 
-    public void setPlayers(Map<String, FootballPlayer> newPlayers){
+    public void setPlayers(Map<Integer, FootballPlayer> newPlayers){
         players = newPlayers.entrySet().stream().collect(Collectors.toMap(e-> e.getKey(), e->e.getValue().clone()));
     }
 
@@ -61,29 +62,52 @@ public class FootballTeam extends Team  {
         return (int) players.values().stream().map(FootballPlayer::calcOverallSkill).count();
     }
 
-    public FootballPlayer getPlayer(String name){
-        return players.get(name).clone();
+    public FootballPlayer getPlayer(int shirtNumber){
+        return players.get(shirtNumber).clone();
     }
 
-    public boolean existsPlayer(String name){
-        return players.containsKey(name);
+    public boolean existsShirtNumber(int shirtNumber){
+        return players.containsKey(shirtNumber);
+    }
+
+    public boolean existsPlayerNumber(String name, int shirtNumber){
+        if(existsShirtNumber(shirtNumber)){
+            return players.get(shirtNumber).getName().equals(name);
+        }
+        return false;
     }
 
     public void addPlayer(FootballPlayer p){
-        if(!players.containsKey(p.getName())) {
-            players.put(p.getName(), p.clone());
-            p.setCurTeam(getName());
-            p.addBackground(getName());
-            incTeamPlayers();
+        if(getNPlayers() < NumberOfPlayers) {
+            if (!players.containsKey(p.getNumber())) {
+                p.setNumber(getNPlayers() + 1);
+                p.setCurTeam(getName());
+                p.addBackground(getName());
+                players.put(p.getNumber(), p.clone());
+                incTeamPlayers();
+            }
         }
     }
 
-    public void removePlayer(String name){
-        if(players.containsKey(name)) {
-            FootballPlayer p = players.get(name);
-            p.setCurTeam("None");
-            players.remove(name);
-            decTeamPlayers();
+    public void removePlayer(String name, int shirtNumber){
+        if(getNPlayers() > 0) {
+            if (existsPlayerNumber(name, shirtNumber)) {
+                FootballPlayer p = players.get(shirtNumber);
+                p.setCurTeam("None");
+                players.remove(shirtNumber);
+                decTeamPlayers();
+            }
+        }
+    }
+
+    public void removePlayer(int shirtNumber){
+        if(getNPlayers() > 0) {
+            if (existsShirtNumber(shirtNumber)) {
+                FootballPlayer p = players.get(shirtNumber);
+                p.setCurTeam("None");
+                players.remove(shirtNumber);
+                decTeamPlayers();
+            }
         }
     }
 
