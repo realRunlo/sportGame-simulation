@@ -3,11 +3,11 @@ package model.football.player;
 import model.football.foul.Card;
 import model.generic.player.Player;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public abstract class FootballPlayer extends Player {
+public class FootballPlayer extends Player {
     private int speed;
     private int resistance;
     private int dexterity;
@@ -27,6 +27,18 @@ public abstract class FootballPlayer extends Player {
         this.setKick(0);
         this.setPassing(0);
         this.setCard(Card.NONE);
+    }
+
+    @Override
+    public int calcOverallSkill() {
+        int sum = this.getSpeed()      +
+                  this.getResistance() +
+                  this.getDexterity()  +
+                  this.getImplosion()  +
+                  this.getHeadGame()   +
+                  this.getKick()       +
+                  this.getPassing();
+        return sum / 7;
     }
 
     public FootballPlayer(String name,
@@ -207,9 +219,36 @@ public abstract class FootballPlayer extends Player {
         return ret;
     }
 
-    public abstract FootballPlayer clone();
+    @Override
+    public FootballPlayer clone() {
+        return new FootballPlayer(this);
+    }
 
-    public abstract FootballPlayer fromCSV(String line);
+    public static FootballPlayer fromCSV(String line) {
+        String[] elems = line.split(";");
+        List<String> background;
+
+        if(!elems[3].equals("")) {
+            background = Arrays.asList(elems[3].split(","));
+        } else background = new ArrayList<>();
+
+        return new FootballPlayer
+                (
+                        elems[0],
+                        Integer.parseInt(elems[1]),
+                        elems[2],
+                        background,
+                        Integer.parseInt(elems[4]),
+                        Integer.parseInt(elems[5]),
+                        Integer.parseInt(elems[6]),
+                        Integer.parseInt(elems[7]),
+                        Integer.parseInt(elems[8]),
+                        Integer.parseInt(elems[9]),
+                        Integer.parseInt(elems[10]),
+                        Integer.parseInt(elems[11]),
+                        Card.valueOf(elems[12])
+                );
+    }
 
     public String toCSV() {
         StringBuilder str = new StringBuilder(super.toCSV()).append(';');
