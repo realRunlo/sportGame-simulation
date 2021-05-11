@@ -1,33 +1,32 @@
 package model.football.team;
 import model.football.player.FootballPlayer;
+import model.generic.player.Player;
 import model.generic.team.Team;
 
-import java.io.Serializable;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class FootballTeam extends Team  {
     private Map<String, FootballPlayer> players;
-    private int AverageOverlSkill;
     private int Nplayers;
+
     public FootballTeam(){
         super();
         players = new HashMap<>();
-        AverageOverlSkill = 0;
         Nplayers = 0;
     }
 
-    public FootballTeam(String name, int GlobalSkill, Map<String, FootballPlayer> newPlayers, int newAverage,int newNplayers){
+    public FootballTeam(String name, int GlobalSkill, Map<String, FootballPlayer> newPlayers, int newNplayers){
         super(name,GlobalSkill);
         setPlayers(newPlayers);
-        setAverageOverlSkill(newAverage);
         Nplayers = newNplayers;
     }
 
     public FootballTeam(FootballTeam newTeam){
         super(newTeam);
         players = newTeam.getPlayers();
-        AverageOverlSkill = newTeam.getAverageOverlSkill();
         Nplayers = newTeam.getNPlayers();
     }
 
@@ -37,14 +36,6 @@ public class FootballTeam extends Team  {
 
     public void setPlayers(Map<String, FootballPlayer> newPlayers){
         players = newPlayers.entrySet().stream().collect(Collectors.toMap(e-> e.getKey(), e->e.getValue().clone()));
-    }
-
-    public int getAverageOverlSkill(){
-        return AverageOverlSkill;
-    }
-
-    public void setAverageOverlSkill(int newAverage){
-        AverageOverlSkill = newAverage;
     }
 
     public int getNPlayers(){
@@ -110,7 +101,6 @@ public class FootballTeam extends Team  {
         FootballTeam team = (FootballTeam) o;
 
         return getName().equals(team.getName())
-                && getAverageOverlSkill() == team.getAverageOverlSkill()
                 && Nplayers == team.getNPlayers()
                 && players.equals(team.getPlayers());
     }
@@ -132,5 +122,29 @@ public class FootballTeam extends Team  {
         players.values().forEach(p->sb.append(p.getName()).append(", "));
         sb.append("\n");
         return sb.toString();
+    }
+
+    public String toCSV() {
+        return super.toCSV() + ';' + this.getNPlayers();
+    }
+
+    public void saveTeam(String filePath) throws FileNotFoundException {
+        PrintWriter file = new PrintWriter(filePath);
+
+        file.println(this.toCSV());
+        file.flush();
+        file.close();
+    }
+
+    public static FootballTeam fromCSV(String line) {
+        String[] splitLine = line.split(";");
+
+        return new FootballTeam
+                (
+                        splitLine[0],
+                        Integer.parseInt(splitLine[1]),
+                        new HashMap<>(),
+                        Integer.parseInt(splitLine[2])
+                );
     }
 }
