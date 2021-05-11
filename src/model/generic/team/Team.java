@@ -1,9 +1,11 @@
 package model.generic.team;
 
+import model.Saveable;
 
-import java.io.Serializable;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
-public abstract class Team implements Serializable {
+public abstract class Team implements Saveable {
     private String name;
     private int GlobalSkill;
 
@@ -47,10 +49,21 @@ public abstract class Team implements Serializable {
         return name.equals(t.getName()) && GlobalSkill == t.getGlobalSkill();
     }
 
-
     public String toString(){
         return "Nome de equipa: " + getName() + "\nGlobal Skill: " + getGlobalSkill() + "\n";
     }
 
+    public String toCSV() {
+        return this.getName() + ';' + this.getGlobalSkill();
+    }
+
     public abstract Team clone();
+
+    public void save(String filePath) throws FileNotFoundException {
+        PrintWriter file = new PrintWriter(filePath);
+
+        file.println(this.toCSV());
+        file.flush();
+        file.close();
+    }
 }

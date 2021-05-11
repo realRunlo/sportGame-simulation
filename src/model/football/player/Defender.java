@@ -2,8 +2,6 @@ package model.football.player;
 
 import model.football.foul.Card;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

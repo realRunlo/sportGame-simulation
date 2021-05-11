@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -52,15 +51,13 @@ public class StrikerTest {
         Striker sTest;
         List<String> lines = new ArrayList<>();
         try {
-            s1.savePlayer("DefenderTest.csv");
+            s1.save("DefenderTest.csv");
             lines = Files.readAllLines(Paths.get("DefenderTest.csv"), StandardCharsets.UTF_8);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         String[] test = lines.get(0).split(": ", 2);
-        sTest = s1.fromCSV(test[1]);
+        sTest = Striker.fromCSV(test[1]);
         assertTrue("Same striker returned not equal", sTest.equals(s1));
     }
 }

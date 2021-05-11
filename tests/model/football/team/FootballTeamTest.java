@@ -37,7 +37,7 @@ public class FootballTeamTest {
     public void saveTeamTest() {
         List<String> lines;
         try {
-            t1.saveTeam("FootballTeam.csv");
+            t1.save("FootballTeam.csv");
             lines = Files.readAllLines(Paths.get("FootballTeam.csv"), StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();

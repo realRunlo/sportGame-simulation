@@ -1,15 +1,13 @@
 package model.generic.player;
 
-import model.football.player.FootballPlayer;
+import model.Saveable;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public abstract class Player {
+public abstract class Player implements Saveable {
     private String name;
     private int number;
     private String curTeam;
@@ -151,9 +149,7 @@ public abstract class Player {
         return str.toString();
     }
 
-    public abstract Player fromCSV(String line);
-
-    public void savePlayer(String fileName) throws FileNotFoundException {
+    public void save(String fileName) throws FileNotFoundException {
         PrintWriter file = new PrintWriter(fileName);
 
         file.println(this.toCSV());

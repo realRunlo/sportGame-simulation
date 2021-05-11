@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -67,15 +66,13 @@ public class LateralTest {
         Lateral lTest;
         List<String> lines = new ArrayList<>();
         try {
-            l1.savePlayer("DefenderTest.csv");
+            l1.save("DefenderTest.csv");
             lines = Files.readAllLines(Paths.get("DefenderTest.csv"), StandardCharsets.UTF_8);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         String[] test = lines.get(0).split(": ", 2);
-        lTest = l1.fromCSV(test[1]);
+        lTest = Lateral.fromCSV(test[1]);
         assertTrue(lTest.equals(l1));
     }
 

@@ -2,14 +2,11 @@ package model.football.player;
 
 import model.football.foul.Card;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Goalkeeper extends FootballPlayer{
+public class Goalkeeper extends FootballPlayer {
     private int elasticity;
 
     public Goalkeeper

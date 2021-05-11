@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -60,15 +59,13 @@ public class DefenderTest {
         Defender dTest;
         List<String> lines = new ArrayList<>();
         try {
-            d1.savePlayer("DefenderTest.csv");
+            d1.save("DefenderTest.csv");
             lines = Files.readAllLines(Paths.get("DefenderTest.csv"), StandardCharsets.UTF_8);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         String[] test = lines.get(0).split(": ", 2);
-        dTest = d1.fromCSV(test[1]);
+        dTest = Defender.fromCSV(test[1]);
         assertTrue("Same defender returned not equal", dTest.equals(d1));
     }
 }

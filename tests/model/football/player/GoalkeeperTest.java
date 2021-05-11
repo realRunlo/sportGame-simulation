@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -65,16 +64,14 @@ public class GoalkeeperTest {
         Goalkeeper gTest;
 
         try {
-            g1.savePlayer("GoalkeeperTest.csv");
+            g1.save("GoalkeeperTest.csv");
             lines = Files.readAllLines(Paths.get("GoalkeeperTest.csv"), StandardCharsets.UTF_8);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         String[] test = lines.get(0).split(": ", 2);
-        gTest = g1.fromCSV(test[1]);
+        gTest = Goalkeeper.fromCSV(test[1]);
         assertTrue(gTest.equals(g1));
 
     }

@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -55,7 +54,7 @@ public class MidfielderTest {
 
     @Test
     public void toCSVTest() {
-        assertEquals("Equal players returned different", "Midfielder: OLA;1;ADEUS;;56;32;0;100;78;89;13;89;87;NONE", m1.toCSV());
+        assertEquals("Equal players returned different", "Midfielder: OLA;1;ADEUS;;56;32;0;100;78;89;13;89;NONE;87", m1.toCSV());
     }
 
     @Test
@@ -64,15 +63,13 @@ public class MidfielderTest {
         Midfielder mTest;
         List<String> lines = new ArrayList<>();
         try {
-            m1.savePlayer("DefenderTest.csv");
+            m1.save("DefenderTest.csv");
             lines = Files.readAllLines(Paths.get("DefenderTest.csv"), StandardCharsets.UTF_8);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         String[] test = lines.get(0).split(": ", 2);
-        mTest = m1.fromCSV(test[1]);
+        mTest = Midfielder.fromCSV(test[1]);
         assertTrue("Same midfielder returned not equal", mTest.equals(m1));
     }
 }

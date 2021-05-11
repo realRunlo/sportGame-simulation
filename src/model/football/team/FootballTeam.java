@@ -1,10 +1,7 @@
 package model.football.team;
 import model.football.player.FootballPlayer;
-import model.generic.player.Player;
 import model.generic.team.Team;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -126,14 +123,6 @@ public class FootballTeam extends Team  {
 
     public String toCSV() {
         return super.toCSV() + ';' + this.getNPlayers();
-    }
-
-    public void saveTeam(String filePath) throws FileNotFoundException {
-        PrintWriter file = new PrintWriter(filePath);
-
-        file.println(this.toCSV());
-        file.flush();
-        file.close();
     }
 
     public static FootballTeam fromCSV(String line) {
