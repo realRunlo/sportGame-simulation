@@ -98,15 +98,12 @@ public class Midfielder extends FootballPlayer {
         return new Midfielder(this);
     }
 
-    @Override
-    public Midfielder fromCSV(String str) {
+    public static Midfielder fromCSV(String str) {
         String[] splitStr = str.split(";");
-        String[] backgroundStr;
         List<String> background;
 
         if(!splitStr[3].equals("")) {
-            backgroundStr = splitStr[3].split(",");
-            background = new ArrayList<>(Arrays.asList(backgroundStr));
+            background = new ArrayList<>(Arrays.asList(splitStr[3].split(",")));
         } else background = new ArrayList<>();
 
         return new Midfielder

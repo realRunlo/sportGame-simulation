@@ -83,15 +83,12 @@ public class Striker extends FootballPlayer {
         return new Striker(this);
     }
 
-    @Override
-    public Striker fromCSV(String str) {
+    public static Striker fromCSV(String str) {
         String[] splitStr = str.split(";");
-        String[] backgroundStr;
         List<String> background;
 
         if(!splitStr[3].equals("")) {
-            backgroundStr = splitStr[3].split(",");
-            background = new ArrayList<>(Arrays.asList(backgroundStr));
+            background = new ArrayList<>(Arrays.asList(splitStr[3].split(",")));
         } else background = new ArrayList<>();
 
         return new Striker

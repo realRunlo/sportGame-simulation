@@ -100,15 +100,12 @@ public class Lateral extends FootballPlayer {
         return new Lateral(this);
     }
 
-    @Override
-    public Lateral fromCSV(String str) {
+    public static Lateral fromCSV(String str) {
         String[] splitStr = str.split(";");
-        String[] backgroundStr;
         List<String> background;
 
         if(!splitStr[3].equals("")) {
-            backgroundStr = splitStr[3].split(",");
-            background = new ArrayList<>(Arrays.asList(backgroundStr));
+            background = new ArrayList<>(Arrays.asList(splitStr[3].split(",")));
         } else background = new ArrayList<>();
 
         return new Lateral
@@ -132,6 +129,6 @@ public class Lateral extends FootballPlayer {
 
     @Override
     public String toCSV() {
-        return "Lateral: " + super.toCSV() + this.getCrossing();
+        return "Lateral: " + super.toCSV() + ';' + this.getCrossing();
     }
 }

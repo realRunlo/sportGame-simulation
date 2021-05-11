@@ -100,15 +100,12 @@ public class Goalkeeper extends FootballPlayer{
         return new Goalkeeper(this);
     }
 
-    @Override
-    public Goalkeeper fromCSV(String str) {
+    public static Goalkeeper fromCSV(String str) {
         String[] splitStr = str.split(";");
-        String[] backgroundStr;
         List<String> background;
 
         if(!splitStr[3].equals("")) {
-            backgroundStr = splitStr[3].split(",");
-            background = new ArrayList<>(Arrays.asList(backgroundStr));
+            background = new ArrayList<>(Arrays.asList(splitStr[3].split(",")));
         } else background = new ArrayList<>();
 
         return new Goalkeeper
