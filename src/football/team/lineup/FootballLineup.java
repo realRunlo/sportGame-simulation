@@ -46,9 +46,11 @@ public class FootballLineup implements Serializable {
         substitutes = new HashSet<>();
         addPlaying(t.getTypePlayer(Goalkeeper.class,playing,substitutes));
         int nDefenders = numberOfType(Defender.class);
+        int nLaterais = numberOfType(Lateral.class);
         int nMidfilders = numberOfType(Midfielder.class);
         int nStrikers = numberOfType(Striker.class);
         for(int i =0; i<nDefenders;i++) addPlaying(t.getTypePlayer(Defender.class,playing,substitutes));
+        for(int i =0; i<nLaterais;i++) addPlaying(t.getTypePlayer(Lateral.class,playing,substitutes));
         for(int i =0; i<nMidfilders;i++) addPlaying(t.getTypePlayer(Midfielder.class,playing,substitutes));
         for(int i =0; i<nStrikers;i++) addPlaying(t.getTypePlayer(Striker.class,playing,substitutes));
         addSubstitute(t.getTypePlayer(Goalkeeper.class,playing,substitutes));
@@ -158,13 +160,15 @@ public class FootballLineup implements Serializable {
     }
 
     public int numberOfType(Class<?> player_type){
-        if(strategy == 1){
-            if (Defender.class.equals(player_type)) return 4;
+        if(strategy == 1){ //4-4-2
+            if (Defender.class.equals(player_type)) return 2;
+            else if(Lateral.class.equals(player_type)) return 2;
             else if (Midfielder.class.equals(player_type)) return 4;
             else return 2;
         }
-        else{
-            if (Defender.class.equals(player_type)) return 4;
+        else{ //4-3-3
+            if (Defender.class.equals(player_type)) return 2;
+            else if(Lateral.class.equals(player_type)) return 2;
             else if (Midfielder.class.equals(player_type)) return 3;
             else return 3;
         }

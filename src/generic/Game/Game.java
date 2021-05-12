@@ -12,17 +12,17 @@ public abstract class Game implements Serializable {
     private int points2;
     private Team t1;
     private Team t2;
-    private LocalDateTime timer;
+    private int timer;
 
     //----------------------------------Construtores------------------------------------------------
     public Game() {
         g = false;
         points1 = 0;
         points2 = 0;
-        timer = LocalDateTime.now();
+        timer = 0;
     }
 
-    public Game(boolean b, int newP1, int newP2, LocalDateTime newTimer, Team newt1, Team newt2) {
+    public Game(boolean b, int newP1, int newP2, int newTimer, Team newt1, Team newt2) {
         g = b;
         points1 = newP1;
         points2 = newP2;
@@ -70,11 +70,11 @@ public abstract class Game implements Serializable {
         points2 = newPoints;
     }
 
-    public LocalDateTime getTimer() {
+    public int getTimer() {
         return timer;
     }
 
-    public void setTimer(LocalDateTime newTimer) {
+    public void setTimer(int newTimer) {
         timer = newTimer;
     }
 
@@ -88,6 +88,6 @@ public abstract class Game implements Serializable {
         return g == game.getBol() &&
                 game.getPoints1() == points1 &&
                 game.getPoints2() == points2 &&
-                game.getTimer().equals(timer);
+                game.getTimer() == (timer);
     }
 }

@@ -103,6 +103,10 @@ public class State implements Serializable {
         gameHistory.add(g);
     }
 
+    public void removeIndexGame(int i){
+        gameHistory.remove(Math.min(i, gameHistory.size() - 1));
+    }
+
 
     public void addPlayer(FootballPlayer p){
         if(!playersList.containsKey(p.getName())){
