@@ -78,6 +78,9 @@ public abstract class Game implements Serializable {
         timer = newTimer;
     }
 
+    public void incTimerBy(int time){
+        timer += time;
+    }
 
 
     public boolean equals(Object o) {

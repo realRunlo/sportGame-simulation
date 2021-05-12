@@ -1,7 +1,7 @@
 package football.player;
 
 public class Defender extends FootballPlayer {
-    // Don't know what skill to add here
+    private int ballRetention;
 
     public Defender
             (
@@ -13,13 +13,16 @@ public class Defender extends FootballPlayer {
                     int implosion,
                     int headGame,
                     int kick,
-                    int passing
+                    int passing,
+                    int ballRetention
             ) {
         super(name, team, speed, resistance, dexterity, implosion, headGame, kick, passing);
+        this.ballRetention = ballRetention;
     }
 
     public Defender(Defender defender) {
         super(defender);
+        ballRetention = defender.getBallRetention();
     }
 
     // TODO: Better balance the weights on the skills
@@ -34,6 +37,14 @@ public class Defender extends FootballPlayer {
                         (this.getKick() * 0.10) +
                         (this.getPassing() * 0.30)
         );
+    }
+
+    public int getBallRetention(){
+        return ballRetention;
+    }
+
+    public void setBallRetention(int x){
+        ballRetention = x;
     }
 
     public boolean equals(Defender defender) {

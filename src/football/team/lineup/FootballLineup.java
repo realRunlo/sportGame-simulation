@@ -117,6 +117,17 @@ public class FootballLineup implements Serializable {
         return sum;
     }
 
+    public FootballPlayer getPlayer(Class<?> player,boolean play){
+        FootballPlayer p;
+        if(play){
+             p = playing.stream().filter(e-> e.getClass().equals(player)).findAny().get();
+        }
+        else{
+             p = substitutes.stream().filter(e-> e.getClass().equals(player)).findAny().get();
+        }
+        return p;
+    }
+
     public void remPlaying(FootballPlayer player) {
         Set<FootballPlayer> playing = this.getPlaying();
 

@@ -31,7 +31,7 @@ public class Interface {
         j = 0;
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Defender d = new Defender("Defender" + i, "Team" + j,1,1,1,1,1,1,1);
+            Defender d = new Defender("Defender" + i, "Team" + j,1,1,1,1,1,1,1,1);
             s.addPlayer(d);
             if(i>=5) t2.addPlayer(d);
             else t1.addPlayer(d);
