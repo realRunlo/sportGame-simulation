@@ -3,11 +3,12 @@ package football.team.lineup;
 import football.player.*;
 import football.team.FootballTeam;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FootballLineup {
+public class FootballLineup implements Serializable {
     private String teamName;
     private int strategy;
     private int globalSkill;

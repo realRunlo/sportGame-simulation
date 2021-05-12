@@ -4,6 +4,8 @@ import football.team.FootballTeam;
 import football.team.lineup.FootballLineup;
 import generic.Game.Game;
 
+import java.io.Serializable;
+
 public class FootballGame extends Game {
     private FootballLineup home;
     private FootballLineup away;

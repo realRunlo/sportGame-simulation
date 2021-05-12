@@ -54,7 +54,7 @@ public class Interface {
         FootballGame game = new FootballGame(s.getTeam("Team1"),1,s.getTeam("Team2"),2);
         System.out.println(s.toString());
         System.out.println(game.toString());
-
+        s.addGame(game);
         try{
             s.saveState("estado.txt");
         }
@@ -70,6 +70,9 @@ public class Interface {
         try{
              State s2 = r.readState("estado.txt");
              System.out.println(s2.toString());
+             System.out.println(s2.getTeam("Team1").toString());
+             System.out.println(s2.getTeam("Team2").toString());
+            System.out.println(s2.getGameHistory().get(s2.getGameHistory().size()-1).toString());
         }
         catch(ClassNotFoundException e){
             System.out.println("Class not found");

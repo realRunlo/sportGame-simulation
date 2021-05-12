@@ -99,6 +99,9 @@ public class State implements Serializable {
         day = nDay;
     }
 
+    public void addGame(FootballGame g){
+        gameHistory.add(g);
+    }
 
 
     public void addPlayer(FootballPlayer p){
