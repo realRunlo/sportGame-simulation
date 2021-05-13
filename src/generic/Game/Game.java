@@ -12,7 +12,7 @@ public abstract class Game implements Serializable {
     private int points2;
     private Team t1;
     private Team t2;
-    private int timer;
+    private double timer;
 
     //----------------------------------Construtores------------------------------------------------
     public Game() {
@@ -70,18 +70,25 @@ public abstract class Game implements Serializable {
         points2 = newPoints;
     }
 
-    public int getTimer() {
+    public double getTimer() {
         return timer;
     }
 
-    public void setTimer(int newTimer) {
+    public void setTimer(double newTimer) {
         timer = newTimer;
     }
 
-    public void incTimerBy(int time){
+    public void incTimerBy(double time){
         timer += time;
     }
 
+    public void incPoints1(){
+        points1++;
+    }
+
+    public void incPoints2(){
+        points2++;
+    }
 
     public boolean equals(Object o) {
         if (this == o) return true;

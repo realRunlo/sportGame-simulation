@@ -200,6 +200,10 @@ public abstract class FootballPlayer extends Player {
         return card;
     }
 
+    public int speedCheck( FootballPlayer p2){
+        return Math.abs(getSpeed() - p2.getSpeed());
+    }
+
     public boolean equals(FootballPlayer player) {
         boolean ret = false;
 

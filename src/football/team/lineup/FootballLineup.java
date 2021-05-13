@@ -107,9 +107,9 @@ public class FootballLineup implements Serializable {
         numPlayers = playing.size() + substitutes.size();
 
         for(FootballPlayer player: playing)
-            sum += player.getOverallSkill();
+            if(player != null) sum += player.getOverallSkill();
         for(FootballPlayer player: substitutes)
-            sum += player.getOverallSkill();
+            if(player!=null) sum += player.getOverallSkill();
 
         if(numPlayers > 0)
             sum /= numPlayers;
@@ -119,13 +119,15 @@ public class FootballLineup implements Serializable {
 
     public FootballPlayer getPlayer(Class<?> player,boolean play){
         FootballPlayer p;
-        if(play){
-             p = playing.stream().filter(e-> e.getClass().equals(player)).findAny().get();
+        if(player != null) {
+            if (play) {
+                p = playing.stream().filter(e -> e.getClass().equals(player)).findAny().get();
+            } else {
+                p = substitutes.stream().filter(e -> e.getClass().equals(player)).findAny().get();
+            }
+            return p;
         }
-        else{
-             p = substitutes.stream().filter(e-> e.getClass().equals(player)).findAny().get();
-        }
-        return p;
+        else return null;
     }
 
     public void remPlaying(FootballPlayer player) {

@@ -1,7 +1,7 @@
 package football.player;
 
 public class Striker extends FootballPlayer {
-    // TODO: Add instance variable for this class
+    private int shooting;
 
     public Striker
             (
@@ -13,15 +13,18 @@ public class Striker extends FootballPlayer {
                     int implosion,
                     int headGame,
                     int kick,
-                    int passing
+                    int passing,
+                    int shooting
             )
     {
         super(name, team, speed, resistance, dexterity, implosion, headGame, kick, passing);
         // TODO: Put changeVariableName() here
+        this.shooting = shooting;
     }
 
     public Striker(Striker striker) {
         super(striker);
+        shooting = striker.getShooting();
         // TODO: Also here
     }
 
@@ -30,14 +33,24 @@ public class Striker extends FootballPlayer {
     public int calcOverallSkill() {
         return (int) (
                 (this.getSpeed() * 0.15)      +
-                (this.getResistance() * 0.15) +
+                (this.getResistance() * 0.5) +
                 (this.getDexterity() * 0.10)  +
                 (this.getImplosion() * 0.10)  +
-                (this.getHeadGame() * 0.15)   +
+                (this.getHeadGame() * 0.5)   +
                 (this.getKick() * 0.25)       +
-                (this.getPassing() * 0.10)
+                (this.getPassing() * 0.10)    +
+                (this.getShooting() * 0.3)
         );
     }
+
+    public int getShooting(){
+        return shooting;
+    }
+
+    public void setShooting(int shooting){
+        this.shooting = shooting;
+    }
+
 
     public boolean equals(Striker striker) {
         boolean ret = false;

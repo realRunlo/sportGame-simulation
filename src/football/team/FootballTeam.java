@@ -12,7 +12,7 @@ public class FootballTeam extends Team  {
     private Map<Integer, FootballPlayer> players;
     private int AverageOverlSkill;
     private int Nplayers;
-    private static final int NumberOfPlayers = 22;
+    private static final int NumberOfPlayers = 40;
     public FootballTeam(){
         super();
         players = new HashMap<>();

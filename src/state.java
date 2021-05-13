@@ -113,6 +113,12 @@ public class State implements Serializable {
             playersList.put(p.getName(),p.clone());
             incNPlayers();
         }
+        else{//caso seja um jogador com o mesmo nome mas stats diferentes, adiciona na mesma
+            if(!playersList.get(p.getName()).equals(p)){
+                playersList.put(p.getName(),p.clone());
+                incNPlayers();
+            }
+        }
     }
 
 

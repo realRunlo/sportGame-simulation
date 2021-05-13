@@ -1,16 +1,20 @@
+import football.Game.ExecuteFootballGame;
 import football.Game.FootballGame;
-import football.player.Defender;
-import football.player.Goalkeeper;
-import football.player.Midfielder;
-import football.player.Striker;
+import football.player.*;
 import football.team.FootballTeam;
 import generic.Game.Game;
 import viewer.SPORTMViewer;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Random;
 
 public class Interface {
+
+    public static int getRand(){
+        Random rand = new Random();
+        return rand.nextInt(101);
+    }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         SPORTMViewer viewer = new SPORTMViewer();
@@ -23,7 +27,7 @@ public class Interface {
         int j = 0;
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Goalkeeper g = new Goalkeeper("Goalie" + i, "Team" + j, 1,1,1,1,1,1,1,1);
+            Goalkeeper g = new Goalkeeper("Goalie" + i, "Team" + j, getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
             s.addPlayer(g);
             if(i>=5) t2.addPlayer(g);
             else t1.addPlayer(g);
@@ -31,21 +35,29 @@ public class Interface {
         j = 0;
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Defender d = new Defender("Defender" + i, "Team" + j,1,1,1,1,1,1,1,1);
+            Lateral l = new Lateral("Lateral" + i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
+            s.addPlayer(l);
+            if(i>=5) t2.addPlayer(l);
+            else t1.addPlayer(l);
+        }
+        j = 0;
+        for(int i = 0; i<10; i++){
+            if(i>=5) j = 1;
+            Defender d = new Defender("Defender" + i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
             s.addPlayer(d);
             if(i>=5) t2.addPlayer(d);
             else t1.addPlayer(d);
         }
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Midfielder m = new Midfielder("Midfielder" + i, "Team" + j,1,1,1,1,1,1,1,1);
+            Midfielder m = new Midfielder("Midfielder" + i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
             s.addPlayer(m);
             if(i>=5) t2.addPlayer(m);
             else t1.addPlayer(m);
         }
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Striker st = new Striker("Striker" + i, "Team" + j,1,1,1,1,1,1,1);
+            Striker st = new Striker("Striker" + i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
             s.addPlayer(st);
             if(i>=5) t2.addPlayer(st);
             else t1.addPlayer(st);
@@ -82,8 +94,16 @@ public class Interface {
             e.printStackTrace();
         }
 
+        ExecuteFootballGame footballGame = new ExecuteFootballGame(game);
+        while(footballGame.getGame().getTimer() < 90){
+            footballGame.ExecutePlay();
+        }
+        System.out.println("-------------\n"+footballGame.getGame().toString()+"\n-----------------\n");
+
 
         viewer.showTermination();
 
         }
+
+
 }

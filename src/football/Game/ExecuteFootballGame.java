@@ -1,19 +1,18 @@
 package football.Game;
 
-import football.player.Defender;
-import football.player.FootballPlayer;
-import football.player.Midfielder;
-import football.player.Striker;
-import football.team.FootballTeam;
+import football.player.*;
 import football.team.lineup.FootballLineup;
 
 import java.util.Random;
-import java.util.Set;
 
 public class ExecuteFootballGame {
     private FootballGame g;
     private FootballPlayer playerWithTheBall; //jogador com a bola neste momento
     private boolean home; //team with the ball
+    private static final double quickAction = 0.5;
+    private static final double averageAction = 1;
+    private static final double slowAction = 1.5;
+
 
     public ExecuteFootballGame(){
         Random rand = new Random();
@@ -34,82 +33,237 @@ public class ExecuteFootballGame {
     }
 
     public ExecuteFootballGame(FootballGame g){
-        g = g.clone();
+        Random rand = new Random();
+        this.g = new FootballGame(g);
+        int random = rand.nextInt(2);
+        if(random == 0){
+            playerWithTheBall = g.getAway().getPlaying().stream()
+                    .filter(e-> e.getClass().equals(Striker.class))
+                    .findAny().get();
+            home = false;
+        }
+        else {
+            playerWithTheBall = g.getHome().getPlaying().stream()
+                    .filter(e-> e.getClass().equals(Striker.class))
+                    .findAny().get();
+            home = true;
+        }
+    }
+
+    public FootballGame getGame(){
+        return g;
     }
 
     public void ExecutePlay(){
         FootballLineup playingHome = g.getHome();
         FootballLineup playingAway = g.getAway();
-        if(playerWithTheBall.getClass().equals(Defender.class)){
-            if(home){
-                FootballPlayer striker = playingAway.getPlayer(Striker.class,true);
-                if(striker != null){
-                    if(speedCheck(playerWithTheBall,striker) < 10){
-                        if(!tryStealBall(striker)){
-                            tryPass();
+        FootballPlayer p;
+        if(home){
+            p = playingAway.getPlayer(getFootballPlayerOppositeClass(),true);
+            if(p != null) {
+                if (playerWithTheBall.getClass().equals(Striker.class)) { // se for um avancado tenta rematar
+                    FootballPlayer d = playingAway.getPlayer(Defender.class, true);
+                    if(playerWithTheBall.speedCheck(d) > 10) {
+                        if (tryShoot());
+                        else {
+                            playerWithTheBall = d;
+                            invertTeamWithBall();
                         }
-                        else;
                     }
                     else{
-
+                        if(!tryStealBall(p)){
+                            if (tryShoot());
+                            else {
+                                playerWithTheBall = p;
+                                invertTeamWithBall();
+                            }
+                        }
+                        else{
+                            playerWithTheBall = d;
+                            invertTeamWithBall();
+                        }
                     }
+                } else { //outras classes tentam passar
+                    if (playerWithTheBall.speedCheck(p) < 10) {
+                        if (!tryStealBall(p)) tryPass();
+                        else {
+                            playerWithTheBall = p;
+                            invertTeamWithBall();
+                        }
+                    } else tryPass();
                 }
-                else{
-
-                }
-            }
+            }// caso o jogador nao tenha oponente, simplesmente executa a acao sem skillcheck
             else{
-
+                if(playerWithTheBall.getClass().equals(Striker.class)) Shoot();
+                else Pass();
+            }
+        }
+        else{
+            p = playingHome.getPlayer(getFootballPlayerOppositeClass(),true);
+            if(p != null) {
+                if (playerWithTheBall.getClass().equals(Striker.class)) { // se for um avancado tenta rematar
+                    FootballPlayer d = playingHome.getPlayer(Defender.class, true);
+                    if(playerWithTheBall.speedCheck(d) > 10) {
+                        if (tryShoot());
+                        else {
+                            playerWithTheBall = d;
+                            invertTeamWithBall();
+                        }
+                    }
+                    else{
+                        if(!tryStealBall(p)){
+                            if (tryShoot());
+                            else {
+                                playerWithTheBall = p;
+                                invertTeamWithBall();
+                            }
+                        }
+                        else{
+                            playerWithTheBall = d;
+                            invertTeamWithBall();
+                        }
+                    }
+                } else { //outras classes tentam passar
+                    if (playerWithTheBall.speedCheck(p) < 10) {
+                        if (!tryStealBall(p)) tryPass();
+                        else {
+                            playerWithTheBall = p;
+                            invertTeamWithBall();
+                        }
+                    } else tryPass();
+                }
+            }// caso o jogador nao tenha oponente, simplesmente executa a acao sem skillcheck
+            else{
+                if(playerWithTheBall.getClass().equals(Striker.class)) Shoot();
+                else Pass();
             }
         }
     }
 
-    public int speedCheck(FootballPlayer p1, FootballPlayer p2){
-        return Math.abs(p1.getSpeed() - p2.getSpeed());
-    }
+
 
 
     public boolean tryStealBall(FootballPlayer p){
+        g.incTimerBy(quickAction);
         Random rand = new Random();
         if(playerWithTheBall.getClass().equals(Defender.class)){//se for defesa tem maior chance de manter a bola
             Defender d = (Defender) playerWithTheBall;
-            if(rand.nextInt(101) <= d.getBallRetention()) {
-                g.incTimerBy(1);
-                return false;
-            }
+            if(rand.nextInt(101) <= d.getBallRetention()) return false;
             else {
                 setPlayerWithTheBall(p);
-                g.incTimerBy(1);
                 return true;
             }
             }
         else if(p.getClass().equals(Midfielder.class)){ //melhorar, talvez dar 2 skill checks ao medio
             Midfielder m = (Midfielder) p;
-            if(rand.nextInt(101) <= m.getBallRecovery()){
-                g.incTimerBy(1);
-                return true;
-            }
-            else{
-                g.incTimerBy(1);
-                return false;
-            }
+            return rand.nextInt(101) <= m.getBallRecovery();
         }
         else{ //caso normal, verifica quem tem melhor destreza
-            if(playerWithTheBall.getDexterity() > p.getDexterity()){
-                g.incTimerBy(1);
-                return false;
-            }
-            else{
-                g.incTimerBy(1);
-                return true;
-            }
+            return playerWithTheBall.getDexterity() <= p.getDexterity();
         }
     }
 
+    public void tryPass(){
+        g.incTimerBy(quickAction);
+        Random rand = new Random();
+        if(rand.nextInt(101) <= playerWithTheBall.getPassing()){
+            Pass();
+        }
+    }
+
+
+    public boolean tryPass(FootballPlayer p){
+        g.incTimerBy(quickAction);
+        Random rand = new Random();
+        if(rand.nextInt(101) <= playerWithTheBall.getPassing()){
+            Pass();
+            return true;
+        }
+        else {
+            invertTeamWithBall();
+            playerWithTheBall = p;
+            return false;
+        }
+    }
+
+    public void Pass(){
+        g.incTimerBy(averageAction);
+        FootballPlayer p;
+        if(home){
+            p = g.getHome().getPlaying().stream().filter(e -> !e.equals(playerWithTheBall)).findAny().get();
+        }
+        else{
+            p = g.getAway().getPlaying().stream().filter(e -> !e.equals(playerWithTheBall)).findAny().get();
+        }
+        playerWithTheBall = p;
+    }
+
+    public boolean tryShoot(){
+        g.incTimerBy(quickAction);
+        Random rand = new Random();
+        Striker s = (Striker) playerWithTheBall;
+        if(rand.nextInt(101) <= s.getShooting()){
+            Shoot();
+            return true;
+        }
+        else return false;
+    }
+
+    public void Shoot(){
+        g.incTimerBy(quickAction);
+        Goalkeeper goalie;
+        Striker s = (Striker) playerWithTheBall;
+        Random rand = new Random();
+        if(home){
+            goalie = (Goalkeeper) g.getAway().getPlayer(Goalkeeper.class,true);
+            if(goalie.getOverallSkill() - s.getOverallSkill() <= 10){
+                if(rand.nextInt(101) <= s.getShooting()){ // se o chute for bem sucedido atualiza score
+                    g.incPoints1();
+                    playerWithTheBall = g.getAway().getPlayer(Midfielder.class,true);
+                }
+                else{ // se falhar o chute, a bola vai para um lateral da equipa adversaria
+                    playerWithTheBall = g.getAway().getPlayer(Lateral.class,true);
+                }
+            }
+            else{// se a skill do guarda-redes for muito superior a do avancado, fica com a bola
+                playerWithTheBall = goalie;
+            }
+        }
+        else{
+            goalie = (Goalkeeper) g.getHome().getPlayer(Goalkeeper.class,true);
+            if(Math.abs(goalie.getOverallSkill() - s.getOverallSkill()) <= 10){
+                if(rand.nextInt(101) <= s.getShooting()){ // se o chute for bem sucedido atualiza score
+                    g.incPoints2();
+                    playerWithTheBall = g.getHome().getPlayer(Midfielder.class,true);
+                }
+                else{ // se falhar o chute, a bola vai para um lateral da equipa adversaria
+                    playerWithTheBall = g.getHome().getPlayer(Lateral.class,true);
+                }
+            }
+            else{// se a skill do guarda-redes for muito superior a do avancado, fica com a bola
+                playerWithTheBall = goalie;
+            }
+        }
+        invertTeamWithBall();
+    }
+
+    public void invertTeamWithBall(){
+        home = !home;
+    }
+
+
+    public Class<?> getFootballPlayerOppositeClass(){
+        if(playerWithTheBall.getClass().equals(Defender.class) || playerWithTheBall.getClass().equals(Lateral.class)) return Striker.class;
+        if(playerWithTheBall.getClass().equals(Midfielder.class)) return Midfielder.class;
+        if(playerWithTheBall.getClass().equals(Striker.class)) return Goalkeeper.class;
+        else return null;
+    }
+
+
+
     public void setPlayerWithTheBall(FootballPlayer p){
         playerWithTheBall = p;
-        if(home) home = false;
-        else home = true;
+        invertTeamWithBall();
     }
 
 }

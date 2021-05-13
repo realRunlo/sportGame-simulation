@@ -38,6 +38,7 @@ public class FootballGame extends Game {
      * @param TeamAway equipa visitante
      */
     public FootballGame(FootballTeam TeamHome,int strategyHome, FootballTeam TeamAway,int strategyAway){
+            super(true,0,0,0,TeamHome,TeamAway);
             setHome(new FootballLineup(TeamHome,strategyHome));
             setAway(new FootballLineup(TeamAway,strategyAway));
     }
