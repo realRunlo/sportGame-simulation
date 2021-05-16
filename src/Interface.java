@@ -1,10 +1,12 @@
+import controller.SPORTMController;
 import football.Game.ExecuteFootballGame;
 import football.Game.FootballGame;
 import football.player.*;
 import football.team.FootballTeam;
 import generic.Game.Game;
+import readFile.readFile;
 import viewer.SPORTMViewer;
-
+import State.State;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
@@ -17,7 +19,9 @@ public class Interface {
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        SPORTMViewer viewer = new SPORTMViewer();
+        SPORTMController controller = new SPORTMController();
+        controller.run();
+        /*SPORTMViewer viewer = new SPORTMViewer();
         viewer.showWelcome();
         State s = new State();
         FootballTeam t1 = new FootballTeam();
@@ -102,7 +106,7 @@ public class Interface {
 
 
         viewer.showTermination();
-
+*/
         }
 
 

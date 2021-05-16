@@ -1,7 +1,8 @@
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
+package readFile;
+import java.io.*;
+
+import State.State;
+
 
 public class readFile implements Serializable {
 
@@ -10,7 +11,8 @@ public class readFile implements Serializable {
     }
 
     public State readState(String filename) throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream(filename);
+        File f = new File(filename);
+        FileInputStream fis = new FileInputStream(f.getName());
         ObjectInputStream ois = new ObjectInputStream(fis);
         State s;
         if((s = (State) ois.readObject())!=null) return s;
