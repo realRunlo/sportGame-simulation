@@ -57,7 +57,8 @@ public class StrikerTest {
             e.printStackTrace();
         }
         String[] test = lines.get(0).split(": ", 2);
-        sTest = Striker.fromCSV(test[1]);
+        String[] tokens = test[1].split(";");
+        sTest = Striker.fromCSV(tokens);
         assertTrue("Same striker returned not equal", sTest.equals(s1));
     }
 }

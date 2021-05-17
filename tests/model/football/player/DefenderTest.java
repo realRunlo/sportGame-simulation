@@ -28,7 +28,7 @@ public class DefenderTest {
     public void setUp() {
         d1 = new Defender("António", 1, "Chelsea", 42, 12, 144, -10, 32, 144, 42);
         d2 = new Defender(d1);
-        d3 = new Defender("", 2, "",  0, 0, 0, 0, 0, 0, 0);
+        d3 = new Defender("test", 2, "tesTeam",  0, 0, 0, 0, 0, 0, 0);
     }
 
     @After
@@ -50,7 +50,7 @@ public class DefenderTest {
 
     @Test
     public void toCSVTest() {
-        assertEquals("Equal players returned different", "Defender: António;1;Chelsea;;45;42;12;0;100;32;100;42;NONE;", d1.toCSV());
+        assertEquals("Equal players returned different", "Defender: António;1;Chelsea;;45;42;12;100;0;32;100;42;NONE", d1.toCSV());
     }
 
     @Test
@@ -60,12 +60,14 @@ public class DefenderTest {
         List<String> lines = new ArrayList<>();
         try {
             d1.save("DefenderTest.csv");
+            d3.save("DefenderTest.csv");
             lines = Files.readAllLines(Paths.get("DefenderTest.csv"), StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
         String[] test = lines.get(0).split(": ", 2);
-        dTest = Defender.fromCSV(test[1]);
+        String[] tokens = test[1].split(";");
+        dTest = Defender.fromCSV(tokens);
         assertTrue("Same defender returned not equal", dTest.equals(d1));
     }
 }

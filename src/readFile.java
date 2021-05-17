@@ -1,3 +1,5 @@
+import model.football.state.FootballState;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,11 +11,11 @@ public class readFile implements Serializable {
 
     }
 
-    public State readState(String filename) throws IOException, ClassNotFoundException {
+    public FootballState readState(String filename) throws IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream(filename);
         ObjectInputStream ois = new ObjectInputStream(fis);
-        State s;
-        if((s = (State) ois.readObject())!=null) return s;
+        FootballState s;
+        if((s = (FootballState) ois.readObject())!=null) return s;
         return null;
     }
 

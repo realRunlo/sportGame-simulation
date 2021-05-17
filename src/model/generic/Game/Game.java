@@ -10,6 +10,8 @@ public abstract class Game {
     private int points2;
     private Team t1;
     private Team t2;
+    private String team1;
+    private String team2;
     private LocalDateTime timer;
 
     //----------------------------------Construtores------------------------------------------------
@@ -87,5 +89,17 @@ public abstract class Game {
                 game.getPoints1() == points1 &&
                 game.getPoints2() == points2 &&
                 game.getTimer().equals(timer);
+    }
+
+    public String toCSV() {
+        StringBuilder str = new StringBuilder();
+
+        str.append(this.getBol()).append(';');
+        str.append(this.getPoints1()).append(';');
+        str.append(this.getPoints2()).append(';');
+        str.append(this.getT1().getName()).append(';');
+        str.append(this.getT2().getName()).append(';');
+
+        return str.toString();
     }
 }

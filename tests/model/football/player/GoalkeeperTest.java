@@ -71,7 +71,8 @@ public class GoalkeeperTest {
         }
 
         String[] test = lines.get(0).split(": ", 2);
-        gTest = Goalkeeper.fromCSV(test[1]);
+        String[] tokens = test[1].split(";");
+        gTest = Goalkeeper.fromCSV(tokens);
         assertTrue(gTest.equals(g1));
 
     }

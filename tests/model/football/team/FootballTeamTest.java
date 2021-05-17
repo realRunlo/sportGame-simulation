@@ -30,7 +30,7 @@ public class FootballTeamTest {
 
     @Test
     public void toCSVTest() {
-        assertEquals("Same players returned different", "Benfica;76;0", t1.toCSV());
+        assertEquals("Same players returned different", "FootballTeam: Benfica;76;0", t1.toCSV());
     }
 
     @Test
@@ -44,7 +44,9 @@ public class FootballTeamTest {
             return;
         }
 
-        FootballTeam tTest = FootballTeam.fromCSV(lines.get(0));
+        String[] splitStr = lines.get(0).split(": ");
+        String[] tokens = splitStr[1].split(";");
+        FootballTeam tTest = FootballTeam.fromCSV(tokens);
         assertEquals("Same class returned not equals", t1, tTest);
     }
 }

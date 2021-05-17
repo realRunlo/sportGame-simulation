@@ -83,29 +83,28 @@ public class Defender extends FootballPlayer {
         return "Defender: " + super.toCSV();
     }
 
-    public static Defender fromCSV(String str) {
-        String[] splitStr = str.split(";");
+    public static Defender fromCSV(String[] tokens) {
         List<String> background;
 
-        if(!splitStr[3].equals("")) {
-            background = new ArrayList<>(Arrays.asList(splitStr[3].split(",")));
+        if(!tokens[3].equals("")) {
+            background = new ArrayList<>(Arrays.asList(tokens[3].split(",")));
         } else background = new ArrayList<>();
 
         return new Defender
                 (
-                        splitStr[0],
-                        Integer.parseInt(splitStr[1]),
-                        splitStr[2],
+                        tokens[0],
+                        Integer.parseInt(tokens[1]),
+                        tokens[2],
                         background,
-                        Integer.parseInt(splitStr[4]),
-                        Integer.parseInt(splitStr[5]),
-                        Integer.parseInt(splitStr[6]),
-                        Integer.parseInt(splitStr[7]),
-                        Integer.parseInt(splitStr[8]),
-                        Integer.parseInt(splitStr[9]),
-                        Integer.parseInt(splitStr[10]),
-                        Integer.parseInt(splitStr[11]),
-                        Card.valueOf(splitStr[12])
+                        Integer.parseInt(tokens[4]),
+                        Integer.parseInt(tokens[5]),
+                        Integer.parseInt(tokens[6]),
+                        Integer.parseInt(tokens[7]),
+                        Integer.parseInt(tokens[8]),
+                        Integer.parseInt(tokens[9]),
+                        Integer.parseInt(tokens[10]),
+                        Integer.parseInt(tokens[11]),
+                        Card.valueOf(tokens[12])
                 );
     }
 }

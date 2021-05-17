@@ -69,7 +69,8 @@ public class MidfielderTest {
             e.printStackTrace();
         }
         String[] test = lines.get(0).split(": ", 2);
-        mTest = Midfielder.fromCSV(test[1]);
+        String[] tokens = test[1].split(";");
+        mTest = Midfielder.fromCSV(tokens);
         assertTrue("Same midfielder returned not equal", mTest.equals(m1));
     }
 }

@@ -14,7 +14,7 @@ public class Interface {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         SPORTMViewer viewer = new SPORTMViewer();
         viewer.showWelcome();
-        State s = new State();
+        model.football.state.State s = new model.football.state.State();
         FootballTeam t1 = new FootballTeam();
         FootballTeam t2 = new FootballTeam();
         t1.setName("Team1");
@@ -64,10 +64,10 @@ public class Interface {
             System.out.println("Error accessing the file");
         }
 
-        System.out.println("Reading State file...\nNew State:\n");
+        System.out.println("Reading model.football.state.State file...\nNew model.football.state.State:\n");
         readFile r = new readFile();
         try{
-             State s2 = r.readState("estado.txt");
+             model.football.state.State s2 = r.readState("estado.txt");
              System.out.println(s2.toString());
         }
         catch(ClassNotFoundException e){

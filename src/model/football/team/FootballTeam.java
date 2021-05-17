@@ -122,18 +122,16 @@ public class FootballTeam extends Team  {
     }
 
     public String toCSV() {
-        return super.toCSV() + ';' + this.getNPlayers();
+        return "FootballTeam: " + super.toCSV();
     }
 
-    public static FootballTeam fromCSV(String line) {
-        String[] splitLine = line.split(";");
-
+    public static FootballTeam fromCSV(String[] tokens) {
         return new FootballTeam
                 (
-                        splitLine[0],
-                        Integer.parseInt(splitLine[1]),
+                        tokens[0],
+                        Integer.parseInt(tokens[1]),
                         new HashMap<>(),
-                        Integer.parseInt(splitLine[2])
+                        0
                 );
     }
 }

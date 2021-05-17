@@ -72,7 +72,8 @@ public class LateralTest {
             e.printStackTrace();
         }
         String[] test = lines.get(0).split(": ", 2);
-        lTest = Lateral.fromCSV(test[1]);
+        String[] tokens = test[1].split(";");
+        lTest = Lateral.fromCSV(tokens);
         assertTrue(lTest.equals(l1));
     }
 
