@@ -19,9 +19,9 @@ public class Interface {
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        SPORTMController controller = new SPORTMController();
-        controller.run();
-        /*SPORTMViewer viewer = new SPORTMViewer();
+        //SPORTMController controller = new SPORTMController();
+        //controller.run();
+        SPORTMViewer viewer = new SPORTMViewer();
         viewer.showWelcome();
         State s = new State();
         FootballTeam t1 = new FootballTeam();
@@ -106,7 +106,7 @@ public class Interface {
 
 
         viewer.showTermination();
-*/
+
         }
 
 

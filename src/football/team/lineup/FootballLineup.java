@@ -16,19 +16,19 @@ public class FootballLineup implements Serializable {
     private Set<FootballPlayer> substitutes;
 
     public FootballLineup() {
-        teamName = "None";
-        strategy = 1;
-        globalSkill = 0;
-        this.playing = new HashSet<>();
-        this.substitutes = new HashSet<>();
+        setTeamName("None");
+        setStrategy(1);
+        setGlobalSkill(0);
+        setPlaying(new HashSet<>());
+        setSubstitutes(new HashSet<>());
     }
 
     public FootballLineup(String name,int s,Set<FootballPlayer> playing, Set<FootballPlayer> substitutes) {
-        teamName = name;
-        strategy = strategyNormalize(s);
-        this.setPlaying(playing);
-        this.substitutes = new HashSet<>(substitutes);
-        this.setGlobalSkill(calcGlobalSkill());
+        setTeamName(name);
+        setStrategy(s);
+        setPlaying(playing);
+        setSubstitutes(substitutes);
+        setGlobalSkill(calcGlobalSkill());
     }
 
     public FootballLineup(FootballLineup lineup) {
@@ -42,22 +42,24 @@ public class FootballLineup implements Serializable {
     public FootballLineup(FootballTeam t,int s){
         setTeamName(t.getName());
         setStrategy(s);
-        playing = new HashSet<>();
-        substitutes = new HashSet<>();
+        setPlaying(new HashSet<>());
+        setSubstitutes(new HashSet<>());
+        //Adicionar os titulares
         addPlaying(t.getTypePlayer(Goalkeeper.class,playing,substitutes));
-        int nDefenders = numberOfType(Defender.class);
-        int nLaterais = numberOfType(Lateral.class);
-        int nMidfilders = numberOfType(Midfielder.class);
-        int nStrikers = numberOfType(Striker.class);
-        for(int i =0; i<nDefenders;i++) addPlaying(t.getTypePlayer(Defender.class,playing,substitutes));
-        for(int i =0; i<nLaterais;i++) addPlaying(t.getTypePlayer(Lateral.class,playing,substitutes));
-        for(int i =0; i<nMidfilders;i++) addPlaying(t.getTypePlayer(Midfielder.class,playing,substitutes));
-        for(int i =0; i<nStrikers;i++) addPlaying(t.getTypePlayer(Striker.class,playing,substitutes));
+        addPlayerTypeToGroup(t,Defender.class,true);
+        addPlayerTypeToGroup(t,Lateral.class,true);
+        addPlayerTypeToGroup(t,Midfielder.class,true);
+        addPlayerTypeToGroup(t,Striker.class,true);
+
+
+        //Adicionar os substitutos
         addSubstitute(t.getTypePlayer(Goalkeeper.class,playing,substitutes));
-        for(int i =0; i<2;i++) addSubstitute(t.getTypePlayer(Defender.class,playing,substitutes));
-        for(int i =0; i<2;i++) addSubstitute(t.getTypePlayer(Midfielder.class,playing,substitutes));
-        for(int i =0; i<2;i++) addSubstitute(t.getTypePlayer(Striker.class,playing,substitutes));
-        globalSkill = calcGlobalSkill();
+        addPlayerTypeToGroup(t,Defender.class,false);
+        addPlayerTypeToGroup(t,Lateral.class,false);
+        addPlayerTypeToGroup(t,Midfielder.class,false);
+        addPlayerTypeToGroup(t,Striker.class,false);
+
+        setGlobalSkill(calcGlobalSkill());
     }
 
     public String getTeamName(){
@@ -121,9 +123,9 @@ public class FootballLineup implements Serializable {
         FootballPlayer p;
         if(player != null) {
             if (play) {
-                p = playing.stream().filter(e -> e.getClass().equals(player)).findAny().get();
+                p = getPlaying().stream().filter(e -> e.getClass().equals(player)).findAny().get();
             } else {
-                p = substitutes.stream().filter(e -> e.getClass().equals(player)).findAny().get();
+                p = getSubstitutes().stream().filter(e -> e.getClass().equals(player)).findAny().get();
             }
             return p;
         }
@@ -146,6 +148,21 @@ public class FootballLineup implements Serializable {
             setPlaying(playing);
         }
     }
+
+    public void addPlayerTypeToGroup(FootballTeam t,Class<?> playerType, boolean playing){
+        int nToAdd = 0;
+        if(playing) {
+            nToAdd = numberOfType(playerType);
+            for(int i =0; i<nToAdd;i++) addPlaying(t.getTypePlayer(playerType,getPlaying(),getSubstitutes()));
+        }
+        else{
+            nToAdd = 2;
+            for(int i =0; i<nToAdd;i++) addSubstitute(t.getTypePlayer(playerType,getPlaying(),getSubstitutes()));
+        }
+
+
+    }
+
 
     public void remSubstitute(FootballPlayer player) {
         Set<FootballPlayer> subs = this.getSubstitutes();
@@ -173,7 +190,7 @@ public class FootballLineup implements Serializable {
     }
 
     public int numberOfType(Class<?> player_type){
-        if(strategy == 1){ //4-4-2
+        if(getStrategy() == 1){ //4-4-2
             if (Defender.class.equals(player_type)) return 2;
             else if(Lateral.class.equals(player_type)) return 2;
             else if (Midfielder.class.equals(player_type)) return 4;

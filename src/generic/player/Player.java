@@ -13,57 +13,57 @@ public abstract class Player implements Serializable {
 
     public Player(String name) {
         this.setName(name);
-        this.number = 0;
+        this.setNumber(0);
         this.setCurTeam("");
-        this.background = new ArrayList<>();
+        this.setBackground(new ArrayList<>());
         this.setOverallSkill(0);
     }
 
     public Player(String name, String team) {
         this.setName(name);
-        this.number = 0;
-        this.background = new ArrayList<>();
+        this.setNumber(0);
+        this.setBackground(new ArrayList<>());
         this.setCurTeam(team);
         this.setOverallSkill(0);
     }
 
     public Player(String name, String team,int number) {
         this.setName(name);
-        this.number = number;
-        this.background = new ArrayList<>();
+        this.setNumber(number);
+        this.setBackground(new ArrayList<>());
         this.setCurTeam(team);
         this.setOverallSkill(0);
     }
 
     public Player(String name, String team, List<String> background) {
         this.setName(name);
-        this.number = 0;
+        this.setNumber(0);
         this.setCurTeam(team);
-        this.background = new ArrayList<>(background);
+        this.setBackground(background);
         this.setOverallSkill(0);
     }
 
     public Player(String name, List<String> background) {
         this.setName(name);
-        this.number = 0;
+        this.setNumber(0);
         this.setCurTeam("");
-        this.background = new ArrayList<>(background);
+        this.setBackground(background);
         this.setOverallSkill(0);
     }
 
     public Player(String name,int newNumber, String newTeam, List<String> background, int newSkill) {
         this.setName(name);
-        this.number = newNumber;
+        this.setNumber(newNumber);
         this.setCurTeam(newTeam);
-        this.setBackgorund(background);
+        this.setBackground(background);
         this.setOverallSkill(newSkill);
     }
 
     public Player(Player player) {
         this.setName(player.getName());
-        this.number = player.getNumber();
+        this.setNumber(player.getNumber());
         this.setCurTeam(player.getCurTeam());
-        this.background = new ArrayList<>(player.getBackground());
+        this.setBackground(player.getBackground());
         this.setOverallSkill(player.getOverallSkill());
     }
 
@@ -88,12 +88,16 @@ public abstract class Player implements Serializable {
     public String getCurTeam() {
         return this.curTeam;
     }
-
-    public void setBackgorund(List<String> newBackground){
+    public void setCurTeamNone(){
+        setCurTeam("None");
+    }
+    public void setBackground(List<String> newBackground){
         background = new ArrayList<>(newBackground);
     }
     public void addBackground(String team) {
-        this.background.add(team);
+        List<String> b = getBackground();
+        b.add(team);
+        setBackground(b);
     }
     public List<String> getBackground() {
         return new ArrayList<>(this.background);
@@ -126,5 +130,7 @@ public abstract class Player implements Serializable {
 
         return ret;
     }
+
+    public abstract Player clone();
 
 }

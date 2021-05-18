@@ -8,18 +8,18 @@ public abstract class Team implements Serializable {
     private int GlobalSkill;
 
     public Team(){
-        name = " ";
-        GlobalSkill = 0;
+        setName(" ");
+        setGlobalSkill(0);
     }
 
     public Team(String newName, int newGlobalSkill){
-        name = newName;
-        GlobalSkill = newGlobalSkill;
+        setName(newName);
+        setGlobalSkill(newGlobalSkill);
     }
 
     public Team(Team t){
-        name = t.getName();
-        GlobalSkill = t.getGlobalSkill();
+        setName(t.getName());
+        setGlobalSkill(t.getGlobalSkill());
     }
 
     public String getName(){
@@ -49,7 +49,7 @@ public abstract class Team implements Serializable {
 
 
     public String toString(){
-        return "Nome de equipa: " + getName() + "\nGlobal Skill: " + getGlobalSkill() + "\n";
+        return "Team: " + getName() + "\nGlobal Skill: " + getGlobalSkill() + "\n";
     }
 
     public abstract Team clone();

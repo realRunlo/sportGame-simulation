@@ -13,52 +13,76 @@ public class ExecuteFootballGame {
     private static final double averageAction = 1;
     private static final double slowAction = 1.5;
 
-
+/* Coloquei em comentario porque nao faz sentido criar um executeFootballGame com um game sem equipas
+    entao talvez nao valha a pena dar a opcao de o fazer
     public ExecuteFootballGame(){
         Random rand = new Random();
-        g = new FootballGame();
+        setGame(new FootballGame());
         int random = rand.nextInt(2);
         if(random == 0){
-            playerWithTheBall = g.getAway().getPlaying().stream()
+            setHome(false);
+            setPlayerWithTheBall(g.getAway().getPlaying().stream()
                     .filter(e-> e.getClass().equals(Striker.class))
-                    .findAny().get();
-            home = false;
+                    .findAny().get(),false);
         }
         else {
-            playerWithTheBall = g.getHome().getPlaying().stream()
+            setHome(true);
+            setPlayerWithTheBall(g.getHome().getPlaying().stream()
                     .filter(e-> e.getClass().equals(Striker.class))
-                    .findAny().get();
-            home = true;
+                    .findAny().get(),true);
         }
     }
-
+*/
     public ExecuteFootballGame(FootballGame g){
         Random rand = new Random();
-        this.g = new FootballGame(g);
+        setGame(g);
         int random = rand.nextInt(2);
         if(random == 0){
-            playerWithTheBall = g.getAway().getPlaying().stream()
-                    .filter(e-> e.getClass().equals(Striker.class))
-                    .findAny().get();
-            home = false;
+            setHome(false);
+            setPlayerWithTheBall(g.getAway().getPlaying().stream()
+                    .filter(e-> e.getClass().equals(Midfielder.class))
+                    .findAny().get(),false);
         }
         else {
-            playerWithTheBall = g.getHome().getPlaying().stream()
-                    .filter(e-> e.getClass().equals(Striker.class))
-                    .findAny().get();
-            home = true;
+            setHome(true);
+            setPlayerWithTheBall(g.getHome().getPlaying().stream()
+                    .filter(e-> e.getClass().equals(Midfielder.class))
+                    .findAny().get(),true);
         }
     }
+    public FootballPlayer getPlayerWithTheBall(){
+        return playerWithTheBall.clone();
+    }
+
+    public void setPlayerWithTheBall(FootballPlayer p, boolean home){
+        playerWithTheBall = p;
+        //caso o novo jogador seja da equipa que antes nao tinha posse da bola, inverte a posse
+        if(home != getHome()) invertTeamWithBall();
+    }
+
+    public boolean getHome(){
+        return home;
+    }
+
+    public void setHome(boolean homeOrAway){
+        home = homeOrAway;
+    }
+
 
     public FootballGame getGame(){
-        return g;
+        return g.clone();
+    }
+
+    public void setGame(FootballGame g){
+        this.g = g.clone();
     }
 
     public void ExecutePlay(){
+        FootballGame g = getGame();
         FootballLineup playingHome = g.getHome();
         FootballLineup playingAway = g.getAway();
         FootballPlayer p;
-        if(home){
+        if(getHome()){
             p = playingAway.getPlayer(getFootballPlayerOppositeClass(),true);
             if(p != null) {
                 if (playerWithTheBall.getClass().equals(Striker.class)) { // se for um avancado tenta rematar
@@ -150,7 +174,7 @@ public class ExecuteFootballGame {
             Defender d = (Defender) playerWithTheBall;
             if(rand.nextInt(101) <= d.getBallRetention()) return false;
             else {
-                setPlayerWithTheBall(p);
+                setPlayerWithTheBall(p,!getHome());
                 return true;
             }
             }
@@ -260,11 +284,13 @@ public class ExecuteFootballGame {
     }
 
 
-
-    public void setPlayerWithTheBall(FootballPlayer p){
-        playerWithTheBall = p;
-        invertTeamWithBall();
+    public void incTimer(double action){
+        FootballGame game = getGame();
+        game.incTimerBy(action);
+        setGame(game);
     }
+
+
 
 }
 
