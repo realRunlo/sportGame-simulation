@@ -1,12 +1,16 @@
 package football.player;
 
+import model.football.player.Defender;
 import model.football.player.Midfielder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 public class MidfielderTest {
     private Midfielder m1;
@@ -18,7 +22,7 @@ public class MidfielderTest {
 
     @Before
     public void setUp() {
-        m1 = new Midfielder("OLA", "ADEUS", 32, -13, 440, 78, 89,13, 89, 87);
+        m1 = new Midfielder("OLA", 1, "ADEUS", 32, -13, 440, 78, 89,13, 89, 87);
         m2 = new Midfielder(m1);
     }
 
@@ -44,5 +48,21 @@ public class MidfielderTest {
     @Test
     public void calcOverallSkillTest() {
         assertEquals("Equal value returned different", (int) 56.25, m1.calcOverallSkill());
+    }
+
+    @Test
+    public void toCSVTest() {
+        assertEquals("Equal players returned different", "Midfielder: OLA;1;ADEUS;;32;0;100;78;89;13;89;NONE;87", m1.toCSV());
+    }
+
+    @Test
+    public void loadSaveTest() throws IOException {
+        String filePath = "midfielder.csv";
+        m1.save(filePath);
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        String[] split = br.readLine().split(": ");
+        Midfielder mTest = Midfielder.load(split[1]);
+
+        assertTrue("Different midfielders", m1.equals(mTest));
     }
 }

@@ -1,6 +1,8 @@
 package football;
 
+import model.football.Game.FootballGame;
 import model.football.player.*;
+import model.football.team.FootballTeam;
 import model.football.team.lineup.FootballLineup;
 import org.junit.After;
 import org.junit.Before;
@@ -25,11 +27,11 @@ public class FootballGameTest {
         fl1 = new FootballLineup();
         fl2 = new FootballLineup();
 
-        FootballPlayer p1 = new Goalkeeper("Ola", "test", 23, 45, 76, 69, 42, 242, 12, 87);
-        FootballPlayer p2 = new Defender("def", "defTeam", 65, 487, 42, -31, 42, 86, 42);
-        FootballPlayer p3 = new Lateral("lat", "latTeam", 32, 87, 42, 64, 56, 32, 46, 74);
-        FootballPlayer p4 = new Midfielder("mid", "midTeam", 65, 76, 31, 42, 53, 64, 87, 96);
-        FootballPlayer p5 = new Striker("striker", "strikeTeam", 52, 46, 24, 14, 6, 64, 46);
+        FootballPlayer p1 = new Goalkeeper("Ola", 1, "test", 23, 45, 76, 69, 42, 242, 12, 87);
+        FootballPlayer p2 = new Defender("def", 2, "defTeam", 65, 487, 42, -31, 42, 86, 42, -32);
+        FootballPlayer p3 = new Lateral("lat", 3, "latTeam", 32, 87, 42, 64, 56, 32, 46, 74);
+        FootballPlayer p4 = new Midfielder("mid", 4, "midTeam", 65, 76, 31, 42, 53, 64, 87, 96);
+        FootballPlayer p5 = new Striker("striker", 5, "strikeTeam", 52, 46, 24, 14, 6, 64, 46, 1032);
 
         fl1.addPlaying(p1);
         fl1.addPlaying(p2);
@@ -43,8 +45,8 @@ public class FootballGameTest {
         fl2.addSubstitute(p2);
         fl2.addSubstitute(p1);
 
-        fg1 = new FootballGame();
-        fg2 = new FootballGame(fl1, fl2);
+        fg1 = new FootballGame(new FootballTeam(), new FootballTeam());
+        fg2 = new FootballGame(new FootballTeam(),new FootballTeam(), fl1, fl2);
         fg3 = new FootballGame(fg2);
     }
 
@@ -55,7 +57,7 @@ public class FootballGameTest {
 
     @Test
     public void equalsTest() {
-        FootballGame fgT = new FootballGame();
+        FootballGame fgT = new FootballGame(new FootballTeam(), new FootballTeam());
         assertTrue(fg1.equals(fgT));
         assertFalse(fg2.equals(fgT));
     }

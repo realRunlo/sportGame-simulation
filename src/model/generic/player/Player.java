@@ -1,10 +1,12 @@
 package model.generic.player;
 
-import java.io.Serializable;
+import model.interfaces.Saveable;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player implements Serializable {
+public abstract class Player implements Saveable {
     private String name;
     private int number;
     private String curTeam;
@@ -19,15 +21,7 @@ public abstract class Player implements Serializable {
         this.setOverallSkill(0);
     }
 
-    public Player(String name, String team) {
-        this.setName(name);
-        this.setNumber(0);
-        this.setBackground(new ArrayList<>());
-        this.setCurTeam(team);
-        this.setOverallSkill(0);
-    }
-
-    public Player(String name, String team,int number) {
+    public Player(String name, int number, String team) {
         this.setName(name);
         this.setNumber(number);
         this.setBackground(new ArrayList<>());
@@ -35,17 +29,17 @@ public abstract class Player implements Serializable {
         this.setOverallSkill(0);
     }
 
-    public Player(String name, String team, List<String> background) {
+    public Player(String name, int number, String team, List<String> background) {
         this.setName(name);
-        this.setNumber(0);
+        this.setNumber(number);
         this.setCurTeam(team);
         this.setBackground(background);
         this.setOverallSkill(0);
     }
 
-    public Player(String name, List<String> background) {
+    public Player(String name, int number, List<String> background) {
         this.setName(name);
-        this.setNumber(0);
+        this.setNumber(number);
         this.setCurTeam("");
         this.setBackground(background);
         this.setOverallSkill(0);
@@ -133,4 +127,31 @@ public abstract class Player implements Serializable {
 
     public abstract Player clone();
 
+    public String toCSV(){
+        StringBuilder csv = new StringBuilder();
+        List<String> bg = this.getBackground();
+        int bgSize = bg.size();
+        int i;
+
+        csv.append(this.getName()).append(';')
+                .append(this.getNumber()).append(';')
+                .append(this.getCurTeam()).append(';');
+
+        for(i = 0; i < bgSize - 1; i++) {
+            csv.append(bg.get(i)).append(',');
+        }
+        if(bgSize != 0) {
+            csv.append(bg.get(i));
+        }
+
+        return csv.toString();
+    }
+
+    public void save(String filePath) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
+
+        bw.write(this.toCSV());
+        bw.flush();
+        bw.close();
+    }
 }

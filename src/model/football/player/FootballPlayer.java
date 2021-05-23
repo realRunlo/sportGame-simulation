@@ -2,10 +2,15 @@ package model.football.player;
 
 import model.football.foul.Card;
 import model.generic.player.Player;
+import model.interfaces.Saveable;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
-public abstract class FootballPlayer extends Player {
+public abstract class FootballPlayer extends Player implements Saveable {
     private int speed;
     private int resistance;
     private int dexterity;
@@ -15,21 +20,21 @@ public abstract class FootballPlayer extends Player {
     private int passing;
     private Card card;
 
-    public FootballPlayer(String name, String team) {
-        super(name, team);
-        this.setSpeed(0);
-        this.setResistance(0);
-        this.setDexterity(0);
-        this.setImplosion(0);
-        this.setHeadGame(0);
-        this.setKick(0);
-        this.setPassing(0);
+    public FootballPlayer(String name, int number, String team) {
+        super(name, number, team);
+        this.changeSpeed(0);
+        this.changeResistance(0);
+        this.changeDexterity(0);
+        this.changeImplosion(0);
+        this.changeImplosion(0);
+        this.changeKick(0);
+        this.changePassing(0);
         this.setCard(Card.NONE);
     }
 
     public FootballPlayer(String name,
-                          String team,
                           int number,
+                          String team,
                           int speed,
                           int resistance,
                           int dexterity,
@@ -37,7 +42,7 @@ public abstract class FootballPlayer extends Player {
                           int headGame,
                           int kick,
                           int passing) {
-        super(name, team,number);
+        super(name, number, team);
         this.changeSpeed(speed);
         this.changeResistance(resistance);
         this.changeDexterity(dexterity);
@@ -48,17 +53,22 @@ public abstract class FootballPlayer extends Player {
         this.setCard(Card.NONE);
     }
 
-    public FootballPlayer(String name,
-                          String team,
-                          List<String> background,
-                          int speed,
-                          int resistance,
-                          int dexterity,
-                          int implosion,
-                          int headGame,
-                          int kick,
-                          int passing) {
-        super(name, team, background);
+    public FootballPlayer
+            (
+                    String name,
+                    int number,
+                    String team,
+                    List<String> background,
+                    int speed,
+                    int resistance,
+                    int dexterity,
+                    int implosion,
+                    int headGame,
+                    int kick,
+                    int passing,
+                    Card card
+            ) {
+        super(name, number, team, background);
         this.changeSpeed(speed);
         this.changeResistance(resistance);
         this.changeDexterity(dexterity);
@@ -66,27 +76,7 @@ public abstract class FootballPlayer extends Player {
         this.changeHeadGame(headGame);
         this.changeKick(kick);
         this.changePassing(passing);
-        this.setCard(Card.NONE);
-    }
-
-    public FootballPlayer(String name,
-                          String team,
-                          int speed,
-                          int resistance,
-                          int dexterity,
-                          int implosion,
-                          int headGame,
-                          int kick,
-                          int passing) {
-        super(name, team);
-        this.changeSpeed(speed);
-        this.changeResistance(resistance);
-        this.changeDexterity(dexterity);
-        this.changeImplosion(implosion);
-        this.changeHeadGame(headGame);
-        this.changeKick(kick);
-        this.changePassing(passing);
-        this.setCard(Card.NONE);
+        this.setCard(card);
     }
 
     public FootballPlayer(FootballPlayer player) {
@@ -225,4 +215,24 @@ public abstract class FootballPlayer extends Player {
     }
 
     public abstract FootballPlayer clone();
+
+    public String toCSV() {
+        return super.toCSV()         + ';' +
+                this.getSpeed()      + ';' +
+                this.getResistance() + ';' +
+                this.getDexterity()  + ';' +
+                this.getImplosion()  + ';' +
+                this.getHeadGame()   + ';' +
+                this.getKick()       + ';' +
+                this.getPassing()    + ';' +
+                this.getCard();
+    }
+
+    public void save(String filePath) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
+
+        bw.write(this.toCSV());
+        bw.flush();
+        bw.close();
+    }
 }

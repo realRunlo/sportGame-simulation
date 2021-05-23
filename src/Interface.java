@@ -1,6 +1,5 @@
 import model.football.Game.ExecuteFootballGame;
 import model.football.Game.FootballGame;
-import football.player.*;
 import model.football.player.*;
 import model.football.team.FootballTeam;
 import readFile.readFile;
@@ -30,7 +29,7 @@ public class Interface {
         int j = 0;
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Goalkeeper g = new Goalkeeper("Goalie" + i, "Team" + j, getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
+            Goalkeeper g = new Goalkeeper("Goalie" + i, i, "Team" + j, getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
             s.addPlayer(g);
             if(i>=5) t2.addPlayer(g);
             else t1.addPlayer(g);
@@ -38,7 +37,7 @@ public class Interface {
         j = 0;
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Lateral l = new Lateral("Lateral" + i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
+            Lateral l = new Lateral("Lateral" + i, i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
             s.addPlayer(l);
             if(i>=5) t2.addPlayer(l);
             else t1.addPlayer(l);
@@ -46,21 +45,21 @@ public class Interface {
         j = 0;
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Defender d = new Defender("Defender" + i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
+            Defender d = new Defender("Defender" + i, i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
             s.addPlayer(d);
             if(i>=5) t2.addPlayer(d);
             else t1.addPlayer(d);
         }
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Midfielder m = new Midfielder("Midfielder" + i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
+            Midfielder m = new Midfielder("Midfielder" + i, i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
             s.addPlayer(m);
             if(i>=5) t2.addPlayer(m);
             else t1.addPlayer(m);
         }
         for(int i = 0; i<10; i++){
             if(i>=5) j = 1;
-            Striker st = new Striker("Striker" + i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
+            Striker st = new Striker("Striker" + i, i, "Team" + j,getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand(),getRand());
             s.addPlayer(st);
             if(i>=5) t2.addPlayer(st);
             else t1.addPlayer(st);

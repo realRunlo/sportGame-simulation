@@ -3,23 +3,20 @@ package model.football.Game;
 import model.football.team.FootballTeam;
 import model.football.team.lineup.FootballLineup;
 import model.generic.Game.Game;
+import model.generic.team.Team;
 
 public class FootballGame extends Game {
     private FootballLineup home;
     private FootballLineup away;
 
-    public FootballGame() {
-        super();
-
-        FootballLineup flHome = new FootballLineup();
-        FootballLineup flAway = new FootballLineup();
-
-        this.setHome(flHome);
-        this.setAway(flAway);
+    public FootballGame(Team t1, Team t2) {
+        super(t1, t2);
+        this.setHome(new FootballLineup());
+        this.setAway(new FootballLineup());
     }
 
-    public FootballGame(FootballLineup home, FootballLineup away) {
-        super();
+    public FootballGame(Team t1, Team t2, FootballLineup home, FootballLineup away) {
+        super(t1, t2);
         this.setHome(home);
         this.setAway(away);
     }

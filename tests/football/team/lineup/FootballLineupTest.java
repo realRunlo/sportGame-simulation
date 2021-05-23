@@ -30,11 +30,11 @@ public class FootballLineupTest {
         Set<FootballPlayer> playing = new HashSet<>();
         Set<FootballPlayer> subsitutes = new HashSet<>();
 
-        p1 = new Goalkeeper("Ola", "test", 23, 45, 76, 69, 42, 242, 12, 87);
-        p2 = new Defender("def", "defTeam", 65, 487, 42, -31, 42, 86, 42);
-        p3 = new Lateral("lat", "latTeam", 32, 87, 42, 64, 56, 32, 46, 74);
-        p4 = new Midfielder("mid", "midTeam", 65, 76, 31, 42, 53, 64, 87, 96);
-        p5 = new Striker("striker", "strikeTeam", 52, 46, 24, 14, 6, 64, 46);
+        p1 = new Goalkeeper("Ola", 1, "test", 23, 45, 76, 69, 42, 242, 12, 87);
+        p2 = new Defender("def", 2, "test", 65, 487, 42, -31, 42, 86, 42, 49);
+        p3 = new Lateral("lat", 3, "test", 32, 87, 42, 64, 56, 32, 46, 74);
+        p4 = new Midfielder("mid", 4, "test", 65, 76, 31, 42, 53, 64, 87, 96);
+        p5 = new Striker("striker", 5, "test", 52, 46, 24, 14, 6, 64, 46, 78);
 
         playing.add(p1);
         playing.add(p2);
@@ -43,7 +43,7 @@ public class FootballLineupTest {
         subsitutes.add(p4);
         subsitutes.add(p5);
 
-        fl1 = new FootballLineup(playing, subsitutes);
+        fl1 = new FootballLineup("test", 2, playing, subsitutes);
         fl2 = new FootballLineup(fl1);
     }
 
@@ -54,15 +54,15 @@ public class FootballLineupTest {
 
     @Test
     public void addPlayerTest() {
-        FootballPlayer newP = new Lateral("latTest", "latTestTeam", 32, 35, 63, 64, 42, 77, 63, 64);
-        FootballPlayer dummy1 = new Striker("142", "$", 32, 53, 534, 35, 21, 42, 421);
-        FootballPlayer dummy2 = new Midfielder("sf", "rwq", 24, 53, 14, 4, 8, 97, 60, 64);
-        FootballPlayer dummy3 = new Midfielder("hrt", "rqew", 67, 68, 24, 5, 86, 90, 50, 75);
-        FootballPlayer dummy4 = new Midfielder("wqe", "htr", 54, 97, 34, 46, 8, 79, 29, 86);
-        FootballPlayer dummy5 = new Midfielder("tqwe", "we", 643, 67, 44, 76, 64, 56, 27, 27);
-        FootballPlayer dummy6 = new Midfielder("1ad", "rwjytj", 42, 5, 61, 64, 66, 34, 76, 75);
-        FootballPlayer dummy7 = new Midfielder("tij", "ndq", 39, 49, 17, 19, 20, 47, 59, 49);
-        FootballPlayer pFull = new Defender("ola", "haha", 34, 53, 95, 29, 37, 5, 59);
+        FootballPlayer newP = new Lateral("latTest", 1, "latTestTeam", 32, 35, 63, 64, 42, 77, 63, 64);
+        FootballPlayer dummy1 = new Striker("142", 2, "$", 32, 53, 534, 35, 21, 42, 421, 32);
+        FootballPlayer dummy2 = new Midfielder("sf", 3, "rwq", 24, 53, 14, 4, 8, 97, 60, 64);
+        FootballPlayer dummy3 = new Midfielder("hrt", 4, "rqew", 67, 68, 24, 5, 86, 90, 50, 75);
+        FootballPlayer dummy4 = new Midfielder("wqe", 5, "htr", 54, 97, 34, 46, 8, 79, 29, 86);
+        FootballPlayer dummy5 = new Midfielder("tqwe", 6, "we", 643, 67, 44, 76, 64, 56, 27, 27);
+        FootballPlayer dummy6 = new Midfielder("1ad", 7, "rwjytj", 42, 5, 61, 64, 66, 34, 76, 75);
+        FootballPlayer dummy7 = new Midfielder("tij", 8, "ndq", 39, 49, 17, 19, 20, 47, 59, 49);
+        FootballPlayer pFull = new Defender("ola", 9, "haha", 34, 32, 53, 95, 29, 37, 5, 59);
 
         assertFalse("Before: Player doesn't exist but returns true", fl1.getPlaying().contains(newP));
         fl1.addPlaying(newP);
@@ -87,7 +87,7 @@ public class FootballLineupTest {
 
     @Test
     public void addSubstituteTest() {
-        FootballPlayer newP = new Goalkeeper("yay", "bomdia", 24, 53, 6, 60, 49, 48, 31, 44);
+        FootballPlayer newP = new Goalkeeper("yay", 43, "bomdia", 24, 53, 6, 60, 49, 48, 31, 44);
         FootballPlayer newPCpy = new Goalkeeper((Goalkeeper) newP);
 
         assertFalse("Before: Player wasn't added but returns true", fl1.getSubstitutes().contains(newP));
@@ -113,7 +113,7 @@ public class FootballLineupTest {
 
     @Test
     public void calcGlobalSkillTest() {
-        assertEquals("Equal value returns different", (int) 55.2, fl1.calcGlobalSkill());
-        assertEquals("Equal value returns different", (int) 55.2, fl2.calcGlobalSkill());
+        assertEquals("Equal value returns different", (int) 62, fl1.calcGlobalSkill());
+        assertEquals("Equal value returns different", (int) 62, fl2.calcGlobalSkill());
     }
 }

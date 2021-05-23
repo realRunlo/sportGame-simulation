@@ -13,30 +13,31 @@ public abstract class Game implements Serializable {
     private double timer;
 
     //----------------------------------Construtores------------------------------------------------
-    public Game() {
-        g = false;
-        points1 = 0;
-        points2 = 0;
-        timer = 0;
+    public Game(Team t1, Team t2) {
+        this.setBol(false);
+        this.setPoints2(0);
+        this.setPoints2(0);
+        this.setTimer(0);
+        this.setT1(t1.clone());
+        this.setT2(t2.clone());
     }
 
     public Game(boolean b, int newP1, int newP2, int newTimer, Team newt1, Team newt2) {
-        g = b;
-        points1 = newP1;
-        points2 = newP2;
-        t1 = newt1.clone();
-        t2 = newt2.clone();
-        timer = newTimer;
-
+        this.setBol(b);
+        this.setPoints1(newP1);
+        this.setPoints2(newP2);
+        this.setT1(newt1.clone());
+        this.setT2(newt2.clone());
+        this.setTimer(newTimer);
     }
 
     public Game(Game newGame) {
-        g = newGame.getBol();
-        points1 = newGame.getPoints1();
-        points2 = newGame.getPoints2();
-        t1 = newGame.getT1();
-        t2 = newGame.getT2();
-        timer = newGame.getTimer();
+        this.setBol(newGame.getBol());
+        this.setPoints1(newGame.getPoints1());
+        this.setPoints2(newGame.getPoints2());
+        this.setT1(newGame.getT1().clone());
+        this.setT2(newGame.getT2().clone());
+        this.setTimer(newGame.getTimer());
     }
 
     //----------------------------------Getters e Setters----------------------------------------------------------
@@ -60,8 +61,14 @@ public abstract class Game implements Serializable {
         return points2;
     }
 
+    public void setT1(Team t1) {
+        this.t1 = t1.clone();
+    }
     public Team getT1(){return t1.clone();};
 
+    public void setT2(Team t2) {
+        this.t2 = t2.clone();
+    }
     public Team getT2(){return t2.clone();};
 
     public void setPoints2(int newPoints) {
