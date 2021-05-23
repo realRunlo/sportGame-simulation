@@ -1,12 +1,11 @@
-import controller.SPORTMController;
-import football.Game.ExecuteFootballGame;
-import football.Game.FootballGame;
+import model.football.Game.ExecuteFootballGame;
+import model.football.Game.FootballGame;
 import football.player.*;
-import football.team.FootballTeam;
-import generic.Game.Game;
+import model.football.player.*;
+import model.football.team.FootballTeam;
 import readFile.readFile;
 import viewer.SPORTMViewer;
-import State.State;
+import model.State.State;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;

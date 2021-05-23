@@ -1,4 +1,4 @@
-package football.player;
+package model.football.player;
 
 public class Striker extends FootballPlayer {
     private int shooting;

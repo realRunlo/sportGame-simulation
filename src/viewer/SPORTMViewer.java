@@ -24,7 +24,8 @@ public class SPORTMViewer {
                 ->Group 68
                 ->Goncalo Braz Afonso a93178
                 ->Goncalo Jose Teixeira Pereira a93168
-                ->Marco Andre Pereira da Costa a93283""");
+                ->Marco Andre Pereira da Costa a93283
+                """);
 
     }
 

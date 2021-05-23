@@ -1,4 +1,4 @@
-package generic.player;
+package model.generic.player;
 
 import java.io.Serializable;
 import java.util.ArrayList;

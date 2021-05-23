@@ -1,4 +1,4 @@
-package football.foul;
+package model.football.foul;
 
 import java.io.Serializable;
 

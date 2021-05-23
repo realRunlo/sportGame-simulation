@@ -1,10 +1,8 @@
-package generic.Game;
+package model.generic.Game;
 
-import football.team.FootballTeam;
-import generic.team.Team;
+import model.generic.team.Team;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 public abstract class Game implements Serializable {
     private boolean g; // information if there is or not a game

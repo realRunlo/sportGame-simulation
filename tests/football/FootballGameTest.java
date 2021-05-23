@@ -1,7 +1,7 @@
 package football;
 
-import football.player.*;
-import football.team.lineup.FootballLineup;
+import model.football.player.*;
+import model.football.team.lineup.FootballLineup;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

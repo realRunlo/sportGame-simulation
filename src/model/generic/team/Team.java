@@ -1,4 +1,4 @@
-package generic.team;
+package model.generic.team;
 
 
 import java.io.Serializable;

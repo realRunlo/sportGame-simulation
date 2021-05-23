@@ -1,11 +1,11 @@
-package football.team.lineup;
+package model.football.team.lineup;
 
 import football.player.*;
-import football.team.FootballTeam;
+import model.football.player.*;
+import model.football.team.FootballTeam;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class FootballLineup implements Serializable {
@@ -47,9 +47,9 @@ public class FootballLineup implements Serializable {
         //Adicionar os titulares
         addPlaying(t.getTypePlayer(Goalkeeper.class,playing,substitutes));
         addPlayerTypeToGroup(t,Defender.class,true);
-        addPlayerTypeToGroup(t,Lateral.class,true);
-        addPlayerTypeToGroup(t,Midfielder.class,true);
-        addPlayerTypeToGroup(t,Striker.class,true);
+        addPlayerTypeToGroup(t, Lateral.class,true);
+        addPlayerTypeToGroup(t, Midfielder.class,true);
+        addPlayerTypeToGroup(t, Striker.class,true);
 
 
         //Adicionar os substitutos

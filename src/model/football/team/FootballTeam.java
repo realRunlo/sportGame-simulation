@@ -1,10 +1,7 @@
-package football.team;
-import football.player.FootballPlayer;
-import football.player.Goalkeeper;
-import generic.player.Player;
-import generic.team.Team;
+package model.football.team;
+import model.football.player.FootballPlayer;
+import model.generic.team.Team;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 

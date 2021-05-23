@@ -1,7 +1,7 @@
 package readFile;
 import java.io.*;
 
-import State.State;
+import model.State.State;
 
 
 public class readFile implements Serializable {

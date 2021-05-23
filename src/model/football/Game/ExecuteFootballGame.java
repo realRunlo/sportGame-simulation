@@ -1,7 +1,8 @@
-package football.Game;
+package model.football.Game;
 
 import football.player.*;
-import football.team.lineup.FootballLineup;
+import model.football.player.*;
+import model.football.team.lineup.FootballLineup;
 
 import java.util.Random;
 

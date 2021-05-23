@@ -1,5 +1,6 @@
 package football.player;
 
+import model.football.player.Defender;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

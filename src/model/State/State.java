@@ -1,10 +1,9 @@
-package State;
-import football.Game.FootballGame;
-import football.player.FootballPlayer;
-import football.team.FootballTeam;
+package model.State;
+import model.football.Game.FootballGame;
+import model.football.player.FootballPlayer;
+import model.football.team.FootballTeam;
 
 import java.io.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

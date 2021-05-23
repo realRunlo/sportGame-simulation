@@ -1,10 +1,8 @@
-package football.Game;
+package model.football.Game;
 
-import football.team.FootballTeam;
-import football.team.lineup.FootballLineup;
-import generic.Game.Game;
-
-import java.io.Serializable;
+import model.football.team.FootballTeam;
+import model.football.team.lineup.FootballLineup;
+import model.generic.Game.Game;
 
 public class FootballGame extends Game {
     private FootballLineup home;
@@ -37,7 +35,7 @@ public class FootballGame extends Game {
      * @param TeamHome equipa visitada
      * @param TeamAway equipa visitante
      */
-    public FootballGame(FootballTeam TeamHome,int strategyHome, FootballTeam TeamAway,int strategyAway){
+    public FootballGame(FootballTeam TeamHome, int strategyHome, FootballTeam TeamAway, int strategyAway){
             super(true,0,0,0,TeamHome,TeamAway);
             setHome(new FootballLineup(TeamHome,strategyHome));
             setAway(new FootballLineup(TeamAway,strategyAway));

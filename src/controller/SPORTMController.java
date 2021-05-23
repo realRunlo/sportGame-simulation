@@ -1,5 +1,5 @@
 package controller;
-import State.State;
+import model.State.State;
 import readFile.readFile;
 import viewer.SPORTMViewer;
 
