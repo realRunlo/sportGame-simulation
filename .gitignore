@@ -5,6 +5,7 @@ out
 *intellij*
 *bluej*
 SPORTM.iml
+*.csv
 fullparser.zip
 logs.txt
 fullparser/proj/Avancado.java
