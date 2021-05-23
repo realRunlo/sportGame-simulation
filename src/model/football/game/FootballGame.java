@@ -1,8 +1,8 @@
-package model.football.Game;
+package model.football.game;
 
 import model.football.team.FootballTeam;
 import model.football.team.lineup.FootballLineup;
-import model.generic.Game.Game;
+import model.generic.game.Game;
 import model.generic.team.Team;
 
 public class FootballGame extends Game {

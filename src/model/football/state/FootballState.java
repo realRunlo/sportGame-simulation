@@ -1,5 +1,5 @@
-package model.State;
-import model.football.Game.FootballGame;
+package model.football.state;
+import model.football.game.FootballGame;
 import model.football.player.FootballPlayer;
 import model.football.team.FootballTeam;
 
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 
 
-public class State implements Serializable {
+public class FootballState implements Serializable {
     private Map<String, FootballPlayer> playersList;
     private Map<String, FootballTeam> teams;
     private List<FootballGame> gameHistory;
@@ -21,7 +21,7 @@ public class State implements Serializable {
     private int day;
 
     private static final int MAX_PLAYER_TEAM = 22;
-    public State(){
+    public FootballState(){
         setPlayersList(new HashMap<>());
         setTeams(new HashMap<>());
         setGameHistory(new ArrayList<>());
@@ -29,7 +29,7 @@ public class State implements Serializable {
         setNTeams(0);
         setDay(0);
     }
-    public State(Map<String, FootballPlayer> newList,Map<String, FootballTeam> newTeams,int newPlayers, int newNumbTeams, int newDay){
+    public FootballState(Map<String, FootballPlayer> newList, Map<String, FootballTeam> newTeams, int newPlayers, int newNumbTeams, int newDay){
         setPlayersList(newList);
         setTeams(newTeams);
         setGameHistory(new ArrayList<>());
@@ -38,7 +38,7 @@ public class State implements Serializable {
         setDay(newDay);
     }
 
-    public State(State s){
+    public FootballState(FootballState s){
         setPlayersList(s.getPlayersList());
         setTeams(s.getTeams());
         setGameHistory(s.getGameHistory());
@@ -258,7 +258,7 @@ public class State implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        State s = (State) o;
+        FootballState s = (FootballState) o;
 
         return playersList.equals(s.getPlayersList()) &&
                 teams.equals(s.getTeams()) &&
@@ -268,8 +268,8 @@ public class State implements Serializable {
     }
 
     @Override
-    public State clone(){
-        return new State(this);
+    public FootballState clone(){
+        return new FootballState(this);
     }
 
     public String toString(){

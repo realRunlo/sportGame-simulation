@@ -1,4 +1,4 @@
-package model.football.Game;
+package model.football.game;
 
 import model.football.player.*;
 import model.football.team.lineup.FootballLineup;

@@ -1,5 +1,5 @@
 package controller;
-import model.State.State;
+import model.football.state.FootballState;
 import readFile.readFile;
 import viewer.SPORTMViewer;
 
@@ -10,13 +10,13 @@ import java.util.Scanner;
 
 public class SPORTMController implements Observer {
     private final SPORTMViewer view;
-    private State state;
+    private FootballState footballState;
     private final Scanner scanner;
     private int option;
 
     public SPORTMController(){
         view = new SPORTMViewer();
-        state = new State();
+        footballState = new FootballState();
         scanner = new Scanner(System.in);
         option = 0;
     }
@@ -38,8 +38,8 @@ public class SPORTMController implements Observer {
         }
     }
 
-    public void setState(State s){
-        state = s.clone();
+    public void setState(FootballState s){
+        footballState = s.clone();
     }
 
 
@@ -85,6 +85,6 @@ public class SPORTMController implements Observer {
 
     @Override
     public void update(Observable o, Object s) {
-        setState((State) s);
+        setState((FootballState) s);
     }
 }

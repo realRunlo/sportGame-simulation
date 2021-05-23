@@ -1,4 +1,4 @@
-package model.generic.Game;
+package model.generic.game;
 
 import model.generic.team.Team;
 

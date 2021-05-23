@@ -1,6 +1,6 @@
 package football;
 
-import model.football.Game.FootballGame;
+import model.football.game.FootballGame;
 import model.football.player.*;
 import model.football.team.FootballTeam;
 import model.football.team.lineup.FootballLineup;

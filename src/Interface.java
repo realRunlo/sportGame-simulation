@@ -1,10 +1,10 @@
-import model.football.Game.ExecuteFootballGame;
-import model.football.Game.FootballGame;
+import model.football.game.ExecuteFootballGame;
+import model.football.game.FootballGame;
 import model.football.player.*;
 import model.football.team.FootballTeam;
 import readFile.readFile;
 import viewer.SPORTMViewer;
-import model.State.State;
+import model.football.state.FootballState;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
@@ -21,7 +21,7 @@ public class Interface {
         //controller.run();
         SPORTMViewer viewer = new SPORTMViewer();
         viewer.showWelcome();
-        State s = new State();
+        FootballState s = new FootballState();
         FootballTeam t1 = new FootballTeam();
         FootballTeam t2 = new FootballTeam();
         t1.setName("Team1");
@@ -82,7 +82,7 @@ public class Interface {
         System.out.println("Reading State file...\nNew State:\n");
         readFile r = new readFile();
         try{
-             State s2 = r.readState("estado.txt");
+             FootballState s2 = r.readState("estado.txt");
              System.out.println(s2.toString());
              System.out.println(s2.getTeam("Team1").toString());
              System.out.println(s2.getTeam("Team2").toString());
