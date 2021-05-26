@@ -1,7 +1,8 @@
 package model.football.state;
 import model.football.game.FootballGame;
-import model.football.player.FootballPlayer;
+import model.football.player.*;
 import model.football.team.FootballTeam;
+import model.interfaces.Saveable;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 
 
-public class FootballState implements Serializable {
+public class FootballState implements Saveable {
     private Map<String, FootballPlayer> playersList;
     private Map<String, FootballTeam> teams;
     private List<FootballGame> gameHistory;
@@ -29,6 +30,16 @@ public class FootballState implements Serializable {
         setNTeams(0);
         setDay(0);
     }
+
+    public FootballState(int day) {
+        this.setPlayersList(new HashMap<>());
+        this.setTeams(new HashMap<>());
+        this.setGameHistory(new ArrayList<>());
+        this.setNumbPlayers(0);
+        this.setNTeams(0);
+        this.setDay(day);
+    }
+
     public FootballState(Map<String, FootballPlayer> newList, Map<String, FootballTeam> newTeams, int newPlayers, int newNumbTeams, int newDay){
         setPlayersList(newList);
         setTeams(newTeams);
@@ -207,11 +218,20 @@ public class FootballState implements Serializable {
         return false;
     }
 
+    public void updateTeam(FootballTeam team) {
+        this.teams.replace(team.getName(), team);
+    }
+
+    public void updatePlayer(FootballPlayer player) {
+        this.playersList.replace(player.getName(), player);
+    }
+
     public void addPlayer2Team(FootballPlayer p ,String team){
         if(teams.containsKey(team)){
-            FootballTeam t = teams.get(team);
+            FootballTeam t = this.getTeams().get(team);
             if(!t.existsPlayerNumber(p.getName(),p.getNumber()) && t.getNPlayers() < MAX_PLAYER_TEAM){
                 t.addPlayer(p);
+                this.updateTeam(t);
             }
         }
     }
@@ -260,11 +280,12 @@ public class FootballState implements Serializable {
 
         FootballState s = (FootballState) o;
 
-        return playersList.equals(s.getPlayersList()) &&
-                teams.equals(s.getTeams()) &&
-                numbPlayers == s.getNPlayers() &&
-                numbTeams == s.getNTeams() &&
-                day == s.getDay();
+        return this.getPlayersList().equals(s.getPlayersList()) &&
+                this.getTeams().equals(s.getTeams()) &&
+                this.getGameHistory().equals(s.getGameHistory()) &&
+                this.getNPlayers() == s.getNPlayers() &&
+                this.getNTeams() == s.getNTeams() &&
+                this.getDay() == s.getDay();
     }
 
     @Override
@@ -279,5 +300,80 @@ public class FootballState implements Serializable {
                 .append("\nDias: ").append(getDay());
 
         return sb.toString();
+    }
+
+    @Override
+    public String toCSV() {
+        return "FootballState: " + this.getDay() + "\n";
+    }
+
+    @Override
+    public void save(String filePath) throws IOException {
+        BufferedWriter br = new BufferedWriter(new FileWriter(filePath));
+
+        br.write(this.toCSV());
+        br.flush();
+        br.close();
+
+        for(FootballTeam ft: this.getTeams().values()) {
+            ft.save(filePath);
+        }
+        for(FootballPlayer fp: this.getPlayersList().values()) {
+            fp.save(filePath);
+        }
+        for(FootballGame fg: this.getGameHistory()) {
+            fg.save(filePath);
+        }
+    }
+
+    public static FootballState load(String filePath) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        String line;
+        String[] split;
+        FootballState fs;
+
+        split = br.readLine().split(": ");
+        fs = new FootballState(Integer.parseInt(split[1]));
+
+        while((line = br.readLine()) != null) {
+            split = line.split(": ");
+
+            switch (split[0]) {
+                case "Defender" -> {
+                    Defender d = Defender.load(split[1]);
+                    fs.addPlayer(d);
+                    fs.addPlayer2Team(d, d.getCurTeam());
+                }
+                case "Lateral" -> {
+                    Lateral l = Lateral.load(split[1]);
+                    fs.addPlayer(l);
+                    fs.addPlayer2Team(l, l.getCurTeam());
+                }
+                case "Midfielder" -> {
+                    Midfielder m = Midfielder.load(split[1]);
+                    fs.addPlayer(m);
+                    fs.addPlayer2Team(m, m.getCurTeam());
+                }
+                case "Striker" -> {
+                    Striker s = Striker.load(split[1]);
+                    fs.addPlayer(s);
+                    fs.addPlayer2Team(s, s.getCurTeam());
+                }
+                case "Goalkeeper" -> {
+                    Goalkeeper g = Goalkeeper.load(split[1]);
+                    fs.addPlayer(g);
+                    fs.addPlayer2Team(g, g.getCurTeam());
+                }
+                case "FootballTeam" -> {
+                    FootballTeam ft = FootballTeam.load(split[1]);
+                    fs.addTeam(ft);
+                }
+                /*case "FootballGame" -> {
+                    FootballGame fg = FootballGame.
+                }*/
+            }
+        }
+
+        return fs;
     }
 }

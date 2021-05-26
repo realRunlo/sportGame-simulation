@@ -80,15 +80,16 @@ public class Goalkeeper extends FootballPlayer{
                       (this.getElasticity() * 0.30));
     }
 
-    public boolean equals(Goalkeeper goalkeeper) {
-        boolean ret = false;
+    public boolean equals(Object o) {
+        if(this == o)
+            return true;
 
-        if(this == goalkeeper)
-            ret = true;
-        else if(super.equals(goalkeeper) && this.getElasticity() == goalkeeper.getElasticity())
-            ret = true;
+        if(o == null || !this.getClass().equals(o.getClass()))
+            return false;
 
-        return ret;
+        Goalkeeper goalkeeper = (Goalkeeper) o;
+
+        return super.equals(goalkeeper) && this.getElasticity() == goalkeeper.getElasticity();
     }
 
     @Override
@@ -98,8 +99,8 @@ public class Goalkeeper extends FootballPlayer{
 
     public String toCSV() {
         return "Goalkeeper: " +
-                super.toCSV() + ';' +
-                this.getElasticity();
+                super.toCSV() + ";" +
+                this.getElasticity() + "\n";
     }
 
     public static Goalkeeper load(String csvLine) {

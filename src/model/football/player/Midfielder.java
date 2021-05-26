@@ -82,15 +82,16 @@ public class Midfielder extends FootballPlayer {
                 (this.getBallRecovery() * 0.20));
     }
 
-    public boolean equals(Midfielder midfielder) {
-        boolean ret = false;
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
 
-        if (this == midfielder)
-            ret = true;
-        else if (super.equals(midfielder) && this.getBallRecovery() == midfielder.getBallRecovery())
-            ret = true;
+        if(o == null || !this.getClass().equals(o.getClass()))
+            return false;
 
-        return ret;
+        Midfielder midfielder = (Midfielder) o;
+
+        return super.equals(midfielder) && this.getBallRecovery() == midfielder.getBallRecovery();
     }
 
     @Override
@@ -100,8 +101,8 @@ public class Midfielder extends FootballPlayer {
 
     public String toCSV() {
         return "Midfielder: " +
-                super.toCSV() + ';' +
-                this.getBallRecovery();
+                super.toCSV() + ";" +
+                this.getBallRecovery() + "\n";
     }
 
     public static Midfielder load(String csvLine) {

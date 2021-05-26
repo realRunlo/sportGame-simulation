@@ -79,22 +79,22 @@ public class Lateral extends FootballPlayer {
                 (this.getCrossing() * 0.15));
     }
 
-    public boolean equals(Lateral lateral) {
+    public boolean equals(Object o) {
+        if(this == o)
+            return true;
 
-        boolean ret = false;
+        if(o == null || !this.getClass().equals(o.getClass()))
+            return false;
 
-        if(this == lateral)
-            ret = true;
-        else if(super.equals(lateral) && this.getCrossing() == lateral.getCrossing())
-            ret = true;
+        Lateral lateral = (Lateral) o;
 
-        return ret;
+        return super.equals(lateral) && this.getCrossing() == lateral.getCrossing();
     }
 
     public String toCSV() {
         return "Lateral: " +
-                super.toCSV() + ';' +
-                this.getCrossing();
+                super.toCSV() + ";" +
+                this.getCrossing() + "\n";
     }
 
     @Override

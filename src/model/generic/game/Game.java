@@ -1,10 +1,14 @@
 package model.generic.game;
 
 import model.generic.team.Team;
+import model.interfaces.Saveable;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 
-public abstract class Game implements Serializable {
+public abstract class Game implements Saveable {
     private boolean g; // information if there is or not a game
     private int points1;
     private int points2;
@@ -104,5 +108,21 @@ public abstract class Game implements Serializable {
                 game.getPoints1() == points1 &&
                 game.getPoints2() == points2 &&
                 game.getTimer() == (timer);
+    }
+
+    public String toCSV() {
+        return this.getBol()           + ";" +
+                this.getPoints1()      + ";" +
+                this.getPoints2()      + ";" +
+                this.getT1().getName() + ";" +
+                this.getT2().getName();
+    }
+
+    public void save(String filePath) throws IOException {
+        BufferedWriter br = new BufferedWriter(new FileWriter(filePath, true));
+
+        br.write(this.toCSV());
+        br.flush();
+        br.close();
     }
 }

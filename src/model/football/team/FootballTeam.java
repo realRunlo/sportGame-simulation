@@ -1,20 +1,31 @@
 package model.football.team;
+
 import model.football.player.FootballPlayer;
 import model.generic.team.Team;
+import model.interfaces.Saveable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FootballTeam extends Team  {
+public class FootballTeam extends Team implements Saveable {
     private Map<Integer, FootballPlayer> players;
     private int AverageOverlSkill;
     private int Nplayers;
     private static final int NumberOfPlayers = 40;
+
     public FootballTeam(){
         super();
         players = new HashMap<>();
         AverageOverlSkill = 0;
         Nplayers = 0;
+    }
+
+    public FootballTeam(String name) {
+        super(name);
+        this.setPlayers(new HashMap<>());
+        this.setAverageOverlSkill(0);
+        this.setNplayers(0);
+        this.setNplayers(0);
     }
 
     public FootballTeam(String name, int GlobalSkill, Map<Integer, FootballPlayer> newPlayers, int newAverage,int newNplayers){
@@ -77,9 +88,10 @@ public class FootballTeam extends Team  {
     public void addPlayer(FootballPlayer p){
         if(getNPlayers() < NumberOfPlayers) {
             if (!players.containsKey(p.getNumber())) {
-                p.setNumber(getNPlayers() + 1);
-                p.setCurTeam(getName());
-                p.addBackground(getName());
+                if(!p.getCurTeam().equals(this.getName())) {
+                    p.setCurTeam(getName());
+                    p.addBackground(getName());
+                }
                 players.put(p.getNumber(), p.clone());
                 incTeamPlayers();
             }
@@ -127,15 +139,13 @@ public class FootballTeam extends Team  {
         return null;
     }
 
-    public boolean equals(Object o){
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FootballTeam team = (FootballTeam) o;
+    public boolean equals(FootballTeam ft){
+        if (this == ft) return true;
 
-        return getName().equals(team.getName())
-                && getAverageOverlSkill() == team.getAverageOverlSkill()
-                && Nplayers == team.getNPlayers()
-                && players.equals(team.getPlayers());
+        return this.getName().equals(ft.getName())
+                && this.getAverageOverlSkill() == ft.getAverageOverlSkill()
+                && this.getNPlayers() == ft.getNPlayers()
+                && this.getPlayers().equals(ft.getPlayers());
     }
 
 
@@ -144,7 +154,6 @@ public class FootballTeam extends Team  {
     public FootballTeam clone(){
         return new FootballTeam(this);
     }
-
 
     public String toString(){
         StringBuilder sb = new StringBuilder();
@@ -155,5 +164,13 @@ public class FootballTeam extends Team  {
         players.values().forEach(p->sb.append(p.getName()).append(", "));
         sb.append("\n");
         return sb.toString();
+    }
+
+    public String toCSV() {
+        return "FootballTeam: " + super.toCSV() + "\n";
+    }
+
+    public static FootballTeam load(String csvLine) {
+        return new FootballTeam(csvLine);
     }
 }

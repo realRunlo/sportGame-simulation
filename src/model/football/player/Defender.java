@@ -54,7 +54,7 @@ public class Defender extends FootballPlayer implements Saveable {
 
     public Defender(Defender defender) {
         super(defender);
-        this.setBallRetention(defender.getBallRetention());
+        this.changeBallRetention(defender.getBallRetention());
     }
 
     // TODO: Better balance the weights on the skills
@@ -85,15 +85,16 @@ public class Defender extends FootballPlayer implements Saveable {
         this.ballRetention = ballRetention;
     }
 
-    public boolean equals(Defender defender) {
-        boolean ret = false;
+    public boolean equals(Object o) {
+        if(this == o)
+            return true;
 
-        if (this == defender)
-            ret = true;
-        else if (super.equals(defender) && this.getBallRetention() == defender.getBallRetention())
-            ret = true;
+        if(o == null || !this.getClass().equals(o.getClass()))
+            return false;
 
-        return ret;
+        Defender defender = (Defender) o;
+
+        return super.equals(defender) && this.getBallRetention() == defender.getBallRetention();
     }
 
     @Override
@@ -104,8 +105,8 @@ public class Defender extends FootballPlayer implements Saveable {
     @Override
     public String toCSV() {
         return "Defender: " +
-                super.toCSV() + ';' +
-                this.getBallRetention();
+                super.toCSV() + ";" +
+                this.getBallRetention() + "\n";
     }
 
     public static Defender load(String csvLine) {

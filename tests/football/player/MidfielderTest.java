@@ -52,7 +52,7 @@ public class MidfielderTest {
 
     @Test
     public void toCSVTest() {
-        assertEquals("Equal players returned different", "Midfielder: OLA;1;ADEUS;;32;0;100;78;89;13;89;NONE;87", m1.toCSV());
+        assertEquals("Equal players returned different", "Midfielder: OLA;1;ADEUS;;32;0;100;78;89;13;89;NONE;87\n", m1.toCSV());
     }
 
     @Test

@@ -40,8 +40,13 @@ public class DefenderTest {
     }
 
     @Test
+    public void equalsTest() {
+        assertTrue("Different defenders", d1.equals(d2));
+    }
+
+    @Test
     public void toCSVTest() {
-        assertEquals("Equal players returned different", "Defender: António;1;Chelsea;;42;12;100;0;32;100;42;NONE;100", d1.toCSV());
+        assertEquals("Equal players returned different", "Defender: António;1;Chelsea;;42;12;100;0;32;100;42;NONE;100\n", d1.toCSV());
     }
 
     @Test

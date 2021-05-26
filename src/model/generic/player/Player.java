@@ -133,12 +133,12 @@ public abstract class Player implements Saveable {
         int bgSize = bg.size();
         int i;
 
-        csv.append(this.getName()).append(';')
-                .append(this.getNumber()).append(';')
-                .append(this.getCurTeam()).append(';');
+        csv.append(this.getName()).append(";")
+                .append(this.getNumber()).append(";")
+                .append(this.getCurTeam()).append(";");
 
         for(i = 0; i < bgSize - 1; i++) {
-            csv.append(bg.get(i)).append(',');
+            csv.append(bg.get(i)).append(";");
         }
         if(bgSize != 0) {
             csv.append(bg.get(i));
@@ -148,7 +148,7 @@ public abstract class Player implements Saveable {
     }
 
     public void save(String filePath) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true));
 
         bw.write(this.toCSV());
         bw.flush();

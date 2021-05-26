@@ -26,7 +26,7 @@ public abstract class FootballPlayer extends Player implements Saveable {
         this.changeResistance(0);
         this.changeDexterity(0);
         this.changeImplosion(0);
-        this.changeImplosion(0);
+        this.changeHeadGame(0);
         this.changeKick(0);
         this.changePassing(0);
         this.setCard(Card.NONE);
@@ -193,46 +193,37 @@ public abstract class FootballPlayer extends Player implements Saveable {
         return Math.abs(getSpeed() - p2.getSpeed());
     }
 
-    public boolean equals(FootballPlayer player) {
-        boolean ret = false;
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
 
-        if(this == player)
-            ret = true;
-        else if
-        (
-                super.equals(player)                           &&
-                this.getSpeed()      == player.getSpeed()      &&
+        if(o == null || !this.getClass().equals(o.getClass()))
+            return false;
+
+        FootballPlayer player = (FootballPlayer) o;
+
+        return super.equals(player) &&
+                this.getSpeed() == player.getSpeed() &&
                 this.getResistance() == player.getResistance() &&
-                this.getDexterity()  == player.getDexterity()  &&
-                this.getImplosion()  == player.getImplosion()  &&
-                this.getHeadGame()   == player.getHeadGame()   &&
-                this.getKick()       == player.getKick()       &&
-                this.getPassing()    == player.getPassing()    &&
-                this.getCard()       == player.getCard()
-        ) ret = true;
-
-        return ret;
+                this.getDexterity() == player.getDexterity() &&
+                this.getImplosion() == player.getImplosion() &&
+                this.getHeadGame() == player.getHeadGame() &&
+                this.getKick() == player.getKick() &&
+                this.getPassing() == player.getPassing() &&
+                this.getCard() == player.getCard();
     }
 
     public abstract FootballPlayer clone();
 
     public String toCSV() {
-        return super.toCSV()         + ';' +
-                this.getSpeed()      + ';' +
-                this.getResistance() + ';' +
-                this.getDexterity()  + ';' +
-                this.getImplosion()  + ';' +
-                this.getHeadGame()   + ';' +
-                this.getKick()       + ';' +
-                this.getPassing()    + ';' +
+        return super.toCSV()         + ";" +
+                this.getSpeed()      + ";" +
+                this.getResistance() + ";" +
+                this.getDexterity()  + ";" +
+                this.getImplosion()  + ";" +
+                this.getHeadGame()   + ";" +
+                this.getKick()       + ";" +
+                this.getPassing()    + ";" +
                 this.getCard();
-    }
-
-    public void save(String filePath) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
-
-        bw.write(this.toCSV());
-        bw.flush();
-        bw.close();
     }
 }

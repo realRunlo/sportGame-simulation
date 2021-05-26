@@ -1,15 +1,24 @@
 package model.generic.team;
 
 
-import java.io.Serializable;
+import model.interfaces.Saveable;
 
-public abstract class Team implements Serializable {
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public abstract class Team implements Saveable {
     private String name;
     private int GlobalSkill;
 
     public Team(){
         setName(" ");
         setGlobalSkill(0);
+    }
+
+    public Team(String name) {
+        this.setName(name);
+        this.setGlobalSkill(0);
     }
 
     public Team(String newName, int newGlobalSkill){
@@ -53,4 +62,16 @@ public abstract class Team implements Serializable {
     }
 
     public abstract Team clone();
+
+    public String toCSV() {
+        return "" + this.getName();
+    }
+
+    public void save(String filePath) throws IOException {
+        BufferedWriter br = new BufferedWriter(new FileWriter(filePath, true));
+
+        br.write(this.toCSV());
+        br.flush();
+        br.close();
+    }
 }

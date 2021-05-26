@@ -53,9 +53,9 @@ public class LateralTest {
 
     @Test
     public void toCSVTest() {
-        assertEquals("Equal string returned different", "Lateral: Bernardo;1;Rio Ave;;43;13;32;0;78;70;41;NONE;100", l1.toCSV());
+        assertEquals("Equal string returned different", "Lateral: Bernardo;1;Rio Ave;;43;13;32;0;78;70;41;NONE;100\n", l1.toCSV());
         l1.addBackground("AYAYA");
-        assertEquals("Equal string returned different", "Lateral: Bernardo;1;Rio Ave;AYAYA;43;13;32;0;78;70;41;NONE;100", l1.toCSV());
+        assertEquals("Equal string returned different", "Lateral: Bernardo;1;Rio Ave;AYAYA;43;13;32;0;78;70;41;NONE;100\n", l1.toCSV());
     }
 
     @Test

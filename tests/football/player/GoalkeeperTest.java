@@ -54,7 +54,7 @@ public class GoalkeeperTest {
 
     @Test
     public void toCSVTest() {
-        assertEquals("Different strings","Goalkeeper: Maria;1;Porto;;76;32;100;54;78;98;54;NONE;12", g1.toCSV());
+        assertEquals("Different strings","Goalkeeper: Maria;1;Porto;;76;32;100;54;78;98;54;NONE;12\n", g1.toCSV());
     }
 
     @Test

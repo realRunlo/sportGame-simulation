@@ -83,15 +83,16 @@ public class Striker extends FootballPlayer {
     }
 
 
-    public boolean equals(Striker striker) {
-        boolean ret = false;
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
 
-        if (this == striker)
-            ret = true;
-        else if (super.equals(striker) && this.getShooting() == striker.getShooting())
-            ret = true;
+        if(o == null || !this.getClass().equals(o.getClass()))
+            return false;
 
-        return ret;
+        Striker striker = (Striker) o;
+
+        return super.equals(striker) && this.getShooting() == striker.getShooting();
     }
 
     @Override
@@ -101,8 +102,8 @@ public class Striker extends FootballPlayer {
 
     public String toCSV() {
         return "Striker: " +
-                super.toCSV() + ';' +
-                this.getShooting();
+                super.toCSV() + ";" +
+                this.getShooting() + "\n";
     }
 
     public static Striker load(String csvLine) {

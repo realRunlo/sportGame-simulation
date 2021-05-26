@@ -74,4 +74,15 @@ public class FootballGame extends Game {
                 .append("Away: ").append(away.toString());
         return sb.toString();
     }
+
+    @Override
+    public String toCSV() {
+        return super.toCSV() + "\n";
+    }
+/*
+    public static FootballGame load(String csvLine) {
+        String[] tokens = csvLine.split(";");
+
+        return new FootballGame(Boolean.parseBoolean(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]))
+    } */
 }
