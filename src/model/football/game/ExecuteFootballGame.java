@@ -1,5 +1,6 @@
 package model.football.game;
 
+import model.exceptions.PlayerDoenstExist;
 import model.football.player.*;
 import model.football.team.lineup.FootballLineup;
 
@@ -77,7 +78,7 @@ public class ExecuteFootballGame {
         this.g = g.clone();
     }
 
-    public void ExecutePlay(){
+    public void ExecutePlay() throws PlayerDoenstExist {
         FootballGame g = getGame();
         FootballLineup playingHome = g.getHome();
         FootballLineup playingAway = g.getAway();
@@ -222,7 +223,7 @@ public class ExecuteFootballGame {
         playerWithTheBall = p;
     }
 
-    public boolean tryShoot(){
+    public boolean tryShoot() throws PlayerDoenstExist {
         g.incTimerBy(quickAction);
         Random rand = new Random();
         Striker s = (Striker) playerWithTheBall;
@@ -233,7 +234,7 @@ public class ExecuteFootballGame {
         else return false;
     }
 
-    public void Shoot(){
+    public void Shoot() throws PlayerDoenstExist {
         g.incTimerBy(quickAction);
         Goalkeeper goalie;
         Striker s = (Striker) playerWithTheBall;
@@ -276,7 +277,7 @@ public class ExecuteFootballGame {
     }
 
 
-    public Class<?> getFootballPlayerOppositeClass(){
+    public Class<? extends FootballPlayer> getFootballPlayerOppositeClass(){
         if(playerWithTheBall.getClass().equals(Defender.class) || playerWithTheBall.getClass().equals(Lateral.class)) return Striker.class;
         if(playerWithTheBall.getClass().equals(Midfielder.class)) return Midfielder.class;
         if(playerWithTheBall.getClass().equals(Striker.class)) return Goalkeeper.class;

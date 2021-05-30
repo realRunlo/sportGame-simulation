@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 
-public abstract class Game implements Saveable {
+public abstract class Game implements Saveable,Serializable {
     private boolean g; // information if there is or not a game
     private int points1;
     private int points2;

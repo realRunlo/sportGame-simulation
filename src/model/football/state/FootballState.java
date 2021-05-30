@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 
 
-public class FootballState implements Saveable {
+public class FootballState implements Saveable,Serializable{
     private Map<String, FootballPlayer> playersList;
     private Map<String, FootballTeam> teams;
     private List<FootballGame> gameHistory;

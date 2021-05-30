@@ -6,8 +6,9 @@ import model.interfaces.Saveable;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 
-public abstract class Team implements Saveable {
+public abstract class Team implements Saveable, Serializable {
     private String name;
     private int GlobalSkill;
 

@@ -1,5 +1,6 @@
 package model.football.team.lineup;
 
+import model.exceptions.PlayerDoenstExist;
 import model.football.player.*;
 import model.football.team.FootballTeam;
 
@@ -118,15 +119,22 @@ public class FootballLineup implements Serializable {
         return sum;
     }
 
-    public FootballPlayer getPlayer(Class<?> player,boolean play){
+    public FootballPlayer getPlayer(Class<?> player,boolean play) throws PlayerDoenstExist {
         FootballPlayer p;
         if(player != null) {
             if (play) {
-                p = getPlaying().stream().filter(e -> e.getClass().equals(player)).findAny().get();
+                if(getPlaying().stream().anyMatch(e -> e.getClass().equals(player))) {
+                    p = getPlaying().stream().filter(e -> e.getClass().equals(player)).findAny().get();
+                    return p;
+                }
+                else throw new PlayerDoenstExist(player.getName());
             } else {
-                p = getSubstitutes().stream().filter(e -> e.getClass().equals(player)).findAny().get();
+                if(getSubstitutes().stream().anyMatch(e -> e.getClass().equals(player))) {
+                    p = getSubstitutes().stream().filter(e -> e.getClass().equals(player)).findAny().get();
+                    return p;
+                }
+                else throw new PlayerDoenstExist(player.getName());
             }
-            return p;
         }
         else return null;
     }

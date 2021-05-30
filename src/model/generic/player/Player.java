@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player implements Saveable {
+public abstract class Player implements Saveable,Serializable {
     private String name;
     private int number;
     private String curTeam;
