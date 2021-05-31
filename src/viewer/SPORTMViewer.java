@@ -51,10 +51,10 @@ public class SPORTMViewer {
         });
     }
 
-    public void run() throws IOException, ClassNotFoundException {
+    public void SimpleRun() throws IOException, ClassNotFoundException {
         int op;
         do {
-            show();
+            SimpleShow();
             op = readOption();
             // testar pré-condição
             if (op>0 && !this.available.get(op).validate()) {
@@ -76,7 +76,10 @@ public class SPORTMViewer {
         this.available.set(i,b);
     }
 
+    public void setSamePreCondition(int[] list, PreCondition b) {
+        for(int i:list) this.available.set(i,b);
 
+    }
 
     /**
      * Método para registar um handler numa opção do NewMenu.
@@ -91,7 +94,7 @@ public class SPORTMViewer {
     // Métodos auxiliares
 
     /** Apresentar o NewMenu */
-    private void show() {
+    private void SimpleShow() {
         System.out.println(YELLOW + this.options.get(0) + RESET);
         for (int i=1; i<this.options.size(); i++) {
             System.out.print(i);
@@ -114,7 +117,7 @@ public class SPORTMViewer {
         catch (NumberFormatException e) { // Não foi inscrito um int
             op = -1;
         }
-        if (op<0 || op>this.options.size()) {
+        if (op<0 || op>=this.options.size()) {
             System.out.println(RED +"Invalid Option"+RESET);
             op = -1;
         }
@@ -126,6 +129,7 @@ public class SPORTMViewer {
         System.out.println("Press any key to continue");
         is.nextLine();
         }
+
 
     public final static void clearConsole()
     {

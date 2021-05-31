@@ -16,7 +16,7 @@ public abstract class Player implements Saveable,Serializable {
     public Player(String name) {
         this.setName(name);
         this.setNumber(0);
-        this.setCurTeam("");
+        this.setCurTeamNone();
         this.setBackground(new ArrayList<>());
         this.setOverallSkill(0);
     }
@@ -40,7 +40,7 @@ public abstract class Player implements Saveable,Serializable {
     public Player(String name, int number, List<String> background) {
         this.setName(name);
         this.setNumber(number);
-        this.setCurTeam("");
+        this.setCurTeamNone();
         this.setBackground(background);
         this.setOverallSkill(0);
     }
