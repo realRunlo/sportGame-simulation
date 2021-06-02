@@ -85,6 +85,20 @@ public class Defender extends FootballPlayer implements Saveable {
         this.ballRetention = ballRetention;
     }
 
+    public String toString(){
+        return  new String("Defender: "+getName() + "\nShirt: "+ getNumber()
+                + "\nSpeed: " + getSpeed()
+                + "\nResistance: " + getResistance()
+                + "\nDexterity: " + getDexterity()
+                + "\nImplosion: " + getImplosion()
+                + "\nHeadGame: " + getHeadGame()
+                + "\nKick: " + getKick()
+                + "\nPassing: " + getPassing()
+                + "\nBall Retention: " + getBallRetention()
+                + "\nOverall Skill: " + calcOverallSkill()
+        );
+    }
+
     public boolean equals(Object o) {
         if(this == o)
             return true;

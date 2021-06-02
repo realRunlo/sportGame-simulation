@@ -82,6 +82,19 @@ public class Striker extends FootballPlayer {
         this.shooting = shooting;
     }
 
+    public String toString(){
+        return  new String("Midfielder: "+getName() + "\nShirt: "+ getNumber()
+                + "\nSpeed: " + getSpeed()
+                + "\nResistance: " + getResistance()
+                + "\nDexterity: " + getDexterity()
+                + "\nImplosion: " + getImplosion()
+                + "\nHeadGame: " + getHeadGame()
+                + "\nKick: " + getKick()
+                + "\nPassing: " + getPassing()
+                + "\nShooting: " + getShooting()
+                + "\nOverall Skill: " + calcOverallSkill()
+        );
+    }
 
     public boolean equals(Object o) {
         if (this == o)

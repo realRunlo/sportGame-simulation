@@ -39,7 +39,7 @@ public class SPORTMViewer {
     private List<String> options;            // Lista de opções
     private List<PreCondition> available;  // Lista de pré-condições
     private List<Handler> handlers;         // Lista de handlers
-
+    private boolean exit = false;
 
     public SPORTMViewer(String[] options){
         this.options = Arrays.asList(options);
@@ -63,7 +63,7 @@ public class SPORTMViewer {
                 // executar handler
                 this.handlers.get(op).execute();
             }
-        } while (op != 0);
+        } while (op != 0 && !exit);
     }
 
     /**
@@ -109,7 +109,7 @@ public class SPORTMViewer {
         int op;
         //Scanner is = new Scanner(System.in);
 
-        System.out.print("Opção: ");
+        System.out.print("Option: ");
         try {
             String line = is.nextLine();
             op = Integer.parseInt(line);
@@ -124,11 +124,42 @@ public class SPORTMViewer {
         return op;
     }
 
+    public int readOptionBetween(int lower, int higher, String[] options) {
+        int op = -1;
+        //Scanner is = new Scanner(System.in);
+        int i = 0;
+        if(options != null) {
+            while (i < options.length) {
+                System.out.println(i + " - " + options[i]);
+                i++;
+            }
+        }
+        System.out.print("Write a number between "+lower+" and "+higher+"\nOption: ");
+        while(op == -1) {
+            try {
+                String line = is.nextLine();
+                op = Integer.parseInt(line);
+            } catch (NumberFormatException e) { // Não foi inscrito um int
+                op = -1;
+            }
+            if (op < lower || op > higher) {
+                System.out.println(RED + "Invalid Option" + RESET);
+                op = -1;
+            }
+        }
+        return op;
+    }
+
     public void showInfo(Object o){
         System.out.println(o.toString());
         System.out.println("Press any key to continue");
         is.nextLine();
-        }
+    }
+
+
+    public void returnMenu(){
+        exit = true;
+    }
 
 
     public final static void clearConsole()

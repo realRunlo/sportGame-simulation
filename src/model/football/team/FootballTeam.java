@@ -139,6 +139,12 @@ public class FootballTeam extends Team implements Saveable {
         return null;
     }
 
+    public void updatePlayer(FootballPlayer p){
+        if(this.players.values().stream().anyMatch(e->e.getName().equals(p.getName()) && e.getNumber() == p.getNumber()))
+            players.replace(p.getNumber(),this.players.values().stream().filter(e->e.getName().equals(p.getName()) && e.getNumber() == p.getNumber()).findFirst().get(),p);
+
+    }
+
     public boolean equals(FootballTeam ft){
         if (this == ft) return true;
 

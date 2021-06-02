@@ -49,6 +49,8 @@ public class Goalkeeper extends FootballPlayer{
         this.changeElasticity(elasticity);
     }
 
+
+
     public Goalkeeper(Goalkeeper goalkeeper) {
         super(goalkeeper);
         this.changeElasticity(goalkeeper.getElasticity());
@@ -78,6 +80,20 @@ public class Goalkeeper extends FootballPlayer{
                       (this.getKick() * 0.05)       +
                       (this.getPassing() * 0.20)    +
                       (this.getElasticity() * 0.30));
+    }
+
+    public String toString(){
+        return  new String("Goalkeeper: "+getName() + "\nShirt: "+ getNumber()
+                + "\nSpeed: " + getSpeed()
+                + "\nResistance: " + getResistance()
+                + "\nDexterity: " + getDexterity()
+                + "\nImplosion: " + getImplosion()
+                + "\nHeadGame: " + getHeadGame()
+                + "\nKick: " + getKick()
+                + "\nPassing: " + getPassing()
+                + "\nElasticity: " + getElasticity()
+                + "\nOverall Skill: " + calcOverallSkill()
+        );
     }
 
     public boolean equals(Object o) {

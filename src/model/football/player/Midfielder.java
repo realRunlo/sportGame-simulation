@@ -105,6 +105,20 @@ public class Midfielder extends FootballPlayer {
                 this.getBallRecovery() + "\n";
     }
 
+    public String toString(){
+        return  new String("Midfielder: "+getName() + "\nShirt: "+ getNumber()
+                + "\nSpeed: " + getSpeed()
+                + "\nResistance: " + getResistance()
+                + "\nDexterity: " + getDexterity()
+                + "\nImplosion: " + getImplosion()
+                + "\nHeadGame: " + getHeadGame()
+                + "\nKick: " + getKick()
+                + "\nPassing: " + getPassing()
+                + "\nBall Recovery: " + getBallRecovery()
+                + "\nOverall Skill: " + calcOverallSkill()
+        );
+    }
+
     public static Midfielder load(String csvLine) {
         String[] tokens = csvLine.split(";");
         List<String> bg = Arrays.asList(tokens[3].split(","));

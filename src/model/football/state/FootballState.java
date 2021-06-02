@@ -131,11 +131,22 @@ public class FootballState implements Saveable,Serializable{
         if(!pList.containsKey(p.getName())){
             pList.put(p.getName(),p.clone());
             setPlayersList(pList);
+            addPlayer2Team(p, p.getCurTeam());
         }
-        else{//caso seja um jogador com o mesmo nome mas stats diferentes, adiciona
-            if(!pList.get(p.getName()).equals(p)){
+        else{//caso seja um jogador com o mesmo nome mas numbero de camisola pode adicionar
+            if(!(pList.get(p.getName()).getNumber() == p.getNumber())){
                 pList.put(p.getName(),p.clone());
                 setPlayersList(pList);
+                addPlayer2Team(p, p.getCurTeam());
+            }
+        }
+    }
+    public void addPlayer2Team(FootballPlayer p ,String team){
+        if(teams.containsKey(team)){
+            FootballTeam t = this.getTeams().get(team);
+            if(!t.existsPlayerNumber(p.getName(),p.getNumber()) && t.getNPlayers() < MAX_PLAYER_TEAM){
+                t.addPlayer(p);
+                this.updateTeam(t);
             }
         }
     }
@@ -165,8 +176,8 @@ public class FootballState implements Saveable,Serializable{
         t.getPlayers().forEach((k,v)->{    //caso a nova equipa introduza jogadores que ainda nao existiam,
         if(!pList.containsKey(v.getName())) addPlayer(v);}); //adiciona-os ao estado
         setPlayersList(pList);
-
     }
+
 
     public void removeTeam(String team){
         Map<String,FootballTeam> tList = getTeams();
@@ -218,23 +229,30 @@ public class FootballState implements Saveable,Serializable{
         return false;
     }
 
+    public boolean existsPlayer(String name, Integer shirt){
+        if(playersList.containsKey(shirt)){
+            return playersList.get(shirt).getName().equals(name);
+        }
+        return false;
+    }
+
     public void updateTeam(FootballTeam team) {
         this.teams.replace(team.getName(), team);
+        team.getPlayers().forEach((e,k)-> updatePlayer(k));
     }
 
     public void updatePlayer(FootballPlayer player) {
-        this.playersList.replace(player.getName(), player);
-    }
-
-    public void addPlayer2Team(FootballPlayer p ,String team){
-        if(teams.containsKey(team)){
-            FootballTeam t = this.getTeams().get(team);
-            if(!t.existsPlayerNumber(p.getName(),p.getNumber()) && t.getNPlayers() < MAX_PLAYER_TEAM){
-                t.addPlayer(p);
-                this.updateTeam(t);
-            }
+        //da update do jogador na lista de jogadores do estado
+        if (this.playersList.values().stream().anyMatch(e-> !e.equals(player) && e.getName().equals(player.getName()) && e.getNumber() == player.getNumber())) {
+            playersList.replace(player.getName(), this.playersList.values().stream().filter(e -> e.getName().equals(player.getName()) && e.getNumber() == player.getNumber()).findFirst().get(), player);
+            //da update, caso necessario, do jogador na propria equipa
+            if(teams.get(player.getCurTeam()) != null)
+                if(!teams.get(player.getCurTeam()).getPlayer(player.getNumber()).equals(player))
+                    teams.get(player.getCurTeam()).updatePlayer(player);
         }
     }
+
+
 
     public void removePlayerFromTeam(FootballPlayer p){
         if(getTeams().containsKey(p.getCurTeam())){

@@ -79,6 +79,20 @@ public class Lateral extends FootballPlayer {
                 (this.getCrossing() * 0.15));
     }
 
+    public String toString(){
+        return  new String("Lateral: "+getName() + "\nShirt: "+ getNumber()
+                + "\nSpeed: " + getSpeed()
+                + "\nResistance: " + getResistance()
+                + "\nDexterity: " + getDexterity()
+                + "\nImplosion: " + getImplosion()
+                + "\nHeadGame: " + getHeadGame()
+                + "\nKick: " + getKick()
+                + "\nPassing: " + getPassing()
+                + "\nCrossing: " + getCrossing()
+                + "\nOverall Skill: " + calcOverallSkill()
+        );
+    }
+
     public boolean equals(Object o) {
         if(this == o)
             return true;
