@@ -167,8 +167,8 @@ public class FootballTeam extends Team implements Saveable {
         sb.append(getName()).append("\nNumber of players: ")
                 .append(getNPlayers())
                 .append("\nPlayers: ");
-        players.values().forEach(p->sb.append(p.getName()).append(", "));
-        sb.append("\n");
+        players.values().forEach(p->sb.append(p.getName()).append("-").append(p.getNumber()).append(", "));
+        sb.append("\nOverall Skill: ").append(getAverageOverlSkill()).append("\n");
         return sb.toString();
     }
 

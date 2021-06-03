@@ -48,7 +48,7 @@ public class SPORTMController implements Observer {
             "Set Name",
             "Team Info",
             "Add Player",
-            "Overall Skill",
+            "Update Player",
             "Save Team"};
     private final String[] PlayerMenu = new String[]{
             "Player Menu",
@@ -133,10 +133,13 @@ public class SPORTMController implements Observer {
     public void addTeam() throws IOException, ClassNotFoundException {
         FootballTeam newTeam = new FootballTeam();
         SPORTMViewer teamMenu = new SPORTMViewer(TeamMenu);
-        teamMenu.setSamePreCondition(new int[]{2,3,4,5},()->!newTeam.getName().equals(" "));
+        teamMenu.setSamePreCondition(new int[]{2,3},()->!newTeam.getName().equals(" "));
+        teamMenu.setSamePreCondition(new int[]{4,5},()->newTeam.getNPlayers() > 0);
         teamMenu.setHandler(1,()-> changeTeamName(newTeam));
         teamMenu.setHandler(2,()-> teamMenu.showInfo(newTeam));
         teamMenu.setHandler(3,()-> newPlayer(newTeam));
+
+        teamMenu.setHandler(5,()->updateTeamState(newTeam,true,teamMenu));
         teamMenu.SimpleRun();
     }
 
@@ -263,6 +266,12 @@ public class SPORTMController implements Observer {
             if(t != null) t.addPlayer(p);
             if(updateState) footballState.addPlayer(p);
         }
+        if(viewer != null) viewer.returnMenu();
+    }
+
+    public void updateTeamState(FootballTeam t, boolean newTeam,SPORTMViewer viewer){
+        if(newTeam) footballState.addTeam(t);
+        else footballState.updateTeam(t);
         if(viewer != null) viewer.returnMenu();
     }
 

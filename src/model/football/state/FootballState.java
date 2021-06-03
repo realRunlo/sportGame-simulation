@@ -173,8 +173,7 @@ public class FootballState implements Saveable,Serializable{
         Map<String,FootballPlayer> pList = getPlayersList();
         tList.put(t.getName(), t.clone());
         setTeams(tList);
-        t.getPlayers().forEach((k,v)->{    //caso a nova equipa introduza jogadores que ainda nao existiam,
-        if(!pList.containsKey(v.getName())) addPlayer(v);}); //adiciona-os ao estado
+        t.getPlayers().forEach((k,v)-> updatePlayer(v)); //adiciona-os ao estado
         setPlayersList(pList);
     }
 
@@ -250,6 +249,8 @@ public class FootballState implements Saveable,Serializable{
                 if(!teams.get(player.getCurTeam()).getPlayer(player.getNumber()).equals(player))
                     teams.get(player.getCurTeam()).updatePlayer(player);
         }
+        //caso nao encontre o jogador no estado, adiciona-o
+        else addPlayer(player);
     }
 
 
