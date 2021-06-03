@@ -133,7 +133,7 @@ public class FootballState implements Saveable,Serializable{
             setPlayersList(pList);
             addPlayer2Team(p, p.getCurTeam());
         }
-        else{//caso seja um jogador com o mesmo nome mas numbero de camisola pode adicionar
+        else{//caso seja um jogador com o mesmo nome mas diferente numero de camisola pode adicionar
             if(!(pList.get(p.getName()).getNumber() == p.getNumber())){
                 pList.put(p.getName(),p.clone());
                 setPlayersList(pList);
@@ -149,6 +149,32 @@ public class FootballState implements Saveable,Serializable{
                 this.updateTeam(t);
             }
         }
+    }
+
+    public void addTeam(FootballTeam t){
+        Map<String,FootballTeam> tList = getTeams();
+        Map<String,FootballPlayer> pList = getPlayersList();
+        tList.put(t.getName(), t.clone());
+        setTeams(tList);
+        t.getPlayers().forEach((k,v)-> updatePlayer(v)); //adiciona-os ao estadoF
+    }
+
+    public void updateTeam(FootballTeam team) {
+        this.teams.replace(team.getName(), team);
+        team.getPlayers().forEach((e,k)-> updatePlayer(k));
+    }
+
+    public void updatePlayer(FootballPlayer player) {
+        //da update do jogador na lista de jogadores do estado
+        if (this.playersList.values().stream().anyMatch(e-> !e.equals(player) && e.getName().equals(player.getName()) && e.getNumber() == player.getNumber())) {
+            playersList.replace(player.getName(), this.playersList.values().stream().filter(e -> e.getName().equals(player.getName()) && e.getNumber() == player.getNumber()).findFirst().get(), player);
+            //da update, caso necessario, do jogador na propria equipa
+            if(teams.get(player.getCurTeam()) != null)
+                if(!teams.get(player.getCurTeam()).getPlayer(player.getNumber()).equals(player))
+                    teams.get(player.getCurTeam()).updatePlayer(player);
+        }
+        //caso nao encontre o jogador no estado, adiciona-o
+        else addPlayer(player);
     }
 
 
@@ -168,14 +194,6 @@ public class FootballState implements Saveable,Serializable{
         }
     }
 
-    public void addTeam(FootballTeam t){
-        Map<String,FootballTeam> tList = getTeams();
-        Map<String,FootballPlayer> pList = getPlayersList();
-        tList.put(t.getName(), t.clone());
-        setTeams(tList);
-        t.getPlayers().forEach((k,v)-> updatePlayer(v)); //adiciona-os ao estado
-        setPlayersList(pList);
-    }
 
 
     public void removeTeam(String team){
@@ -233,24 +251,6 @@ public class FootballState implements Saveable,Serializable{
             return playersList.get(shirt).getName().equals(name);
         }
         return false;
-    }
-
-    public void updateTeam(FootballTeam team) {
-        this.teams.replace(team.getName(), team);
-        team.getPlayers().forEach((e,k)-> updatePlayer(k));
-    }
-
-    public void updatePlayer(FootballPlayer player) {
-        //da update do jogador na lista de jogadores do estado
-        if (this.playersList.values().stream().anyMatch(e-> !e.equals(player) && e.getName().equals(player.getName()) && e.getNumber() == player.getNumber())) {
-            playersList.replace(player.getName(), this.playersList.values().stream().filter(e -> e.getName().equals(player.getName()) && e.getNumber() == player.getNumber()).findFirst().get(), player);
-            //da update, caso necessario, do jogador na propria equipa
-            if(teams.get(player.getCurTeam()) != null)
-                if(!teams.get(player.getCurTeam()).getPlayer(player.getNumber()).equals(player))
-                    teams.get(player.getCurTeam()).updatePlayer(player);
-        }
-        //caso nao encontre o jogador no estado, adiciona-o
-        else addPlayer(player);
     }
 
 
@@ -314,9 +314,9 @@ public class FootballState implements Saveable,Serializable{
 
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Estado\n").append("Numero de jogadores: ").append(getNPlayers())
-                .append("\nNumero de equipas: ").append(getNTeams())
-                .append("\nDias: ").append(getDay());
+        sb.append("State\n").append("Number of players: ").append(getNPlayers())
+                .append("\nNumber of teams: ").append(getNTeams())
+                .append("\nDays: ").append(getDay());
 
         return sb.toString();
     }

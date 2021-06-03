@@ -22,8 +22,8 @@ public class Interface {
         SPORTMController controller = new SPORTMController();
         controller.run();
 /*
-        SPORTMViewer viewer = new SPORTMViewer();
-        viewer.showWelcome();
+        //SPORTMViewer viewer = new SPORTMViewer();
+        //viewer.showWelcome();
         FootballState s = new FootballState();
         FootballTeam t1 = new FootballTeam();
         FootballTeam t2 = new FootballTeam();
@@ -109,7 +109,7 @@ public class Interface {
         System.out.println("-------------\n"+footballGame.getGame().toString()+"\n-----------------\n");
 
 
-        viewer.showTermination();
+        //viewer.showTermination();
 */
         }
 

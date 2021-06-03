@@ -67,7 +67,9 @@ public class FootballTeam extends Team implements Saveable {
     }
 
     public int calcAverageSkill(){
-        return (int) players.values().stream().map(FootballPlayer::calcOverallSkill).count();
+        if(getNPlayers() > 0)
+        return (int) players.values().stream().mapToInt(FootballPlayer::calcOverallSkill).sum() / getNPlayers();
+        else return 0;
     }
 
     public FootballPlayer getPlayer(int shirtNumber){
@@ -168,7 +170,7 @@ public class FootballTeam extends Team implements Saveable {
                 .append(getNPlayers())
                 .append("\nPlayers: ");
         players.values().forEach(p->sb.append(p.getName()).append("-").append(p.getNumber()).append(", "));
-        sb.append("\nOverall Skill: ").append(getAverageOverlSkill()).append("\n");
+        sb.append("\nOverall Skill: ").append(calcAverageSkill()).append("\n");
         return sb.toString();
     }
 

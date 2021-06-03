@@ -49,6 +49,7 @@ public class SPORTMController implements Observer {
             "Team Info",
             "Add Player",
             "Update Player",
+            "Remove Player",
             "Save Team"};
     private final String[] PlayerMenu = new String[]{
             "Player Menu",
@@ -133,13 +134,15 @@ public class SPORTMController implements Observer {
     public void addTeam() throws IOException, ClassNotFoundException {
         FootballTeam newTeam = new FootballTeam();
         SPORTMViewer teamMenu = new SPORTMViewer(TeamMenu);
-        teamMenu.setSamePreCondition(new int[]{2,3},()->!newTeam.getName().equals(" "));
-        teamMenu.setSamePreCondition(new int[]{4,5},()->newTeam.getNPlayers() > 0);
+        teamMenu.setPreCondition(2,()->!newTeam.getName().equals(" "));
+        teamMenu.setPreCondition(3,()->!newTeam.getName().equals(" ") && newTeam.getNPlayers() < 23);
+        teamMenu.setSamePreCondition(new int[]{4,5,6},()->newTeam.getNPlayers() > 0);
         teamMenu.setHandler(1,()-> changeTeamName(newTeam));
         teamMenu.setHandler(2,()-> teamMenu.showInfo(newTeam));
         teamMenu.setHandler(3,()-> newPlayer(newTeam));
-
-        teamMenu.setHandler(5,()->updateTeamState(newTeam,true,teamMenu));
+        //teamMenu.setHandler(4,()-> updatePlayer(newTeam));
+        teamMenu.setHandler(5,()-> removePlayerTeam(newTeam));
+        teamMenu.setHandler(6,()->updateTeamState(newTeam,true,teamMenu));
         teamMenu.SimpleRun();
     }
 
@@ -238,7 +241,7 @@ public class SPORTMController implements Observer {
                 shirtNumber = -1;
                 System.out.println(RED +"Insert a valid number"+ RESET);
             }
-            if(shirtNumber!=-1) {
+            if(shirtNumber >= 0) {
                 if (t == null){
                     valid = footballState.existsPlayer(name,shirtNumber);
                     if (!valid) System.out.println(RED+"Player with the same name and shirt already exists"+RESET);
@@ -273,6 +276,28 @@ public class SPORTMController implements Observer {
         if(newTeam) footballState.addTeam(t);
         else footballState.updateTeam(t);
         if(viewer != null) viewer.returnMenu();
+    }
+
+    public void removePlayerTeam(FootballTeam t){
+        boolean removed = false; int op = -2;
+        System.out.println(t.toString()+"\nWrite '-1' to return");
+        while(!removed && op!=-1){
+            System.out.println("Write the player's shirt to remove him from the team");
+            try {
+                String line = scanner.nextLine();
+                op = Integer.parseInt(line);
+            }
+            catch (NumberFormatException e) { // Não foi inscrito um int
+                op = -2;
+            }
+            if(op>=0){
+                if(t.existsShirtNumber(op)){
+                    removed = !removed;
+                    t.removePlayer(op);
+                }
+                else System.out.println(RED + "Team doesnt have that player" + RESET);
+            }
+        }
     }
 
     /**------------------------SIMPLE PRINTS-------------------------------**/

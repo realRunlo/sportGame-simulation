@@ -214,11 +214,12 @@ public class ExecuteFootballGame {
     public void Pass(){
         g.incTimerBy(averageAction);
         FootballPlayer p;
+        Class higherPosition = higherPositionClass();
         if(home){
-            p = g.getHome().getPlaying().stream().filter(e -> !e.equals(playerWithTheBall)).findAny().get();
+            p = g.getHome().getPlaying().stream().filter(e -> e.getClass().getName().equals(higherPosition.getName())).findAny().get();
         }
         else{
-            p = g.getAway().getPlaying().stream().filter(e -> !e.equals(playerWithTheBall)).findAny().get();
+            p = g.getAway().getPlaying().stream().filter(e -> e.getClass().getName().equals(higherPosition.getName())).findAny().get();
         }
         playerWithTheBall = p;
     }
@@ -256,7 +257,7 @@ public class ExecuteFootballGame {
         }
         else{
             goalie = (Goalkeeper) g.getHome().getPlayer(Goalkeeper.class,true);
-            if(Math.abs(goalie.getOverallSkill() - s.getOverallSkill()) <= 10){
+            if(goalie.getOverallSkill() - s.getOverallSkill() <= 10){
                 if(rand.nextInt(101) <= s.getShooting()){ // se o chute for bem sucedido atualiza score
                     g.incPoints2();
                     playerWithTheBall = g.getHome().getPlayer(Midfielder.class,true);
@@ -281,6 +282,14 @@ public class ExecuteFootballGame {
         if(playerWithTheBall.getClass().equals(Defender.class) || playerWithTheBall.getClass().equals(Lateral.class)) return Striker.class;
         if(playerWithTheBall.getClass().equals(Midfielder.class)) return Midfielder.class;
         if(playerWithTheBall.getClass().equals(Striker.class)) return Goalkeeper.class;
+        else return null;
+    }
+
+    public Class<? extends FootballPlayer> higherPositionClass(){
+        if(playerWithTheBall.getClass().equals(Defender.class)) return Midfielder.class;
+        if(playerWithTheBall.getClass().equals(Midfielder.class)|| playerWithTheBall.getClass().equals(Lateral.class)) return Striker.class;
+        if(playerWithTheBall.getClass().equals(Striker.class)) return Striker.class;
+        if(playerWithTheBall.getClass().equals(Goalkeeper.class)) return Lateral.class;
         else return null;
     }
 
