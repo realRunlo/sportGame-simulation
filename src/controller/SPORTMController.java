@@ -46,6 +46,8 @@ public class SPORTMController implements Observer {
             "Update Team",
             "Update Player",
             "Transfer Player",
+            "Remove Team",
+            "Remove Player",
             "Save State"
     };
     private final String[] TeamMenu = new String[]{
@@ -117,6 +119,8 @@ public class SPORTMController implements Observer {
         }
 
     }
+
+
     public void costumState() throws IOException, ClassNotFoundException {
         readFile r = new readFile();
         String s = new String();
@@ -129,31 +133,37 @@ public class SPORTMController implements Observer {
     public void EnterState() throws IOException, ClassNotFoundException {
         SPORTMViewer enterState = new SPORTMViewer(GameMenu);
         enterState.setPreCondition(2,()-> false);
-        enterState.setPreCondition(7,()->footballState.getNPlayers()>0);
-        enterState.setSamePreCondition(new int[]{6,8},()->footballState.getNTeams()>0);
+        enterState.setSamePreCondition(new int[]{7,10},()->footballState.getNPlayers()>0);
+        enterState.setSamePreCondition(new int[]{6,8,9},()->footballState.getNTeams()>0);
 
         enterState.setHandler(1,()-> enterState.showInfo(this.footballState));
         enterState.setHandler(3,()-> enterState.showInfo(this.footballState.getGameHistory()));
-        enterState.setHandler(4,()-> addTeam());
+        enterState.setHandler(4,()-> addOrUpdateTeam(false));
         enterState.setHandler(5,()-> newPlayer(null,true));
-        //enterState.setHandler(6,()-> updateTeam(null));
+        enterState.setHandler(6,()-> addOrUpdateTeam(true));
         enterState.setHandler(7,()-> updatePlayer(null,true));
 
         enterState.SimpleRun();
     }
 
-    public void addTeam() throws IOException, ClassNotFoundException {
-        FootballTeam newTeam = new FootballTeam();
+    public void addOrUpdateTeam(boolean update) throws IOException, ClassNotFoundException {
+        FootballTeam team;
+        if(update) team = chooseTeamToUpdate();
+        else team = new FootballTeam();
         SPORTMViewer teamMenu = new SPORTMViewer(TeamMenu);
-        teamMenu.setPreCondition(2,()->!newTeam.getName().equals(" "));
-        teamMenu.setPreCondition(3,()->!newTeam.getName().equals(" ") && newTeam.getNPlayers() < 23);
-        teamMenu.setSamePreCondition(new int[]{4,5,6},()->newTeam.getNPlayers() > 0);
-        teamMenu.setHandler(1,()-> changeTeamName(newTeam));
-        teamMenu.setHandler(2,()-> teamMenu.showInfo(newTeam));
-        teamMenu.setHandler(3,()-> newPlayer(newTeam,false));
-        teamMenu.setHandler(4,()-> updatePlayer(newTeam,false));
-        teamMenu.setHandler(5,()-> removePlayerTeam(newTeam));
-        teamMenu.setHandler(6,()-> updateTeamState(newTeam,true,teamMenu));
+        //caso seja so um update, nao permite mudar o nome da equipa
+        if(update) teamMenu.setPreCondition(1,()->false);
+        teamMenu.setSamePreCondition(new int[]{2,6},()->!team.getName().equals(" "));
+        teamMenu.setPreCondition(3,()->!team.getName().equals(" ") && team.getNPlayers() < 23);
+        teamMenu.setSamePreCondition(new int[]{4,5},()->team.getNPlayers() > 0);
+
+
+        teamMenu.setHandler(1,()-> changeTeamName(team));
+        teamMenu.setHandler(2,()-> teamMenu.showInfo(team));
+        teamMenu.setHandler(3,()-> newPlayer(team,false));
+        teamMenu.setHandler(4,()-> updatePlayer(team,false));
+        teamMenu.setHandler(5,()-> removePlayerTeam(team));
+        teamMenu.setHandler(6,()-> updateTeamState(team,!update,teamMenu));
         teamMenu.SimpleRun();
     }
 
@@ -214,7 +224,11 @@ public class SPORTMController implements Observer {
 
     public void updatePlayer(FootballTeam t,boolean updateState) throws IOException, ClassNotFoundException {
         FootballPlayer p = choosePlayerToUpdate(t);
+        AtomicReference<FootballTeam> team = new AtomicReference<>();
+        team.set(t);
         if(p!= null){
+            //caso de update diretamente no estado, pode ser necessario dar update na equipa se o jogador tiver uma
+            if(t == null & footballState.existsTeam(p.getCurTeam())) team.set(footballState.getTeam(p.getCurTeam()));
             AtomicInteger[] atributes = new AtomicInteger[]
                     {
                             new AtomicInteger(p.getSpeed()),//0 - speed
@@ -247,10 +261,32 @@ public class SPORTMController implements Observer {
                 updatePlayer.setHandler(j, () -> atributes[finalI].set(updatePlayer.readOptionBetween(0, 100, null)));
             }
             //gravar o jogador
-            updatePlayer.setHandler(13, ()-> updatePlayerState(playerPrototype(Arrays.stream(atributes).mapToInt(e->e.get()).toArray(),p.getName(),t,p.getBackground()),t,updatePlayer,false,updateState));
+            updatePlayer.setHandler(13, ()-> updatePlayerState(playerPrototype(Arrays.stream(atributes).mapToInt(e->e.get()).toArray(),p.getName(),team.get(),p.getBackground()),team.get(),updatePlayer,false,updateState));
 
             updatePlayer.SimpleRun();
         }
+    }
+
+
+
+    public FootballTeam chooseTeamToUpdate() {
+        FootballTeam t = null;
+        System.out.println("Write -1 to return");
+        String name = "";
+        boolean valid = false;
+        while (!valid && !name.equals("-1")) {
+            System.out.println(footballState.printTeams());
+            System.out.println("Insert the name of the team to update");
+            name = scanner.nextLine();
+            if(!name.equals("-1")) {
+                if (footballState.existsTeam(name)) {
+                    valid = true;
+                    t = footballState.getTeam(name);
+                }
+                else System.out.println(RED + "Choose a valid team" + RESET);
+            }
+        }
+        return t;
     }
 
 
@@ -379,6 +415,7 @@ public class SPORTMController implements Observer {
                     System.out.println("Insert the name of the player");
                     name = scanner.nextLine();
                     if(footballState.existsPlayer(name,shirtNumber)){
+                        valid = true;
                         p = footballState.getPlayer(name,shirtNumber);
                     }
                 }

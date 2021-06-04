@@ -86,7 +86,8 @@ public class Defender extends FootballPlayer implements Saveable {
     }
 
     public String toString(){
-        return  new String("Defender: "+getName() + "\nShirt: "+ getNumber()
+        return  new String("Team : " + getCurTeam()
+                + "\nDefender: "+getName() + "\nShirt: "+ getNumber()
                 + "\nSpeed: " + getSpeed()
                 + "\nResistance: " + getResistance()
                 + "\nDexterity: " + getDexterity()

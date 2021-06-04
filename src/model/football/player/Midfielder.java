@@ -106,7 +106,8 @@ public class Midfielder extends FootballPlayer {
     }
 
     public String toString(){
-        return  new String("Midfielder: "+getName() + "\nShirt: "+ getNumber()
+        return  new String("Team : " + getCurTeam()
+                + "\nMidfielder: "+getName() + "\nShirt: "+ getNumber()
                 + "\nSpeed: " + getSpeed()
                 + "\nResistance: " + getResistance()
                 + "\nDexterity: " + getDexterity()

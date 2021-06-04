@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 
 public class FootballState implements Saveable,Serializable{
-    private Map<String, FootballPlayer> playersList; // a key sera um concat do nome do jogador com a sua camisola
+    private Map<String, FootballPlayer> playersList; //a key sera um concat do nome do jogador com a sua camisola
     private Map<String, FootballTeam> teams;
     private List<FootballGame> gameHistory;
     private int numbPlayers;
@@ -173,12 +173,14 @@ public class FootballState implements Saveable,Serializable{
 
     public void updatePlayer(FootballPlayer player) {
         //da update do jogador na lista de jogadores do estado
-        if (this.playersList.values().stream().anyMatch(e-> !e.equals(player) && e.getName().equals(player.getName()) && e.getNumber() == player.getNumber())) {
-            playersList.replace(player.getName(), this.playersList.values().stream().filter(e -> e.getName().equals(player.getName()) && e.getNumber() == player.getNumber()).findFirst().get(), player);
+        if (this.playersList.containsKey(player.getName()+player.getNumber())) {
+            playersList.replace(player.getName()+player.getNumber(), player);
             //da update, caso necessario, do jogador na propria equipa
-            if(teams.get(player.getCurTeam()) != null)
-                if(!teams.get(player.getCurTeam()).getPlayer(player.getNumber()).equals(player))
+            if(teams.containsKey(player.getCurTeam()))
+                if(teams.get(player.getCurTeam()).existsPlayerNumber(player.getName(),player.getNumber())) {
+                    System.out.println("vou dar update");
                     teams.get(player.getCurTeam()).updatePlayer(player);
+                }
         }
         //caso nao encontre o jogador no estado, adiciona-o
         else addPlayer(player);
@@ -254,10 +256,14 @@ public class FootballState implements Saveable,Serializable{
     }
 
     public boolean existsPlayer(String name, Integer shirt){
-        if(playersList.containsKey(shirt)){
-            return playersList.get(shirt).getName().equals(name);
+        if(playersList.containsKey(name+shirt)){
+            return playersList.get(name+shirt).getName().equals(name);
         }
         return false;
+    }
+
+    public boolean existsTeam(String name){
+        return teams.containsKey(name);
     }
 
 
@@ -302,8 +308,19 @@ public class FootballState implements Saveable,Serializable{
         sb.append("Available Players:\n");
         playersList.forEach((e,k) ->
                 sb.append(k.getName())
-                        .append("-")
+                        .append(" - ")
                         .append(k.getNumber())
+                        .append(", "));
+        return sb.toString();
+    }
+
+    public String printTeams(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Available Teams:\n");
+        teams.forEach((e,k) ->
+                sb.append(e)
+                        .append(" - ")
+                        .append(k.calcAverageSkill())
                         .append(", "));
         return sb.toString();
     }

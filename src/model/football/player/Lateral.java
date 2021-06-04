@@ -80,7 +80,8 @@ public class Lateral extends FootballPlayer {
     }
 
     public String toString(){
-        return  new String("Lateral: "+getName() + "\nShirt: "+ getNumber()
+        return  new String("Team : " + getCurTeam()
+                + "\nLateral: "+getName() + "\nShirt: "+ getNumber()
                 + "\nSpeed: " + getSpeed()
                 + "\nResistance: " + getResistance()
                 + "\nDexterity: " + getDexterity()

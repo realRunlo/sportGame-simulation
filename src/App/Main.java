@@ -1,3 +1,5 @@
+package App;
+
 import controller.SPORTMController;
 import model.exceptions.PlayerDoenstExist;
 import model.football.game.ExecuteFootballGame;
@@ -11,7 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
 
-public class Interface {
+public class Main {
 
     public static int getRand(){
         Random rand = new Random();
