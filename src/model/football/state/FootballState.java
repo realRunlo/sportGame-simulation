@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 
 public class FootballState implements Saveable,Serializable{
-    private Map<String, FootballPlayer> playersList;
+    private Map<String, FootballPlayer> playersList; // a key sera um concat do nome do jogador com a sua camisola
     private Map<String, FootballTeam> teams;
     private List<FootballGame> gameHistory;
     private int numbPlayers;
@@ -108,6 +108,13 @@ public class FootballState implements Saveable,Serializable{
         return day;
     }
 
+    public FootballPlayer getPlayer(String name, Integer shirt){
+        if(playersList.containsKey(name+shirt)){
+            return playersList.get(name+shirt).clone();
+        }
+        return null;
+    }
+
     public void setDay(int nDay){
         day = nDay;
     }
@@ -129,13 +136,13 @@ public class FootballState implements Saveable,Serializable{
         Map<String,FootballPlayer> pList = getPlayersList();
         //caso nao exista jogador com o mesmo nome adiciona imediatamente
         if(!pList.containsKey(p.getName())){
-            pList.put(p.getName(),p.clone());
+            pList.put(p.getName()+p.getNumber(),p.clone());
             setPlayersList(pList);
             addPlayer2Team(p, p.getCurTeam());
         }
         else{//caso seja um jogador com o mesmo nome mas diferente numero de camisola pode adicionar
             if(!(pList.get(p.getName()).getNumber() == p.getNumber())){
-                pList.put(p.getName(),p.clone());
+                pList.put(p.getName()+p.getName(),p.clone());
                 setPlayersList(pList);
                 addPlayer2Team(p, p.getCurTeam());
             }
@@ -288,6 +295,17 @@ public class FootballState implements Saveable,Serializable{
         oos.writeObject(this);
         oos.flush();
         oos.close();
+    }
+
+    public String printPlayers(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Available Players:\n");
+        playersList.forEach((e,k) ->
+                sb.append(k.getName())
+                        .append("-")
+                        .append(k.getNumber())
+                        .append(", "));
+        return sb.toString();
     }
 
 

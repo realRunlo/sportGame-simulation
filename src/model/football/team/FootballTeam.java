@@ -147,6 +147,18 @@ public class FootballTeam extends Team implements Saveable {
 
     }
 
+
+    public String printPlayers(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Available Players:\n");
+        players.forEach((e,k) ->
+                sb.append(k.getName())
+                        .append("-")
+                        .append(k.getNumber())
+                        .append(", "));
+        return sb.toString();
+    }
+
     public boolean equals(FootballTeam ft){
         if (this == ft) return true;
 
