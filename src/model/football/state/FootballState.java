@@ -339,6 +339,19 @@ public class FootballState implements Saveable,Serializable{
         return sb.toString();
     }
 
+    public String printPlayersWithShirt(int shirt){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Available Players:\n");
+        playersList.values().stream().filter(e->e.getNumber() == shirt)
+                .forEach(k->
+                sb.append(k.getName())
+                .append(" - ")
+                .append(k.getNumber())
+                .append(", "));
+        return sb.toString();
+    }
+
+
     public String printTeams(){
         StringBuilder sb = new StringBuilder();
         sb.append("Available Teams:\n");

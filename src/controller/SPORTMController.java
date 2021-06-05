@@ -19,18 +19,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 
-public class SPORTMController implements Observer {
-    public static final String RESET = "\u001B[0m";
-    public static final String BLACK = "\u001B[30m";
-    public static final String RED = "\u001B[31m";
-    public static final String GREEN = "\u001B[32m";
-    public static final String YELLOW = "\u001B[33m";
-    public static final String BLUE = "\u001B[34m";
-    public static final String PURPLE = "\u001B[35m";
-    public static final String CYAN = "\u001B[36m";
-    public static final String WHITE = "\u001B[37m";
+public class SPORTMController{
     private FootballState footballState;
     private final Scanner scanner;
+    private final SPORTMViewer messages = new SPORTMViewer(new String[]{});
     private static final int MaxNumberOfPlayers = 23;
 
     private final String[] InitialMenu   = new String[]{
@@ -78,7 +70,9 @@ public class SPORTMController implements Observer {
             "Change Kick",
             "Change Passing",
             "Change Type Specific Skill",
-            "Save Player"};
+            "Save Player",
+            "Randomize Stats"
+    };
     private final String[] RemoveTeamMenu = new String[]{
             "Remove Team Menu",
             "Remove only Team",
@@ -126,14 +120,13 @@ public class SPORTMController implements Observer {
             this.footballState = r.readState("estado.txt");
         }
         catch(ClassNotFoundException e){
-            System.out.println("Error class not found");
+            messages.errorMessage("Error class not found");
         }
         catch(FileNotFoundException e){
-            System.out.println("File not found.");
+            messages.errorMessage("File not found");
         }
         catch(IOException e){
-            System.out.println("Error accessing the file");
-            e.printStackTrace();
+            messages.errorMessage("Error accessing the file");
         }
         viewer.returnMenu();
     }
@@ -145,13 +138,13 @@ public class SPORTMController implements Observer {
             this.footballState = r.readState(getName());
         }
         catch (FileNotFoundException e){
-            System.out.println(RED +"File not found" + RESET);
+            messages.errorMessage("File not found");
         }
         catch (IOException e){
-            System.out.println(RED +"Error loading the file"+ RESET);
+            messages.errorMessage("Error accessing the file");
         }
         catch (ClassNotFoundException e){
-            System.out.println(RED +"Invalid class loaded"+ RESET);
+            messages.errorMessage("Error class not found");
         }
         viewer.returnMenu();
     }
@@ -218,7 +211,7 @@ public class SPORTMController implements Observer {
                 }
             }
             else valido = 1;
-            if(valido == 0) System.out.println("Name already in use");
+            if(valido == 0) messages.errorMessage("Name already in use");
         }while(valido == 0);
         t.setName(newName);
     }
@@ -245,17 +238,17 @@ public class SPORTMController implements Observer {
         playerMenu.setPreCondition(13,()->!name.get().equals("") && atributes[9].get()!=-1);
         playerMenu.setPreCondition(2,()-> atributes[8].get() != -1);
         //apenas pode mudar as skills do jogador,ver informacao sobre ele, se ja tiver escolhido o tipo de jogador
-        playerMenu.setSamePreCondition(new int[]{2,5,6,7,8,9,10,11,12},()->!name.get().equals("") && atributes[8].get() != -1 && atributes[9].get() != -1);
+        playerMenu.setSamePreCondition(new int[]{2,5,6,7,8,9,10,11,12,14},()->!name.get().equals("") && atributes[8].get() != -1 && atributes[9].get() != -1);
 
         playerMenu.setHandler(1, ()->  name.set(getName()));
         playerMenu.setHandler(2, ()->  playerMenu.showInfo(playerPrototype(Arrays.stream(atributes).mapToInt(e->e.get()).toArray(),name.get(),t,new ArrayList<String>())));
         playerMenu.setHandler(3, ()->  atributes[8].set(playerMenu.readOptionBetween(0,4,new String[]{"Goalkeeper","Defender","Lateral","Midfielder","Striker"})));
         playerMenu.setHandler(4, ()->  atributes[9].set(getShirtNumber(name.get(),t)));
-
+        playerMenu.setHandler(14, ()->  randomizeStats(atributes));
         //handlers dos atributos de um jogador
         for(int i = 0,j = 5; i<8;i++,j++) {
             int finalI = i;
-            playerMenu.setHandler(j, () -> atributes[finalI].set(playerMenu.readOptionBetween(0, 100, null)));
+            playerMenu.setHandler(j, () -> atributes[finalI].set(getSkillValue(playerMenu,"Current Value: " + atributes[finalI].get())));
         }
         //gravar o jogador
         playerMenu.setHandler(13, ()-> updatePlayerState(playerPrototype(Arrays.stream(atributes).mapToInt(e->e.get()).toArray(),name.get(),t,new ArrayList<String>()),t,playerMenu,true,updateState));
@@ -291,15 +284,15 @@ public class SPORTMController implements Observer {
             updatePlayer.setPreCondition(13,()->!p.getName().equals("") && atributes[9].get()!=-1);
             updatePlayer.setPreCondition(2,()-> atributes[8].get() != -1);
             //apenas pode mudar as skills do jogador,ver informacao sobre ele, se ja tiver escolhido o tipo de jogador
-            updatePlayer.setSamePreCondition(new int[]{2,5,6,7,8,9,10,11,12},()->!p.getName().equals("") && atributes[8].get() != -1 && atributes[9].get() != -1);
+            updatePlayer.setSamePreCondition(new int[]{2,5,6,7,8,9,10,11,12,14},()->!p.getName().equals("") && atributes[8].get() != -1 && atributes[9].get() != -1);
 
             updatePlayer.setHandler(2, ()->  updatePlayer.showInfo(playerPrototype(Arrays.stream(atributes).mapToInt(AtomicInteger::get).toArray(),p.getName(),t,p.getBackground())));
             updatePlayer.setHandler(3, ()->  atributes[8].set(updatePlayer.readOptionBetween(0,4,new String[]{"Goalkeeper","Defender","Lateral","Midfielder","Striker"})));
-
+            updatePlayer.setHandler(14, ()->  randomizeStats(atributes));
             //handlers dos atributos de um jogador
             for(int i = 0,j = 5; i<8;i++,j++) {
                 int finalI = i;
-                updatePlayer.setHandler(j, () -> atributes[finalI].set(updatePlayer.readOptionBetween(0, 100, null)));
+                updatePlayer.setHandler(j, () -> atributes[finalI].set(getSkillValue(updatePlayer,"Current Value: " + atributes[finalI].get())));
             }
             //gravar o jogador
             updatePlayer.setHandler(13, ()-> updatePlayerState(playerPrototype(Arrays.stream(atributes).mapToInt(e->e.get()).toArray(),p.getName(),team.get(),p.getBackground()),team.get(),updatePlayer,false,updateState));
@@ -312,19 +305,19 @@ public class SPORTMController implements Observer {
 
     public FootballTeam chooseTeam(String message) {
         FootballTeam t = null;
-        System.out.println("Write -1 to return");
         String name = "";
         boolean valid = false;
         while (!valid && !name.equals("-1")) {
-            System.out.println(footballState.printTeams());
-            System.out.println(message);
+            messages.informationMessage("Write -1 to return");
+            messages.normalMessage(footballState.printTeams());
+            messages.informationMessage(message);
             name = scanner.nextLine();
             if(!name.equals("-1")) {
                 if (footballState.existsTeam(name)) {
                     valid = true;
                     t = footballState.getTeam(name);
                 }
-                else System.out.println(RED + "Choose a valid team" + RESET);
+                else messages.errorMessage("Choose a valid team");
             }
         }
         return t;
@@ -365,7 +358,7 @@ public class SPORTMController implements Observer {
 
 
     public void createGame() throws PlayerDoenstExist, IOException, ClassNotFoundException {
-        System.out.println(
+        messages.titleMessage(
                 "--------------------------------------\n" +
                 "---------------New Match--------------\n" +
                 "--------------------------------------\n"
@@ -376,7 +369,7 @@ public class SPORTMController implements Observer {
             homeTeam = chooseTeam("Choose the home team");
             if(homeTeam == null) leave = true;
             else if(homeTeam.getNPlayers() > 0) validHome = true;
-                 else System.out.println(RED + "Team doesn't have enough players to play" + RESET);
+                 else messages.errorMessage("Team doesn't have enough players to play");
         }
 
         FootballTeam visitingTeam = null;
@@ -384,12 +377,12 @@ public class SPORTMController implements Observer {
             visitingTeam = chooseTeam("Choose the visiting team");
             if(visitingTeam == null) leave = true;
             else if(visitingTeam.equals(homeTeam))
-                System.out.println(RED +"A team can't play against itself" + RESET);
+                messages.errorMessage("A team can't play against itself");
                 else if(visitingTeam.getNPlayers() > 0) validVisitor = true;
-                     else System.out.println(RED + "Team doesn't have enough players to play" + RESET);
+                     else messages.errorMessage("Team doesn't have enough players to play");
         }
         if(!leave){
-            System.out.println("\t\t"+homeTeam.getName()+" VS "+visitingTeam.getName());
+            messages.titleMessage("\t\t"+homeTeam.getName()+" VS "+visitingTeam.getName());
 
             FootballLineup homeLineup = makeLineup(homeTeam,true);
             if(homeLineup != null && homeLineup.readyToPlay()){
@@ -400,12 +393,19 @@ public class SPORTMController implements Observer {
                     while(play.getGame().getTimer() <= 90){
                         play.ExecutePlay();
                     }
+
+
+
                     System.out.println("-------------\n"+play.getGame().toString()+"\n-----------------\n");
+
+
+
+
                     footballState.addGame(g);
-                }else System.out.println(RED + "Error with lineup, make sure there is at least 1 player of each type in the team" + RESET);
-            }else System.out.println(RED + "Error with lineup, make sure there is at least 1 player of each type in the team" + RESET);
+                }else messages.errorMessage("Error with lineup, make sure there is at least 1 player of each type in the team");
+            }else messages.errorMessage("Error with lineup, make sure there is at least 1 player of each type in the team");
         }
-        System.out.println(
+        messages.titleMessage(
                 "--------------------------------------\n" +
                 "---------------Returning--------------\n" +
                 "--------------------------------------\n"
@@ -439,7 +439,6 @@ public class SPORTMController implements Observer {
 
 
     public void setPlaying(AtomicReference<FootballLineup> proto, FootballTeam t){
-        SPORTMViewer messages = new SPORTMViewer(null);
         boolean saved = false;
         String line = "";
         int shirt = -1;
@@ -488,7 +487,6 @@ public class SPORTMController implements Observer {
     }
 
     public void setSubstitutes(AtomicReference<FootballLineup> proto, FootballTeam t){
-        SPORTMViewer messages = new SPORTMViewer(null);
         boolean saved = false;
         String line = "";
         int shirt = -1;
@@ -544,7 +542,7 @@ public class SPORTMController implements Observer {
     /**------------------------General methods-----------------------------**/
 
     public String getName(){
-        System.out.println("Insert a name");
+        messages.informationMessage("Insert a name");
         return scanner.nextLine();
     }
 
@@ -554,31 +552,33 @@ public class SPORTMController implements Observer {
         boolean valid = false;
         int shirtNumber = -1;
         while(!valid){
-            System.out.println("Insert the number of the shirt");
+            messages.informationMessage("Insert the number of the shirt");
             try{
                 shirtNumber = Integer.parseInt(scanner.nextLine());
             }
             catch(NumberFormatException e){
                 shirtNumber = -1;
-                System.out.println(RED +"Insert a valid number"+ RESET);
+                messages.errorMessage("Insert a valid number");
             }
             if(shirtNumber >= 0) {
                 if (t == null){
-                    if (footballState.existsPlayer(name,shirtNumber)) System.out.println(RED+"Player with the same name and shirt already exists"+RESET);
+                    if (footballState.existsPlayer(name,shirtNumber))
+                        messages.errorMessage("Player with the same name and shirt already exists");
                     else valid = true;
                 }
                 else{
                     valid = !t.existsShirtNumber(shirtNumber);
-                    if (!valid) System.out.println(RED+"Team already has a players with that shirt" + RESET);
+                    if (!valid)
+                        messages.errorMessage("Team already has a players with that shirt");
                 }
             }
         }
         return shirtNumber;
     }
 
-    public int getSkillValue(){
-        System.out.println("Insert a skill value");
-        return scanner.nextInt();
+    public int getSkillValue(SPORTMViewer menu,String currentValue){
+        messages.informationMessage(currentValue);
+        return menu.readOptionBetween(0, 100, null);
     }
 
     public void updatePlayerState(FootballPlayer p,FootballTeam t, SPORTMViewer viewer,boolean newPlayer,boolean updateState){
@@ -601,9 +601,9 @@ public class SPORTMController implements Observer {
 
     public void removePlayerTeam(FootballTeam t){
         boolean removed = false; int op = -2;
-        System.out.println(t.toString()+"\nWrite '-1' to return");
         while(!removed && op!=-1){
-            System.out.println("Write the player's shirt to remove him from the team");
+            messages.normalMessage(t.toString());
+            messages.informationMessage("Write '-1' to return\nWrite the player's shirt to remove him from the team");
             try {
                 String line = scanner.nextLine();
                 op = Integer.parseInt(line);
@@ -616,28 +616,28 @@ public class SPORTMController implements Observer {
                     removed = true;
                     t.removePlayer(op);
                 }
-                else System.out.println(RED + "Team doesnt have that player" + RESET);
+                else messages.errorMessage("Team doesnt have that player");
             }
         }
     }
 
 
     public FootballPlayer choosePlayerToUpdate(FootballTeam t){
-        System.out.println("Write -1 to return");
         int shirtNumber = -2;
         String name = "";
         boolean valid = false;
         FootballPlayer p = null;
         while(!valid && shirtNumber != -1){
+            messages.informationMessage("Write -1 to return");
             // caso de update atravez da equipa
             if(t!=null){
-                System.out.println(t.printPlayers());
-                System.out.println("Write the shirt of the player to update");
+                messages.normalMessage(t.printPlayers());
+                messages.informationMessage("Write the shirt of the player to update");
             }
             //caso de update diretamente no estado
             else{
-                System.out.println(footballState.printPlayers());
-                System.out.println("Write the name and shirt of the player to update\nInsert the number of the shirt: ");
+                messages.normalMessage(footballState.printPlayers());
+                messages.informationMessage("Write the name and shirt of the player to update\nInsert the number of the shirt: ");
             }
 
 
@@ -646,7 +646,7 @@ public class SPORTMController implements Observer {
             }
             catch(NumberFormatException e){
                 shirtNumber = -2;
-                System.out.println(RED +"Insert a valid number"+ RESET);
+                messages.errorMessage("Insert a valid number");
             }
 
             if(t!=null){
@@ -655,12 +655,13 @@ public class SPORTMController implements Observer {
                         valid = true;
                         p = t.getPlayer(shirtNumber);
                     }
-                    else System.out.println(RED +"Insert a valid player"+ RESET);
+                    else messages.errorMessage("Insert a valid player");
                 }
             }
             else{
                 if(shirtNumber >=0){
-                    System.out.println("Insert the name of the player");
+                    messages.normalMessage(footballState.printPlayersWithShirt(shirtNumber));
+                    messages.informationMessage("Insert the name of the player");
                     name = scanner.nextLine();
                     if(footballState.existsPlayer(name,shirtNumber)){
                         valid = true;
@@ -717,17 +718,24 @@ public class SPORTMController implements Observer {
         return skill;
     }
 
+    public void randomizeStats(AtomicInteger[] atributes){
+        Random random = new Random();
+        int i = 0;
+           for(;i<8;i++){
+               atributes[i].set(random.nextInt(101));
+    }
+
+    }
+
     /**------------------------SIMPLE PRINTS-------------------------------**/
     public void terminate(){
-        clearScreen();
         showTermination();
         System.exit(0);
     }
 
     public void showWelcome(){
-        clearScreen();
-        System.out.println("Welcome to SPORTM!");
-        System.out.println("""
+        messages.titleMessage("Welcome to SPORTM!");
+        messages.titleMessage("""
                 Made by:
                 ->Group 68
                 ->Goncalo Braz Afonso a93178
@@ -738,16 +746,7 @@ public class SPORTMController implements Observer {
     }
 
     public void showTermination(){
-        System.out.println("Closing the Game\nWe hope you've enjoyed your time.");
+        messages.titleMessage("Closing the Game\nWe hope you've enjoyed your time.");
     }
 
-    public void clearScreen(){
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
-
-    @Override
-    public void update(Observable o, Object s) {
-        setState((FootballState) s);
-    }
 }

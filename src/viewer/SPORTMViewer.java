@@ -109,7 +109,7 @@ public class SPORTMViewer {
         int op;
         //Scanner is = new Scanner(System.in);
 
-        System.out.print("Option: ");
+        informationMessage("Option: ");
         try {
             String line = is.nextLine();
             op = Integer.parseInt(line);
@@ -134,7 +134,7 @@ public class SPORTMViewer {
                 i++;
             }
         }
-        System.out.print("Write a number between "+lower+" and "+higher+"\nOption: ");
+        informationMessage("Write a number between "+lower+" and "+higher+"\nOption: ");
         while(op == -1) {
             try {
                 String line = is.nextLine();
@@ -152,7 +152,7 @@ public class SPORTMViewer {
 
     public void showInfo(Object o){
         System.out.println(o.toString());
-        System.out.println("Press any key to continue");
+        informationMessage("Press any key to continue");
         is.nextLine();
     }
 
