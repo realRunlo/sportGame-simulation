@@ -1,6 +1,7 @@
 package model.football.team.lineup;
 
 import model.exceptions.PlayerDoenstExist;
+import model.football.game.FootballGame;
 import model.football.player.*;
 import model.football.team.FootballTeam;
 
@@ -147,14 +148,42 @@ public class FootballLineup implements Serializable {
         this.setPlaying(playing);
     }
 
-    public void addPlaying(FootballPlayer player) {
-        Set<FootballPlayer> playing = getPlaying();
-
-        if(playing.size() < 11) {
-            playing.add(player);
-            setPlaying(playing);
-        }
+    public void remPlaying(int shirt){
+        if(playing.stream().anyMatch(k->k.getNumber() == shirt)) playing.removeIf(k->k.getNumber() == shirt);
     }
+
+    public boolean addPlaying(FootballPlayer player) {
+        boolean added = false;
+        if(player!=null) {
+            Set<FootballPlayer> playing = getPlaying();
+            if (playing.size() < 12 && availableSpotInStrategy(player.getClass())
+                    && !playerAdded(player))
+            {
+                playing.add(player);
+                setPlaying(playing);
+                added = true;
+            }
+        }
+        return added;
+    }
+
+    public boolean playerAdded(FootballPlayer p){
+        boolean exists = false;
+        if(playing.stream().anyMatch(k->k.getNumber() == p.getNumber())) exists = true;
+        if(substitutes.stream().anyMatch(k->k.getNumber() == p.getNumber())) exists = true;
+        return exists;
+    }
+
+    public boolean availableSpotInStrategy(Class<? extends FootballPlayer> p){
+        boolean available = false;
+        //verificar guarda-redes
+        if(p.equals(Goalkeeper.class) && playing.stream().noneMatch(k -> k instanceof Goalkeeper))
+            available = true;
+        else if(playing.stream().filter(k -> k.getClass().equals(p)).count() < numberOfType(p))
+            available = true;
+        return available;
+    }
+
 
     public void addPlayerTypeToGroup(FootballTeam t,Class<?> playerType, boolean playing){
         int nToAdd = 0;
@@ -180,12 +209,22 @@ public class FootballLineup implements Serializable {
         this.setGlobalSkill(this.calcGlobalSkill());
     }
 
-    public void addSubstitute(FootballPlayer player) {
-        Set<FootballPlayer> subs = getSubstitutes();
+    public void remSubstitute(int shirt){
+        if(substitutes.stream().anyMatch(k->k.getNumber() == shirt)) substitutes.removeIf(k->k.getNumber() == shirt);
+    }
 
-        subs.add(player);
-        this.setSubstitutes(subs);
-        this.setGlobalSkill(this.calcGlobalSkill());
+    public boolean addSubstitute(FootballPlayer player) {
+        boolean added = false;
+        if(player!=null) {
+            Set<FootballPlayer> substitutes = getSubstitutes();
+            if (substitutes.size() < 3 && !playerAdded(player))
+            {
+                substitutes.add(player);
+                setSubstitutes(substitutes);
+                added = true;
+            }
+        }
+        return added;
     }
 
     public void substitutePlayer(FootballPlayer player, FootballPlayer sub) {
@@ -211,7 +250,14 @@ public class FootballLineup implements Serializable {
         }
     }
 
-
+    public boolean readyToPlay(){
+        //para estar pronto para jogar, tem de ter um jogador de cada tipo na lineUp
+        return playing.stream().anyMatch(p -> p instanceof Goalkeeper)
+                && playing.stream().anyMatch(p -> p instanceof Defender)
+                && playing.stream().anyMatch(p -> p instanceof Lateral)
+                && playing.stream().anyMatch(p -> p instanceof Midfielder)
+                && playing.stream().anyMatch(p -> p instanceof Striker);
+    }
 
 
     public int strategyNormalize(int strategy){
@@ -219,6 +265,24 @@ public class FootballLineup implements Serializable {
         else if(strategy == 2) return 2;
             else return 1;
     }
+
+    public String printPlaying(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Playing : ");
+        playing.forEach(k-> sb.append(k.getName()).append(" - ").append(k.getNumber()).append("/ "));
+        return sb.toString();
+    }
+
+    public String printSubstitutes(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Substitutes : ");
+        substitutes.forEach(k-> sb.append(k.getName()).append(" - ").append(k.getNumber()).append("/ "));
+        return sb.toString();
+    }
+
+
     public boolean equals(FootballLineup fl) {
         boolean bool = false;
 

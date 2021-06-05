@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 public abstract class Game implements Saveable,Serializable {
-    private boolean g; // information if there is or not a game
+    private boolean ended; // information if there is or not a game
     private int points1;
     private int points2;
     private Team t1;
@@ -46,11 +46,11 @@ public abstract class Game implements Saveable,Serializable {
 
     //----------------------------------Getters e Setters----------------------------------------------------------
     public boolean getBol(){
-        return g;
+        return ended;
     }
 
     public void setBol(boolean b){
-        g = b;
+        ended = b;
     }
 
     public int getPoints1() {
@@ -104,7 +104,7 @@ public abstract class Game implements Saveable,Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
 
-        return g == game.getBol() &&
+        return ended == game.getBol() &&
                 game.getPoints1() == points1 &&
                 game.getPoints2() == points2 &&
                 game.getTimer() == (timer);

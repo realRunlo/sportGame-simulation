@@ -23,8 +23,8 @@ public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException, PlayerDoenstExist {
         SPORTMController controller = new SPORTMController();
         controller.run();
-/*
-        //SPORTMViewer viewer = new SPORTMViewer();
+        /*
+        // SPORTMViewer viewer = new SPORTMViewer();
         //viewer.showWelcome();
         FootballState s = new FootballState();
         FootballTeam t1 = new FootballTeam();

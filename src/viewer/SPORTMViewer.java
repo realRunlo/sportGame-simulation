@@ -161,6 +161,26 @@ public class SPORTMViewer {
         exit = true;
     }
 
+    public void titleMessage(String message){
+        System.out.println(YELLOW +message+RESET);
+    }
+
+    public void confirmationMessage(String message){
+        System.out.println(GREEN + message + RESET);
+    }
+
+    public void informationMessage(String message){
+        System.out.println(PURPLE + message + RESET);
+    }
+
+    public void normalMessage(String message){
+        System.out.println(message);
+    }
+
+    public void errorMessage(String error){
+        System.out.println(RED + error + RESET);
+    }
+
 
     public final static void clearConsole()
     {

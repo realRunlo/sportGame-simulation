@@ -1,14 +1,19 @@
 package controller;
+import model.exceptions.PlayerDoenstExist;
 import model.football.foul.Card;
+import model.football.game.ExecuteFootballGame;
+import model.football.game.FootballGame;
 import model.football.player.*;
 import model.football.state.FootballState;
 import model.football.team.FootballTeam;
+import model.football.team.lineup.FootballLineup;
 import readFile.readFile;
 import viewer.SPORTMViewer;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -40,8 +45,8 @@ public class SPORTMController implements Observer {
     private final String[] GameMenu = new String[]{
             "Game Menu",
             "State information",
-            "Create Game",
-            "Game History",
+            "Create Match",
+            "Match History",
             "Add Team",
             "Add Player",
             "Update Team",
@@ -78,6 +83,14 @@ public class SPORTMController implements Observer {
             "Remove Team Menu",
             "Remove only Team",
             "Remove Team and Players"};
+    private final String[] LineupMenu = new String[]{ //4-4-2 e 4-3-3
+            "Lineup Menu",
+            "Choose strategy",
+            "Auto assign players",
+            "Assign playing",
+            "Assign substitutes",
+            "Save lineup"
+    };
     public SPORTMController(){
         footballState = new FootballState();
         scanner = new Scanner(System.in);
@@ -147,11 +160,18 @@ public class SPORTMController implements Observer {
 
     public void EnterState() throws IOException, ClassNotFoundException {
         SPORTMViewer enterState = new SPORTMViewer(GameMenu);
-        enterState.setPreCondition(2,()-> false);
+        enterState.setPreCondition(2,()-> footballState.getNTeams() >= 2);
         enterState.setSamePreCondition(new int[]{7,10},()->footballState.getNPlayers()>0);
         enterState.setSamePreCondition(new int[]{6,8,9},()->footballState.getNTeams()>0);
 
         enterState.setHandler(1,()-> enterState.showInfo(this.footballState));
+        enterState.setHandler(2,()-> {
+            try {
+                createGame();
+            } catch (PlayerDoenstExist playerDoenstExist) {
+                playerDoenstExist.printStackTrace();
+            }
+        });
         enterState.setHandler(3,()-> enterState.showInfo(this.footballState.getGameHistory()));
         enterState.setHandler(4,()-> addOrUpdateTeam(false));
         enterState.setHandler(5,()-> newPlayer(null,true));
@@ -341,6 +361,184 @@ public class SPORTMController implements Observer {
         FootballPlayer p = choosePlayerToUpdate(null);
         if(p!=null) footballState.removePlayer(p.getName(),p.getNumber(),p.getCurTeam());
     }
+
+
+
+    public void createGame() throws PlayerDoenstExist, IOException, ClassNotFoundException {
+        System.out.println(
+                "--------------------------------------\n" +
+                "---------------New Match--------------\n" +
+                "--------------------------------------\n"
+        );
+        FootballTeam homeTeam = null;
+        boolean validHome = false, validVisitor = false, leave = false;
+        while(!validHome && !leave){
+            homeTeam = chooseTeam("Choose the home team");
+            if(homeTeam == null) leave = true;
+            else if(homeTeam.getNPlayers() > 0) validHome = true;
+                 else System.out.println(RED + "Team doesn't have enough players to play" + RESET);
+        }
+
+        FootballTeam visitingTeam = null;
+        while(!validVisitor && !leave){
+            visitingTeam = chooseTeam("Choose the visiting team");
+            if(visitingTeam == null) leave = true;
+            else if(visitingTeam.equals(homeTeam))
+                System.out.println(RED +"A team can't play against itself" + RESET);
+                else if(visitingTeam.getNPlayers() > 0) validVisitor = true;
+                     else System.out.println(RED + "Team doesn't have enough players to play" + RESET);
+        }
+        if(!leave){
+            System.out.println("\t\t"+homeTeam.getName()+" VS "+visitingTeam.getName());
+
+            FootballLineup homeLineup = makeLineup(homeTeam,true);
+            if(homeLineup != null && homeLineup.readyToPlay()){
+                FootballLineup visitorLineup = makeLineup(visitingTeam,false);
+                if(visitorLineup != null && visitorLineup.readyToPlay()){
+                    FootballGame g = new FootballGame(homeTeam,visitingTeam,homeLineup,visitorLineup);
+                    ExecuteFootballGame play = new ExecuteFootballGame(g);
+                    while(play.getGame().getTimer() <= 90){
+                        play.ExecutePlay();
+                    }
+                    System.out.println("-------------\n"+play.getGame().toString()+"\n-----------------\n");
+                    footballState.addGame(g);
+                }else System.out.println(RED + "Error with lineup, make sure there is at least 1 player of each type in the team" + RESET);
+            }else System.out.println(RED + "Error with lineup, make sure there is at least 1 player of each type in the team" + RESET);
+        }
+        System.out.println(
+                "--------------------------------------\n" +
+                "---------------Returning--------------\n" +
+                "--------------------------------------\n"
+        );
+    }
+
+    public FootballLineup makeLineup(FootballTeam t,boolean home) throws IOException, ClassNotFoundException {
+        SPORTMViewer lineupMenu = new SPORTMViewer(LineupMenu);
+
+        if(home) lineupMenu.titleMessage("Home Team");
+        else lineupMenu.titleMessage("Visitor Team");
+
+        AtomicInteger strategy = new AtomicInteger(-1);
+        AtomicReference<FootballLineup> protoLineup = new AtomicReference<>(new FootballLineup());
+        FootballLineup lineup = null;
+        AtomicBoolean saved = new AtomicBoolean(false);
+
+        lineupMenu.setSamePreCondition(new int[]{2,3},()->strategy.get()!=-1);
+        lineupMenu.setSamePreCondition(new int[]{4,5},()-> protoLineup.get().getPlaying().size() > 0);
+
+        lineupMenu.setHandler(1,()->
+                strategy.set(1 + lineupMenu.readOptionBetween(0,1,new String[]{"4-4-2","4-3-3"})));
+        lineupMenu.setHandler(2,()-> protoLineup.set(new FootballLineup(t,strategy.get())));
+        lineupMenu.setHandler(3,()-> setPlaying(protoLineup,t));
+        lineupMenu.setHandler(4,()-> setSubstitutes(protoLineup,t));
+        lineupMenu.setHandler(5,()-> saveLineup(saved,lineupMenu));
+        lineupMenu.SimpleRun();
+        if(saved.get()) lineup = protoLineup.get();
+        return lineup;
+    }
+
+
+    public void setPlaying(AtomicReference<FootballLineup> proto, FootballTeam t){
+        SPORTMViewer messages = new SPORTMViewer(null);
+        boolean saved = false;
+        String line = "";
+        int shirt = -1;
+        FootballLineup l = proto.get();
+
+        while(!saved && !line.equals("-1")){
+            messages.normalMessage(t.printPlayers());
+            messages.informationMessage("Write -1 to return, 's' to save\n Write 'a' to add a player and 'r' to remove");
+            messages.normalMessage(l.printPlaying());
+
+            line = scanner.nextLine();
+            if(line.equals("s") || line.equals("save")){
+                if(l.getPlaying().size() > 0){
+                    saved = true;
+                    proto.set(l);
+                }
+            }
+            if(!line.equals("-1") && !saved){
+                if(line.equals("a") || line.equals("r")){
+                    try {
+                        shirt = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) { // Não foi inscrito um int
+                        shirt = -1;
+                    }
+                    if(shirt >= 0){
+                        if(line.equals("a")) {
+                            if (l.getPlaying().size() < 12) {
+                                if(!l.addPlaying(t.getPlayer(shirt)))
+                                    messages.errorMessage("Can't add that player");
+                            }
+                            else messages.errorMessage("Playing full");
+                        }
+                        else{
+                            if(l.getPlaying().size() > 0){
+                                l.remPlaying(shirt);
+                            }
+                            else messages.errorMessage("Playing empty");
+                        }
+                    }
+                    else messages.errorMessage("Insert a valid shirt");
+                }
+                else messages.errorMessage("Invalid command");
+            }
+
+        }
+    }
+
+    public void setSubstitutes(AtomicReference<FootballLineup> proto, FootballTeam t){
+        SPORTMViewer messages = new SPORTMViewer(null);
+        boolean saved = false;
+        String line = "";
+        int shirt = -1;
+        FootballLineup l = proto.get();
+        messages.informationMessage("Write -1 to return, 's' to save\n Write 'a' to add a player and 'r' to remove");
+
+        while(!saved && !line.equals("-1")){
+            messages.normalMessage(l.printSubstitutes());
+
+            line = scanner.nextLine();
+            if(line.equals("s") || line.equals("save")){
+                if(l.getSubstitutes().size() > 0){
+                    saved = true;
+                    proto.set(l);
+                }
+            }
+            if(!line.equals("-1") && !saved){
+                if(line.equals("a") || line.equals("r")){
+                    try {
+                        shirt = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) { // Não foi inscrito um int
+                        shirt = -1;
+                    }
+                    if(shirt >= 0){
+                        if(line.equals("a")) {
+                            if (l.getSubstitutes().size() < 12) {
+                                if(!l.addSubstitute(t.getPlayer(shirt))) messages.errorMessage("Can't add that player");
+                            }
+                            else messages.errorMessage("Substitutes full");
+                        }
+                        else{
+                            if(l.getSubstitutes().size() > 0){
+                                l.remSubstitute(shirt);
+                            }
+                            else messages.errorMessage("Substitutes empty");
+                        }
+                    }
+                    else messages.errorMessage("Insert a valid shirt");
+                }
+                else messages.errorMessage("Invalid command");
+            }
+
+        }
+    }
+
+    public void saveLineup(AtomicBoolean saved ,SPORTMViewer menu){
+        saved.set(true);
+        menu.returnMenu();
+    }
+
 
 
     /**------------------------General methods-----------------------------**/

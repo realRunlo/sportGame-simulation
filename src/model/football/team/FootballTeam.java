@@ -73,7 +73,10 @@ public class FootballTeam extends Team implements Saveable {
     }
 
     public FootballPlayer getPlayer(int shirtNumber){
-        return players.get(shirtNumber).clone();
+        FootballPlayer p = null;
+        if(players.containsKey(shirtNumber))
+            p=players.get(shirtNumber).clone();
+        return p;
     }
 
     public boolean existsShirtNumber(int shirtNumber){
@@ -88,15 +91,14 @@ public class FootballTeam extends Team implements Saveable {
     }
 
     public void addPlayer(FootballPlayer p){
-        if(getNPlayers() < NumberOfPlayers) {
-            if (!players.containsKey(p.getNumber())) {
-                if(!p.getCurTeam().equals(this.getName())) {
+        if(getNPlayers() < NumberOfPlayers && p!=null) {
+            if(!existsPlayerNumber(p.getName(),p.getNumber())) {
+                if (!p.getCurTeam().equals(this.getName())) {
                     p.setCurTeam(getName());
                     p.addBackground(getName());
                 }
                 players.put(p.getNumber(), p.clone());
                 incTeamPlayers();
-
             }
         }
     }
@@ -131,11 +133,11 @@ public class FootballTeam extends Team implements Saveable {
         Nplayers--;
     }
 
-
     public FootballPlayer getTypePlayer(Class<?> t,Set<FootballPlayer> Playinglist,Set<FootballPlayer> Substituteslist){
         if(getNPlayers() != 0) {
             Optional<FootballPlayer> p_type = players.values().stream()
-                    .filter(p ->p.getClass() == t && (!Playinglist.contains(p)) && !Substituteslist.contains(p))
+                    .filter(p ->p.getClass() == t && (Playinglist.stream().noneMatch(k -> k.getName().equals(p.getName())))
+                            && Substituteslist.stream().noneMatch(k -> k.getName().equals(p.getName())))
                     .findFirst();
             if (p_type.isPresent()) return p_type.get().clone();
         }

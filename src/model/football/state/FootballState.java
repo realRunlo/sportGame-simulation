@@ -150,9 +150,20 @@ public class FootballState implements Saveable,Serializable{
         }
     }
     public void addPlayer2Team(FootballPlayer p ,String team){
-        if(teams.containsKey(team)){
+        if(teams.containsKey(team) && p!= null){
             FootballTeam t = getTeam(team);
             if(!t.existsPlayerNumber(p.getName(),p.getNumber()) && t.getNPlayers() < MAX_PLAYER_TEAM){
+                //mudar o numero da camisola se necessario
+                if(t.existsShirtNumber(p.getNumber())){
+                    int originalShirt = p.getNumber();
+                    boolean available = false;
+                    int shirt = 0;
+                    while(!available){
+                        if(!existsPlayer(p.getName(),shirt) && !t.existsShirtNumber(shirt)) available = true;
+                        else shirt++;
+                    }
+                    p.setNumber(shirt);
+                }
                 t.addPlayer(p);
                 teams.replace(team,t);
             }
@@ -250,10 +261,12 @@ public class FootballState implements Saveable,Serializable{
     public void transferPlayer(FootballPlayer p, FootballTeam teamToTransfer){
         if(p!=null){
             removePlayerFromTeam(p);
+            int originalShirt = p.getNumber();
             if(teamToTransfer != null){
                 addPlayer2Team(p,teamToTransfer.getName());
             }
             updatePlayer(p);
+            if(originalShirt != p.getNumber()) playersList.remove(p.getName()+originalShirt);
         }
     }
 
