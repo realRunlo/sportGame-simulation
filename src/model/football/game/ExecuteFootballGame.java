@@ -4,39 +4,36 @@ import model.exceptions.PlayerDoenstExist;
 import model.football.player.*;
 import model.football.team.lineup.FootballLineup;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class ExecuteFootballGame {
     private FootballGame g;
     private FootballPlayer playerWithTheBall; //jogador com a bola neste momento
     private boolean home; //team with the ball
+    private List<String> gameReport;
+
+
     private static final double quickAction = 0.5;
     private static final double averageAction = 1;
     private static final double slowAction = 1.5;
+    public static final String RESET = "\u001B[0m";
+    public static final String BLACK = "\u001B[30m";
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String PURPLE = "\u001B[35m";
+    public static final String CYAN = "\u001B[36m";
+    public static final String WHITE = "\u001B[37m";
 
-/* Coloquei em comentario porque nao faz sentido criar um executeFootballGame com um game sem equipas
-    entao talvez nao valha a pena dar a opcao de o fazer
-    public ExecuteFootballGame(){
-        Random rand = new Random();
-        setGame(new FootballGame());
-        int random = rand.nextInt(2);
-        if(random == 0){
-            setHome(false);
-            setPlayerWithTheBall(g.getAway().getPlaying().stream()
-                    .filter(e-> e.getClass().equals(Striker.class))
-                    .findAny().get(),false);
-        }
-        else {
-            setHome(true);
-            setPlayerWithTheBall(g.getHome().getPlaying().stream()
-                    .filter(e-> e.getClass().equals(Striker.class))
-                    .findAny().get(),true);
-        }
-    }
-*/
+
     public ExecuteFootballGame(FootballGame g){
         Random rand = new Random();
         setGame(g);
+        gameReport = new ArrayList<>();
         int random = rand.nextInt(2);
         if(random == 0){
             setHome(false);
@@ -61,6 +58,10 @@ public class ExecuteFootballGame {
         if(home != getHome()) invertTeamWithBall();
     }
 
+    public List<String> getGameReport(){
+        return gameReport;
+    }
+
     public boolean getHome(){
         return home;
     }
@@ -68,7 +69,6 @@ public class ExecuteFootballGame {
     public void setHome(boolean homeOrAway){
         home = homeOrAway;
     }
-
 
     public FootballGame getGame(){
         return g.clone();
@@ -169,42 +169,51 @@ public class ExecuteFootballGame {
 
 
     public boolean tryStealBall(FootballPlayer p){
-        g.incTimerBy(quickAction);
+        incTimer(quickAction);
+        registerAction(p.getName() + " tries to steal the ball!");
         Random rand = new Random();
+        boolean steal = false;
         if(playerWithTheBall.getClass().equals(Defender.class)){//se for defesa tem maior chance de manter a bola
             Defender d = (Defender) playerWithTheBall;
-            if(rand.nextInt(101) <= d.getBallRetention()) return false;
+            if(rand.nextInt(101) <= d.getBallRetention());
             else {
                 setPlayerWithTheBall(p,!getHome());
-                return true;
+                steal = true;
             }
             }
         else if(p.getClass().equals(Midfielder.class)){ //melhorar, talvez dar 2 skill checks ao medio
             Midfielder m = (Midfielder) p;
-            return rand.nextInt(101) <= m.getBallRecovery();
+            steal = rand.nextInt(101) <= m.getBallRecovery();
         }
         else{ //caso normal, verifica quem tem melhor destreza
-            return playerWithTheBall.getDexterity() <= p.getDexterity();
+            steal = playerWithTheBall.getDexterity() <= p.getDexterity();
         }
+        if(steal) registerAction("And he's got it!");
+        else registerAction("But fails...");
+        return steal;
     }
 
     public void tryPass(){
-        g.incTimerBy(quickAction);
+        registerAction(playerWithTheBall.getName() + "tries to pass the ball.");
+        incTimer(quickAction);
         Random rand = new Random();
         if(rand.nextInt(101) <= playerWithTheBall.getPassing()){
             Pass();
         }
+        else registerAction("But decides otherwise.");
     }
 
 
     public boolean tryPass(FootballPlayer p){
-        g.incTimerBy(quickAction);
+        registerAction(playerWithTheBall.getName() + "tries to pass the ball.");
+        incTimer(quickAction);
         Random rand = new Random();
         if(rand.nextInt(101) <= playerWithTheBall.getPassing()){
             Pass();
             return true;
         }
         else {
+            registerAction("But " + p.getName() + "intercepts ball!");
             invertTeamWithBall();
             playerWithTheBall = p;
             return false;
@@ -212,7 +221,7 @@ public class ExecuteFootballGame {
     }
 
     public void Pass(){
-        g.incTimerBy(averageAction);
+        incTimer(averageAction);
         FootballPlayer p;
         Class higherPosition = higherPositionClass();
         if(home){
@@ -221,22 +230,28 @@ public class ExecuteFootballGame {
         else{
             p = g.getAway().getPlaying().stream().filter(e -> e.getClass().getName().equals(higherPosition.getName())).findAny().get();
         }
+        registerAction(p.getName() + " now has the ball.");
         playerWithTheBall = p;
     }
 
-    public boolean tryShoot() throws PlayerDoenstExist {
-        g.incTimerBy(quickAction);
+    public boolean tryShoot() throws PlayerDoenstExist{
+        registerAction(YELLOW + playerWithTheBall.getName() + "Tries to score!!!!!" + RESET);
+        incTimer(quickAction);
         Random rand = new Random();
         Striker s = (Striker) playerWithTheBall;
         if(rand.nextInt(101) <= s.getShooting()){
             Shoot();
             return true;
         }
-        else return false;
+        else{
+            registerAction(RED + "Fate did not feel the same way..." + RESET);
+            return false;
+        }
     }
 
-    public void Shoot() throws PlayerDoenstExist {
-        g.incTimerBy(quickAction);
+    public void Shoot() throws PlayerDoenstExist{
+        registerAction("He shoots!!!");
+        incTimer(quickAction);
         Goalkeeper goalie;
         Striker s = (Striker) playerWithTheBall;
         Random rand = new Random();
@@ -244,14 +259,18 @@ public class ExecuteFootballGame {
             goalie = (Goalkeeper) g.getAway().getPlayer(Goalkeeper.class,true);
             if(goalie.getOverallSkill() - s.getOverallSkill() <= 10){
                 if(rand.nextInt(101) <= s.getShooting()){ // se o chute for bem sucedido atualiza score
+                    registerAction(GREEN + "And he Scores!\nGOOOOOOOOOOOOOOOOOOOOOOOOOaaaaaaalllllllllll!!!!!!!!!" + RESET);
+                    incTimer(slowAction);
                     g.incPoints1();
                     playerWithTheBall = g.getAway().getPlayer(Midfielder.class,true);
                 }
                 else{ // se falhar o chute, a bola vai para um lateral da equipa adversaria
+                    registerAction(RED + "Swing and a miss" + RESET);
                     playerWithTheBall = g.getAway().getPlayer(Lateral.class,true);
                 }
             }
             else{// se a skill do guarda-redes for muito superior a do avancado, fica com a bola
+                registerAction(RED + "But the goalkeeper doens't let that slide!" + RED);
                 playerWithTheBall = goalie;
             }
         }
@@ -259,14 +278,18 @@ public class ExecuteFootballGame {
             goalie = (Goalkeeper) g.getHome().getPlayer(Goalkeeper.class,true);
             if(goalie.getOverallSkill() - s.getOverallSkill() <= 10){
                 if(rand.nextInt(101) <= s.getShooting()){ // se o chute for bem sucedido atualiza score
+                    registerAction(GREEN + "And he Scores!\nGOOOOOOOOOOOOOOOOOOOOOOOOOaaaaaaalllllllllll!!!!!!!!!" + RESET);
+                    incTimer(slowAction);
                     g.incPoints2();
                     playerWithTheBall = g.getHome().getPlayer(Midfielder.class,true);
                 }
                 else{ // se falhar o chute, a bola vai para um lateral da equipa adversaria
+                    registerAction(RED + "Swing and a miss" + RESET);
                     playerWithTheBall = g.getHome().getPlayer(Lateral.class,true);
                 }
             }
             else{// se a skill do guarda-redes for muito superior a do avancado, fica com a bola
+                registerAction(RED + "But the goalkeeper doens't let that slide!" + RED);
                 playerWithTheBall = goalie;
             }
         }
@@ -295,11 +318,13 @@ public class ExecuteFootballGame {
 
 
     public void incTimer(double action){
-        FootballGame game = getGame();
-        game.incTimerBy(action);
-        setGame(game);
+        g.incTimerBy(action);
     }
 
+
+    public void registerAction(String message){
+        gameReport.add(message);
+    }
 
 
 }

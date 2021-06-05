@@ -24,6 +24,9 @@ public class SPORTMController{
     private final Scanner scanner;
     private final SPORTMViewer messages = new SPORTMViewer(new String[]{});
     private static final int MaxNumberOfPlayers = 23;
+    private static final long quickSleep = 500;
+    private static final long averageSleep = 1000;
+    private static final long slowSleep = 1500;
 
     private final String[] InitialMenu   = new String[]{
             "Initial Menu",
@@ -164,6 +167,9 @@ public class SPORTMController{
             } catch (PlayerDoenstExist playerDoenstExist) {
                 playerDoenstExist.printStackTrace();
             }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
         enterState.setHandler(3,()-> enterState.showInfo(this.footballState.getGameHistory()));
         enterState.setHandler(4,()-> addOrUpdateTeam(false));
@@ -185,6 +191,7 @@ public class SPORTMController{
             SPORTMViewer teamMenu = new SPORTMViewer(TeamMenu);
             //caso seja so um update, nao permite mudar o nome da equipa
             if (update) teamMenu.setPreCondition(1, () -> false);
+            else teamMenu.setPreCondition(1, () -> team.getName().equals(" "));
             teamMenu.setSamePreCondition(new int[]{2, 6}, () -> !team.getName().equals(" "));
             teamMenu.setPreCondition(3, () -> !team.getName().equals(" ") && team.getNPlayers() < MaxNumberOfPlayers);
             teamMenu.setSamePreCondition(new int[]{4, 5}, () -> team.getNPlayers() > 0);
@@ -357,7 +364,7 @@ public class SPORTMController{
 
 
 
-    public void createGame() throws PlayerDoenstExist, IOException, ClassNotFoundException {
+    public void createGame() throws PlayerDoenstExist, IOException, ClassNotFoundException, InterruptedException {
         messages.titleMessage(
                 "--------------------------------------\n" +
                 "---------------New Match--------------\n" +
@@ -390,8 +397,23 @@ public class SPORTMController{
                 if(visitorLineup != null && visitorLineup.readyToPlay()){
                     FootballGame g = new FootballGame(homeTeam,visitingTeam,homeLineup,visitorLineup);
                     ExecuteFootballGame play = new ExecuteFootballGame(g);
-                    while(play.getGame().getTimer() <= 90){
+
+                    messages.informationMessage("Choose the speed of the game");
+                    int speed = messages.readOptionBetween(0,3,new String[]{"Slow","Medium","Fast","No Report"});
+                    int messageIndex = 0;
+                    List<String> gameReport = new ArrayList<>();
+                    String message;
+                    while(play.getGame().getTimer() <= 90) {
                         play.ExecutePlay();
+                        gameReport = play.getGameReport();
+                        if (speed != 3) {
+                            while (messageIndex < gameReport.size()) {
+                                message = gameReport.get(messageIndex);
+                                messages.normalMessage(play.getGame().getTimer() + "': "+ message);
+                                sleepDependingOnMessage(message,speed);
+                                messageIndex++;
+                            }
+                        }
                     }
 
 
@@ -401,7 +423,7 @@ public class SPORTMController{
 
 
 
-                    footballState.addGame(g);
+                    footballState.addGame(play.getGame());
                 }else messages.errorMessage("Error with lineup, make sure there is at least 1 player of each type in the team");
             }else messages.errorMessage("Error with lineup, make sure there is at least 1 player of each type in the team");
         }
@@ -410,6 +432,18 @@ public class SPORTMController{
                 "---------------Returning--------------\n" +
                 "--------------------------------------\n"
         );
+    }
+
+    public void sleepDependingOnMessage(String message, int speed) throws InterruptedException {
+        if (message.contains("steal")
+                || message.contains("pass")
+                || message.contains("score")
+                || message.contains("shoots")
+        ) Thread.sleep(quickSleep / (speed + 1));
+        else if (message.contains("now has"))
+            Thread.sleep(averageSleep / (speed + 1));
+        else if (message.contains("GOOOOOOO"))
+            Thread.sleep(slowSleep / (speed + 1));
     }
 
     public FootballLineup makeLineup(FootballTeam t,boolean home) throws IOException, ClassNotFoundException {
@@ -446,7 +480,7 @@ public class SPORTMController{
 
         while(!saved && !line.equals("-1")){
             messages.normalMessage(t.printPlayers());
-            messages.informationMessage("Write -1 to return, 's' to save\n Write 'a' to add a player and 'r' to remove");
+            messages.informationMessage("Write -1 to return, 's' to save\nWrite 'a' to add a player and 'r' to remove");
             messages.normalMessage(l.printPlaying());
 
             line = scanner.nextLine();

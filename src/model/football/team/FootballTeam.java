@@ -136,8 +136,8 @@ public class FootballTeam extends Team implements Saveable {
     public FootballPlayer getTypePlayer(Class<?> t,Set<FootballPlayer> Playinglist,Set<FootballPlayer> Substituteslist){
         if(getNPlayers() != 0) {
             Optional<FootballPlayer> p_type = players.values().stream()
-                    .filter(p ->p.getClass() == t && (Playinglist.stream().noneMatch(k -> k.getName().equals(p.getName())))
-                            && Substituteslist.stream().noneMatch(k -> k.getName().equals(p.getName())))
+                    .filter(p ->p.getClass() == t && (Playinglist.stream().noneMatch(k ->  k.getNumber() == (p.getNumber())))
+                            && Substituteslist.stream().noneMatch(k -> k.getNumber() == (p.getNumber())))
                     .findFirst();
             if (p_type.isPresent()) return p_type.get().clone();
         }

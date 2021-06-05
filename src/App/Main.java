@@ -11,6 +11,8 @@ import viewer.SPORTMViewer;
 import model.football.state.FootballState;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Main {
@@ -20,10 +22,12 @@ public class Main {
         return rand.nextInt(101);
     }
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, PlayerDoenstExist {
+
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException, PlayerDoenstExist, InterruptedException {
         SPORTMController controller = new SPORTMController();
         controller.run();
-        /*
+/*
         // SPORTMViewer viewer = new SPORTMViewer();
         //viewer.showWelcome();
         FootballState s = new FootballState();
@@ -103,8 +107,20 @@ public class Main {
         }
 
         ExecuteFootballGame footballGame = new ExecuteFootballGame(game);
+        int messageIndex = 0;
+        List<String> gameReport = new ArrayList<>();
+        String message;
+        int speed = 3;
         while(footballGame.getGame().getTimer() < 90){
             footballGame.ExecutePlay();
+            gameReport = footballGame.getGameReport();
+            if(speed != 3) {
+                while (messageIndex < gameReport.size()) {
+                    message = gameReport.get(messageIndex);
+                    System.out.println(message);
+                    messageIndex++;
+                }
+            }
         }
         System.out.println("-------------\n"+s.getTeam("Team1").getPlayer(1).toString()+"\n-----------------\n");
 
@@ -112,8 +128,23 @@ public class Main {
 
 
         //viewer.showTermination();
+
 */
+
+
         }
 
-
+}
+interface sleeping {
+    public default void sleepDependingOnMessage(String message, int speed) throws InterruptedException {
+        if (message.contains("steal")
+                || message.contains("pass")
+                || message.contains("score")
+                || message.contains("shoots")
+        ) Thread.sleep(500 / (speed + 1));
+        else if (message.contains("now has"))
+            Thread.sleep(1000 / (speed + 1));
+        else if (message.contains("GOOOOOOO"))
+            Thread.sleep(1500 / (speed + 1));
+    }
 }
