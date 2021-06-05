@@ -26,6 +26,7 @@ public class SPORTMController implements Observer {
     public static final String WHITE = "\u001B[37m";
     private FootballState footballState;
     private final Scanner scanner;
+    private static final int MaxNumberOfPlayers = 23;
 
     private final String[] InitialMenu   = new String[]{
             "Initial Menu",
@@ -73,6 +74,10 @@ public class SPORTMController implements Observer {
             "Change Passing",
             "Change Type Specific Skill",
             "Save Player"};
+    private final String[] RemoveTeamMenu = new String[]{
+            "Remove Team Menu",
+            "Remove only Team",
+            "Remove Team and Players"};
     public SPORTMController(){
         footballState = new FootballState();
         scanner = new Scanner(System.in);
@@ -97,12 +102,12 @@ public class SPORTMController implements Observer {
 
     public void loadState() throws IOException, ClassNotFoundException {
         SPORTMViewer loadMenu = new SPORTMViewer(LoadStateMenu);
-        loadMenu.setHandler(1,()-> defaultState());
-        loadMenu.setHandler(2,()-> costumState());
+        loadMenu.setHandler(1,()-> defaultState(loadMenu));
+        loadMenu.setHandler(2,()-> costumState(loadMenu));
         loadMenu.SimpleRun();
     }
 
-    public void defaultState() throws IOException, ClassNotFoundException {
+    public void defaultState(SPORTMViewer viewer) throws IOException, ClassNotFoundException {
         readFile r = new readFile();
         try {
             this.footballState = r.readState("estado.txt");
@@ -117,15 +122,25 @@ public class SPORTMController implements Observer {
             System.out.println("Error accessing the file");
             e.printStackTrace();
         }
-
+        viewer.returnMenu();
     }
 
 
-    public void costumState() throws IOException, ClassNotFoundException {
+    public void costumState(SPORTMViewer viewer) throws IOException, ClassNotFoundException {
         readFile r = new readFile();
-        String s = new String();
-        s = scanner.nextLine();
-        this.footballState = r.readState(s);
+        try {
+            this.footballState = r.readState(getName());
+        }
+        catch (FileNotFoundException e){
+            System.out.println(RED +"File not found" + RESET);
+        }
+        catch (IOException e){
+            System.out.println(RED +"Error loading the file"+ RESET);
+        }
+        catch (ClassNotFoundException e){
+            System.out.println(RED +"Invalid class loaded"+ RESET);
+        }
+        viewer.returnMenu();
     }
 
     /**------------------------ENTER STATE-------------------------------**/
@@ -142,29 +157,34 @@ public class SPORTMController implements Observer {
         enterState.setHandler(5,()-> newPlayer(null,true));
         enterState.setHandler(6,()-> addOrUpdateTeam(true));
         enterState.setHandler(7,()-> updatePlayer(null,true));
-
+        enterState.setHandler(8,()-> transferPlayer());
+        enterState.setHandler(9,()-> removeTeam());
+        enterState.setHandler(10,()-> removePlayer());
+        enterState.setHandler(11,()-> footballState.saveState(getName()));
         enterState.SimpleRun();
     }
 
     public void addOrUpdateTeam(boolean update) throws IOException, ClassNotFoundException {
         FootballTeam team;
-        if(update) team = chooseTeamToUpdate();
+        if(update) team = chooseTeam("Insert a team to update");
         else team = new FootballTeam();
-        SPORTMViewer teamMenu = new SPORTMViewer(TeamMenu);
-        //caso seja so um update, nao permite mudar o nome da equipa
-        if(update) teamMenu.setPreCondition(1,()->false);
-        teamMenu.setSamePreCondition(new int[]{2,6},()->!team.getName().equals(" "));
-        teamMenu.setPreCondition(3,()->!team.getName().equals(" ") && team.getNPlayers() < 23);
-        teamMenu.setSamePreCondition(new int[]{4,5},()->team.getNPlayers() > 0);
+        if(team != null) {
+            SPORTMViewer teamMenu = new SPORTMViewer(TeamMenu);
+            //caso seja so um update, nao permite mudar o nome da equipa
+            if (update) teamMenu.setPreCondition(1, () -> false);
+            teamMenu.setSamePreCondition(new int[]{2, 6}, () -> !team.getName().equals(" "));
+            teamMenu.setPreCondition(3, () -> !team.getName().equals(" ") && team.getNPlayers() < MaxNumberOfPlayers);
+            teamMenu.setSamePreCondition(new int[]{4, 5}, () -> team.getNPlayers() > 0);
 
 
-        teamMenu.setHandler(1,()-> changeTeamName(team));
-        teamMenu.setHandler(2,()-> teamMenu.showInfo(team));
-        teamMenu.setHandler(3,()-> newPlayer(team,false));
-        teamMenu.setHandler(4,()-> updatePlayer(team,false));
-        teamMenu.setHandler(5,()-> removePlayerTeam(team));
-        teamMenu.setHandler(6,()-> updateTeamState(team,!update,teamMenu));
-        teamMenu.SimpleRun();
+            teamMenu.setHandler(1, () -> changeTeamName(team));
+            teamMenu.setHandler(2, () -> teamMenu.showInfo(team));
+            teamMenu.setHandler(3, () -> newPlayer(team, false));
+            teamMenu.setHandler(4, () -> updatePlayer(team, false));
+            teamMenu.setHandler(5, () -> removePlayerTeam(team));
+            teamMenu.setHandler(6, () -> updateTeamState(team, !update, teamMenu));
+            teamMenu.SimpleRun();
+        }
     }
 
     public void changeTeamName(FootballTeam t){
@@ -222,6 +242,7 @@ public class SPORTMController implements Observer {
         playerMenu.SimpleRun();
     }
 
+
     public void updatePlayer(FootballTeam t,boolean updateState) throws IOException, ClassNotFoundException {
         FootballPlayer p = choosePlayerToUpdate(t);
         AtomicReference<FootballTeam> team = new AtomicReference<>();
@@ -269,14 +290,14 @@ public class SPORTMController implements Observer {
 
 
 
-    public FootballTeam chooseTeamToUpdate() {
+    public FootballTeam chooseTeam(String message) {
         FootballTeam t = null;
         System.out.println("Write -1 to return");
         String name = "";
         boolean valid = false;
         while (!valid && !name.equals("-1")) {
             System.out.println(footballState.printTeams());
-            System.out.println("Insert the name of the team to update");
+            System.out.println(message);
             name = scanner.nextLine();
             if(!name.equals("-1")) {
                 if (footballState.existsTeam(name)) {
@@ -289,8 +310,37 @@ public class SPORTMController implements Observer {
         return t;
     }
 
+    public void transferPlayer(){
+        FootballPlayer p = choosePlayerToUpdate(null);
+        if(p!=null) {
+            FootballTeam teamToTransfer = chooseTeam(
+                    "Insert  a team to transfer the player to\n" +
+                            "Write -1 if you just wish to remove him from his team"
+            );
+            footballState.transferPlayer(p,teamToTransfer);
+        }
+    }
 
+    public void removeTeam() throws IOException, ClassNotFoundException {
+        SPORTMViewer menu = new SPORTMViewer(RemoveTeamMenu);
+        FootballTeam t = chooseTeam("Choose the Team to remove");
+        if(t!=null) {
+            menu.setHandler(1, () -> removeTeam(menu,t,false));
+            menu.setHandler(2, () -> removeTeam(menu,t,true));
+            menu.SimpleRun();
+        }
+    }
 
+    public void removeTeam(SPORTMViewer menu, FootballTeam t,boolean removeAll){
+        if(removeAll) footballState.removeTeam(t.getName());
+        else footballState.removeOnlyTeam(t.getName());
+        menu.returnMenu();
+    }
+
+    public void removePlayer(){
+        FootballPlayer p = choosePlayerToUpdate(null);
+        if(p!=null) footballState.removePlayer(p.getName(),p.getNumber(),p.getCurTeam());
+    }
 
 
     /**------------------------General methods-----------------------------**/

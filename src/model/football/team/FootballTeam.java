@@ -11,7 +11,7 @@ public class FootballTeam extends Team implements Saveable {
     private Map<Integer, FootballPlayer> players;
     private int AverageOverlSkill;
     private int Nplayers;
-    private static final int NumberOfPlayers = 40;
+    private static final int NumberOfPlayers = 23;
 
     public FootballTeam(){
         super();
@@ -96,6 +96,7 @@ public class FootballTeam extends Team implements Saveable {
                 }
                 players.put(p.getNumber(), p.clone());
                 incTeamPlayers();
+
             }
         }
     }
@@ -104,7 +105,7 @@ public class FootballTeam extends Team implements Saveable {
         if(getNPlayers() > 0) {
             if (existsPlayerNumber(name, shirtNumber)) {
                 FootballPlayer p = players.get(shirtNumber);
-                p.setCurTeam("None");
+                p.setCurTeamNone();
                 players.remove(shirtNumber);
                 decTeamPlayers();
             }
@@ -115,7 +116,7 @@ public class FootballTeam extends Team implements Saveable {
         if(getNPlayers() > 0) {
             if (existsShirtNumber(shirtNumber)) {
                 FootballPlayer p = players.get(shirtNumber);
-                p.setCurTeam("None");
+                p.setCurTeamNone();
                 players.remove(shirtNumber);
                 decTeamPlayers();
             }

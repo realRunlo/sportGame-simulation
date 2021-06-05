@@ -2,6 +2,7 @@ package model.football.state;
 import model.football.game.FootballGame;
 import model.football.player.*;
 import model.football.team.FootballTeam;
+import model.generic.player.Player;
 import model.interfaces.Saveable;
 
 import java.io.*;
@@ -21,7 +22,7 @@ public class FootballState implements Saveable,Serializable{
     private int numbTeams;
     private int day;
 
-    private static final int MAX_PLAYER_TEAM = 22;
+    private static final int MAX_PLAYER_TEAM = 23;
     public FootballState(){
         setPlayersList(new HashMap<>());
         setTeams(new HashMap<>());
@@ -150,10 +151,10 @@ public class FootballState implements Saveable,Serializable{
     }
     public void addPlayer2Team(FootballPlayer p ,String team){
         if(teams.containsKey(team)){
-            FootballTeam t = this.getTeams().get(team);
+            FootballTeam t = getTeam(team);
             if(!t.existsPlayerNumber(p.getName(),p.getNumber()) && t.getNPlayers() < MAX_PLAYER_TEAM){
                 t.addPlayer(p);
-                this.updateTeam(t);
+                teams.replace(team,t);
             }
         }
     }
@@ -167,8 +168,11 @@ public class FootballState implements Saveable,Serializable{
     }
 
     public void updateTeam(FootballTeam team) {
-        this.teams.replace(team.getName(), team);
         team.getPlayers().forEach((e,k)-> updatePlayer(k));
+        this.teams.replace(team.getName(), team);
+        playersList.values().stream()
+                .filter(k->k.getCurTeam().equals(team.getName()) && !team.existsPlayerNumber(k.getName(),k.getNumber()))
+                .forEach(Player::setCurTeamNone);
     }
 
     public void updatePlayer(FootballPlayer player) {
@@ -178,7 +182,6 @@ public class FootballState implements Saveable,Serializable{
             //da update, caso necessario, do jogador na propria equipa
             if(teams.containsKey(player.getCurTeam()))
                 if(teams.get(player.getCurTeam()).existsPlayerNumber(player.getName(),player.getNumber())) {
-                    System.out.println("vou dar update");
                     teams.get(player.getCurTeam()).updatePlayer(player);
                 }
         }
@@ -189,16 +192,14 @@ public class FootballState implements Saveable,Serializable{
 
     public void removePlayer(String name,int shirt, String team){
         Map<String,FootballPlayer> pList = getPlayersList();
-        if(pList.containsKey(name)){
-            FootballPlayer p = pList.values().stream().filter(e-> e.getName().equals(name)
-                    && e.getNumber() == shirt
-                    && e.getCurTeam().equals(team)).findFirst().get();
+        if(pList.containsKey(name+shirt)){
+            FootballPlayer p = pList.get(name+shirt);
             if(!p.getCurTeam().equals("None")) { //antes de remover o jogador do jogo, remove-o da equipa
                 FootballTeam t = getTeam(p.getCurTeam());
                 t.removePlayer(p.getName(),p.getNumber());
-                addTeam(t);
+                updateTeam(t);
             }
-            pList.remove(name);
+            pList.remove(name+shirt);
             setPlayersList(pList);
         }
     }
@@ -212,7 +213,7 @@ public class FootballState implements Saveable,Serializable{
             FootballTeam t = getTeam(team);
             if(t.getNPlayers() > 0){
                 t.getPlayers().forEach((k,v)-> removePlayer(v.getName(),v.getNumber(),v.getCurTeam())); //caso a equipa ainda tenha jogadores,
-            }                                                                                           //remove-os da equipa
+            }                                                                                           //remove-os do estado
             tList.remove(team);
             setTeams(tList);
         }
@@ -230,6 +231,32 @@ public class FootballState implements Saveable,Serializable{
             setTeams(tList);
         }
     }
+
+    public void removePlayerFromTeam(FootballPlayer p){
+        if(getTeams().containsKey(p.getCurTeam())){
+            FootballTeam t = getTeam(p.getCurTeam());
+            if(existsPlayer(p)){
+                if (t.existsPlayerNumber(p.getName(),p.getNumber())) {
+                    t.removePlayer(p.getName(),p.getNumber());
+                }
+            updateTeam(t);
+            p.setCurTeamNone();
+            updatePlayer(p);
+            }
+        }
+    }
+
+
+    public void transferPlayer(FootballPlayer p, FootballTeam teamToTransfer){
+        if(p!=null){
+            removePlayerFromTeam(p);
+            if(teamToTransfer != null){
+                addPlayer2Team(p,teamToTransfer.getName());
+            }
+            updatePlayer(p);
+        }
+    }
+
 
     public void incNPlayers(){
         numbPlayers++;
@@ -266,21 +293,6 @@ public class FootballState implements Saveable,Serializable{
         return teams.containsKey(name);
     }
 
-
-
-    public void removePlayerFromTeam(FootballPlayer p){
-        if(getTeams().containsKey(p.getCurTeam())){
-            FootballTeam t = getTeam(p.getCurTeam());
-            if(existsPlayer(p)){
-                if (t.existsPlayerNumber(p.getName(),p.getNumber())) {
-                    t.removePlayer(p.getName(),p.getNumber());
-                }
-                p.setCurTeamNone();
-                addTeam(t);
-                addPlayer(p);
-            }
-        }
-    }
 
     public void createGame(String team1, String team2){
         Map<String,FootballTeam> tList = getTeams();
@@ -350,8 +362,12 @@ public class FootballState implements Saveable,Serializable{
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("State\n").append("Number of players: ").append(getNPlayers())
-                .append("\nNumber of teams: ").append(getNTeams())
-                .append("\nDays: ").append(getDay());
+                .append("\nAvailable Players: ");
+        getPlayersList().forEach((k,v)-> sb.append(v.getName()).append(" , ")
+                .append(v.getNumber()).append(" , ").append(v.getCurTeam()).append(" / "));
+
+        sb.append("\nNumber of teams: ").append(getNTeams())
+        .append("\nDays: ").append(getDay());
 
         return sb.toString();
     }
