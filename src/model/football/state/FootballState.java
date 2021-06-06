@@ -333,39 +333,48 @@ public class FootballState implements Saveable,Serializable{
         oos.close();
     }
 
-    public String printPlayers(){
+    public String printPlayers(boolean showTeam){
         StringBuilder sb = new StringBuilder();
         AtomicInteger changeLine = new AtomicInteger(0);
+        int limit = 10;
+        if(showTeam) limit = 5;
         sb.append("Available Players:\n\t");
+        int finalLimit = limit;
         playersList.values().forEach(k-> {
-            if(changeLine.get() == 10){
+            if(changeLine.get() == finalLimit){
                 sb.append("\n\t");
                 changeLine.set(0);
             }
             else changeLine.set(changeLine.get()+1);
             sb.append(k.getName())
                     .append(" - ")
-                    .append(k.getNumber())
-                    .append(", ");
+                    .append(k.getNumber());
+            if(showTeam) sb.append(" - ").append(k.getCurTeam());
+            sb.append(" , ");
         });
         return sb.append("\n").toString();
     }
 
-    public String printPlayersWithShirt(int shirt){
+    public String printPlayersWithShirt(int shirt,boolean showTeam){
         StringBuilder sb = new StringBuilder();
         AtomicInteger changeLine = new AtomicInteger(0);
+        int limit = 10;
+        if(showTeam) limit = 5;
         sb.append("Available Players:\n\t");
+        int finalLimit = limit;
+
         playersList.values().stream().filter(e->e.getNumber() == shirt)
                 .forEach(k-> {
-                    if(changeLine.get() == 10){
+                    if(changeLine.get() == finalLimit) {
                         sb.append("\n\t");
                         changeLine.set(0);
                     }
                     else changeLine.set(changeLine.get()+1);
                     sb.append(k.getName())
                             .append(" - ")
-                            .append(k.getNumber())
-                            .append(", ");
+                            .append(k.getNumber());
+                    if(showTeam) sb.append(" - ").append(k.getCurTeam());
+                    sb.append(" , ");
                 });
         return sb.append("\n").toString();
     }
@@ -426,7 +435,7 @@ public class FootballState implements Saveable,Serializable{
         sb.append("\n*************************************\n")
         .append("\t\t\t\tState\n")
                 .append("Number of players: ").append(getNPlayers());
-        sb.append("\n").append(printPlayers());
+        sb.append("\n").append(printPlayers(false));
 
         sb.append("\nNumber of teams: ").append(getNTeams())
         .append("\n").append(printTeams())

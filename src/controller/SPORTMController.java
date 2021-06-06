@@ -268,7 +268,7 @@ public class SPORTMController{
         AtomicReference<List<String>> background = new AtomicReference<>();
         background.set(new ArrayList<>());
         if(!newPlayer) {
-            p = choosePlayerToUpdate(t);
+            p = choosePlayerToUpdate(t,true);
             if(p!=null) {
                 name.set(p.getName());
                 background.set(p.getBackground()) ;
@@ -340,7 +340,7 @@ public class SPORTMController{
     }
 
     public void transferPlayer(){
-        FootballPlayer p = choosePlayerToUpdate(null);
+        FootballPlayer p = choosePlayerToUpdate(null,true);
         if(p!=null) {
             FootballTeam teamToTransfer = chooseTeam(
                     "Insert  a team to transfer the player to\n" +
@@ -367,7 +367,7 @@ public class SPORTMController{
     }
 
     public void removePlayer(){
-        FootballPlayer p = choosePlayerToUpdate(null);
+        FootballPlayer p = choosePlayerToUpdate(null,true);
         if(p!=null) footballState.removePlayer(p.getName(),p.getNumber(),p.getCurTeam());
     }
 
@@ -725,21 +725,22 @@ public class SPORTMController{
     }
 
 
-    public FootballPlayer choosePlayerToUpdate(FootballTeam t){
+    public FootballPlayer choosePlayerToUpdate(FootballTeam t,boolean showTeam){
         int shirtNumber = -2;
         String name = "";
         boolean valid = false;
         FootballPlayer p = null;
         while(!valid && shirtNumber != -1){
-            messages.informationMessage("Write -1 to return");
             // caso de update atravez da equipa
             if(t!=null){
                 messages.normalMessage(t.printPlayers());
+                messages.informationMessage("Write -1 to return");
                 messages.informationMessage("Write the shirt of the player to update");
             }
             //caso de update diretamente no estado
             else{
-                messages.normalMessage(footballState.printPlayers());
+                messages.normalMessage(footballState.printPlayers(showTeam));
+                messages.informationMessage("Write -1 to return");
                 messages.informationMessage("Write the name and shirt of the player to update\nInsert the number of the shirt: ");
             }
 
@@ -763,13 +764,14 @@ public class SPORTMController{
             }
             else{
                 if(shirtNumber >=0){
-                    messages.normalMessage(footballState.printPlayersWithShirt(shirtNumber));
+                    messages.normalMessage(footballState.printPlayersWithShirt(shirtNumber,true));
                     messages.informationMessage("Insert the name of the player");
                     name = scanner.nextLine();
                     if(footballState.existsPlayer(name,shirtNumber)){
                         valid = true;
                         p = footballState.getPlayer(name,shirtNumber);
                     }
+                    else messages.errorMessage("Invalid player");
                 }
 
             }
