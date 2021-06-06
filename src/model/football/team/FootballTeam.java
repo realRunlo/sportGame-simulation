@@ -1,6 +1,6 @@
 package model.football.team;
 
-import model.football.player.FootballPlayer;
+import model.football.player.*;
 import model.generic.team.Team;
 import model.interfaces.Saveable;
 
@@ -153,12 +153,32 @@ public class FootballTeam extends Team implements Saveable {
 
     public String printPlayers(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Available Players:\n");
-        players.forEach((e,k) ->
-                sb.append(k.getName())
-                        .append("-")
-                        .append(k.getNumber())
-                        .append(", "));
+        sb.append("Available Players ('Name','Shirt','OverallSkill'):\n");
+        sb.append("Goalkeepers: "); players.values()
+                .forEach(k->{
+                    if(k instanceof Goalkeeper)
+                        sb.append(k.getName()).append(" , ").append(k.getNumber()).append(" , ").append(k.calcOverallSkill()).append("/ ");
+                });
+        sb.append("\nDefenders: "); players.values()
+                .forEach(k->{
+                    if(k instanceof Defender)
+                        sb.append(k.getName()).append(" , ").append(k.getNumber()).append(" , ").append(k.calcOverallSkill()).append("/ ");
+                });
+        sb.append("\nLateral: "); players.values()
+                .forEach(k->{
+                    if(k instanceof Lateral)
+                        sb.append(k.getName()).append(" , ").append(k.getNumber()).append(" , ").append(k.calcOverallSkill()).append("/ ");
+                });
+        sb.append("\nMidfielders: "); players.values()
+                .forEach(k->{
+                    if(k instanceof Midfielder)
+                        sb.append(k.getName()).append(" , ").append(k.getNumber()).append(" , ").append(k.calcOverallSkill()).append("/ ");
+                });
+        sb.append("\nStrikers: "); players.values()
+                .forEach(k->{
+                    if(k instanceof Striker)
+                        sb.append(k.getName()).append(" , ").append(k.getNumber()).append(" , ").append(k.calcOverallSkill()).append("/ ");
+                });
         return sb.toString();
     }
 
@@ -171,6 +191,15 @@ public class FootballTeam extends Team implements Saveable {
                 && this.getPlayers().equals(ft.getPlayers());
     }
 
+    public int typeNeeded(){
+        if(Nplayers >= 22) return -1;
+        if(players.values().stream().filter(k->k instanceof Goalkeeper).count() < 2) return 0;
+        else if(players.values().stream().filter(k->k instanceof Defender).count() < 4) return 1;
+        else if(players.values().stream().filter(k->k instanceof Lateral).count() < 4) return 2;
+        else if(players.values().stream().filter(k->k instanceof Midfielder).count() < 6) return 3;
+        else return 4;
+    }
+
 
 
     @Override
@@ -180,11 +209,9 @@ public class FootballTeam extends Team implements Saveable {
 
     public String toString(){
         StringBuilder sb = new StringBuilder();
-
         sb.append(getName()).append("\nNumber of players: ")
-                .append(getNPlayers())
-                .append("\nPlayers: ");
-        players.values().forEach(p->sb.append(p.getName()).append("-").append(p.getNumber()).append(", "));
+                .append(getNPlayers()).append("\n");
+        sb.append(printPlayers());
         sb.append("\nOverall Skill: ").append(calcAverageSkill()).append("\n");
         return sb.toString();
     }

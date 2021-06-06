@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
@@ -124,6 +125,7 @@ public class FootballState implements Saveable,Serializable{
         List<FootballGame> gHistory = getGameHistory();
         gHistory.add(g.clone());
         setGameHistory(gHistory);
+        day++;
     }
 
     public void removeIndexGame(int i){
@@ -155,19 +157,22 @@ public class FootballState implements Saveable,Serializable{
             if(!t.existsPlayerNumber(p.getName(),p.getNumber()) && t.getNPlayers() < MAX_PLAYER_TEAM){
                 //mudar o numero da camisola se necessario
                 if(t.existsShirtNumber(p.getNumber())){
-                    int originalShirt = p.getNumber();
-                    boolean available = false;
-                    int shirt = 0;
-                    while(!available){
-                        if(!existsPlayer(p.getName(),shirt) && !t.existsShirtNumber(shirt)) available = true;
-                        else shirt++;
-                    }
-                    p.setNumber(shirt);
+                    p.setNumber(findAvailableShirt(p.getName(),t));
                 }
                 t.addPlayer(p);
                 teams.replace(team,t);
             }
         }
+    }
+
+    public int findAvailableShirt(String name, FootballTeam t){
+        boolean available = false;
+        int shirt = 0;
+        while(!available){
+            if(!existsPlayer(name,shirt) && !t.existsShirtNumber(shirt)) available = true;
+            else shirt++;
+        }
+        return shirt;
     }
 
     public void addTeam(FootballTeam t){
@@ -330,24 +335,38 @@ public class FootballState implements Saveable,Serializable{
 
     public String printPlayers(){
         StringBuilder sb = new StringBuilder();
+        AtomicInteger changeLine = new AtomicInteger(0);
         sb.append("Available Players:\n");
-        playersList.forEach((e,k) ->
-                sb.append(k.getName())
-                        .append(" - ")
-                        .append(k.getNumber())
-                        .append(", "));
+        playersList.values().forEach(k-> {
+            if(changeLine.get() == 5){
+                sb.append("\n");
+                changeLine.set(0);
+            }
+            else changeLine.set(changeLine.get()+1);
+            sb.append(k.getName())
+                    .append(" - ")
+                    .append(k.getNumber())
+                    .append(", ");
+        });
         return sb.toString();
     }
 
     public String printPlayersWithShirt(int shirt){
         StringBuilder sb = new StringBuilder();
+        AtomicInteger changeLine = new AtomicInteger(0);
         sb.append("Available Players:\n");
         playersList.values().stream().filter(e->e.getNumber() == shirt)
-                .forEach(k->
-                sb.append(k.getName())
-                .append(" - ")
-                .append(k.getNumber())
-                .append(", "));
+                .forEach(k-> {
+                    if(changeLine.get() == 5){
+                        sb.append("\n");
+                        changeLine.set(0);
+                    }
+                    else changeLine.set(changeLine.get()+1);
+                    sb.append(k.getName())
+                            .append(" - ")
+                            .append(k.getNumber())
+                            .append(", ");
+                });
         return sb.toString();
     }
 
@@ -360,6 +379,15 @@ public class FootballState implements Saveable,Serializable{
                         .append(" - ")
                         .append(k.calcAverageSkill())
                         .append(", "));
+        return sb.toString();
+    }
+
+    public String printGameHistory(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("****************************\n").append("\t\t\t\tGame History\n");
+        gameHistory.forEach(k ->
+                sb.append(k.toString()).append("\n"));
+        sb.append(sb.append("\n****************************\n"));
         return sb.toString();
     }
 
@@ -387,13 +415,15 @@ public class FootballState implements Saveable,Serializable{
 
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("State\n").append("Number of players: ").append(getNPlayers())
-                .append("\nAvailable Players: ");
-        getPlayersList().forEach((k,v)-> sb.append(v.getName()).append(" , ")
-                .append(v.getNumber()).append(" , ").append(v.getCurTeam()).append(" / "));
+        sb.append("\n*************************************\n")
+        .append("\t\t\t\tState\n")
+                .append("Number of players: ").append(getNPlayers());
+        sb.append("\n").append(printPlayers());
 
         sb.append("\nNumber of teams: ").append(getNTeams())
-        .append("\nDays: ").append(getDay());
+        .append("\n").append(printTeams())
+        .append("\nDays: ").append(getDay())
+        .append("\n*************************************\n");
 
         return sb.toString();
     }

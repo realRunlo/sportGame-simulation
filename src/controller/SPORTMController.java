@@ -58,7 +58,9 @@ public class SPORTMController{
             "Add Player",
             "Update Player",
             "Remove Player",
-            "Save Team"};
+            "Save Team",
+            "AutoFill Team"
+    };
     private final String[] PlayerMenu = new String[]{
             "Player Menu",
             "Set Name",
@@ -118,14 +120,9 @@ public class SPORTMController{
     }
 
     public void defaultState(SPORTMViewer viewer) throws IOException, ClassNotFoundException {
-        readFile r = new readFile();
         try {
-            this.footballState = r.readState("estado.txt");
-        }
-        catch(ClassNotFoundException e){
-            messages.errorMessage("Error class not found");
-        }
-        catch(FileNotFoundException e){
+            this.footballState = FootballState.load("estado");
+        } catch(FileNotFoundException e){
             messages.errorMessage("File not found");
         }
         catch(IOException e){
@@ -136,18 +133,14 @@ public class SPORTMController{
 
 
     public void costumState(SPORTMViewer viewer) throws IOException, ClassNotFoundException {
-        readFile r = new readFile();
         try {
-            this.footballState = r.readState(getName());
+            this.footballState = FootballState.load(getName());
         }
         catch (FileNotFoundException e){
             messages.errorMessage("File not found");
         }
         catch (IOException e){
             messages.errorMessage("Error accessing the file");
-        }
-        catch (ClassNotFoundException e){
-            messages.errorMessage("Error class not found");
         }
         viewer.returnMenu();
     }
@@ -171,7 +164,7 @@ public class SPORTMController{
                 e.printStackTrace();
             }
         });
-        enterState.setHandler(3,()-> enterState.showInfo(this.footballState.getGameHistory()));
+        enterState.setHandler(3,()-> enterState.showInfo(this.footballState.printGameHistory()));
         enterState.setHandler(4,()-> addOrUpdateTeam(false));
         enterState.setHandler(5,()-> newPlayer(null,true));
         enterState.setHandler(6,()-> addOrUpdateTeam(true));
@@ -179,7 +172,7 @@ public class SPORTMController{
         enterState.setHandler(8,()-> transferPlayer());
         enterState.setHandler(9,()-> removeTeam());
         enterState.setHandler(10,()-> removePlayer());
-        enterState.setHandler(11,()-> footballState.saveState(getName()));
+        enterState.setHandler(11,()-> footballState.save(getName()));
         enterState.SimpleRun();
     }
 
@@ -193,8 +186,9 @@ public class SPORTMController{
             if (update) teamMenu.setPreCondition(1, () -> false);
             else teamMenu.setPreCondition(1, () -> team.getName().equals(" "));
             teamMenu.setSamePreCondition(new int[]{2, 6}, () -> !team.getName().equals(" "));
-            teamMenu.setPreCondition(3, () -> !team.getName().equals(" ") && team.getNPlayers() < MaxNumberOfPlayers);
+            teamMenu.setSamePreCondition(new int[]{3, 7}, () -> !team.getName().equals(" ") && team.getNPlayers() < MaxNumberOfPlayers);
             teamMenu.setSamePreCondition(new int[]{4, 5}, () -> team.getNPlayers() > 0);
+
 
 
             teamMenu.setHandler(1, () -> changeTeamName(team));
@@ -203,6 +197,7 @@ public class SPORTMController{
             teamMenu.setHandler(4, () -> updatePlayer(team, false));
             teamMenu.setHandler(5, () -> removePlayerTeam(team));
             teamMenu.setHandler(6, () -> updateTeamState(team, !update, teamMenu));
+            teamMenu.setHandler(7, () -> autoFillTeam(team));
             teamMenu.SimpleRun();
         }
     }
@@ -221,6 +216,35 @@ public class SPORTMController{
             if(valido == 0) messages.errorMessage("Name already in use");
         }while(valido == 0);
         t.setName(newName);
+    }
+
+    public void autoFillTeam(FootballTeam team){
+        String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
+        Random rand = new Random();
+
+        while(team.getNPlayers() < 22){
+            AtomicInteger[] atributes = new AtomicInteger[]
+                    {
+                            new AtomicInteger(rand.nextInt(101)),//0 - speed
+                            new AtomicInteger(rand.nextInt(101)),//1 - resistance
+                            new AtomicInteger(rand.nextInt(101)),//2 - dexterity
+                            new AtomicInteger(rand.nextInt(101)),//3 - implosion
+                            new AtomicInteger(rand.nextInt(101)),//4 - headGame
+                            new AtomicInteger(rand.nextInt(101)),//5 - kick
+                            new AtomicInteger(rand.nextInt(101)),//6 - passing
+                            new AtomicInteger(rand.nextInt(101)),//7 - typeSpecificSkill
+                            new AtomicInteger(-1),//8 - type
+                            new AtomicInteger(-1)//9 - shirt
+                    };
+            StringBuilder newName = new StringBuilder();
+            for(int i = 0; i < 10; i++) {
+                newName.append(lexicon.charAt(rand.nextInt(37)));
+            }
+            String name = newName.toString();
+            atributes[8].set(team.typeNeeded());
+            atributes[9].set(footballState.findAvailableShirt(name,team));
+            updatePlayerState(playerPrototype(Arrays.stream(atributes).mapToInt(e->e.get()).toArray(),name,team,new ArrayList<String>()),team,null,true,false);
+        }
     }
 
     public void newPlayer(FootballTeam t,boolean updateState) throws IOException, ClassNotFoundException {
@@ -389,7 +413,8 @@ public class SPORTMController{
                      else messages.errorMessage("Team doesn't have enough players to play");
         }
         if(!leave){
-            messages.titleMessage("\t\t"+homeTeam.getName()+" VS "+visitingTeam.getName());
+            messages.titleMessage("********************************\n" +
+                    "\t\t"+homeTeam.getName()+" VS "+visitingTeam.getName());
 
             FootballLineup homeLineup = makeLineup(homeTeam,true);
             if(homeLineup != null && homeLineup.readyToPlay()){
@@ -416,12 +441,9 @@ public class SPORTMController{
                         }
                     }
 
-
-
-                    System.out.println("-------------\n"+play.getGame().toString()+"\n-----------------\n");
-
-
-
+                    messages.normalMessage("-------------\n"+play.getGame().toString()+"\n-----------------\n");
+                    messages.informationMessage("Press enter to proceed");
+                    scanner.nextLine();
 
                     footballState.addGame(play.getGame());
                 }else messages.errorMessage("Error with lineup, make sure there is at least 1 player of each type in the team");

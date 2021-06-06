@@ -194,7 +194,7 @@ public class ExecuteFootballGame {
     }
 
     public void tryPass(){
-        registerAction(playerWithTheBall.getName() + "tries to pass the ball.");
+        registerAction(playerWithTheBall.getName() + " tries to pass the ball.");
         incTimer(quickAction);
         Random rand = new Random();
         if(rand.nextInt(101) <= playerWithTheBall.getPassing()){
@@ -205,7 +205,7 @@ public class ExecuteFootballGame {
 
 
     public boolean tryPass(FootballPlayer p){
-        registerAction(playerWithTheBall.getName() + "tries to pass the ball.");
+        registerAction(playerWithTheBall.getName() + " tries to pass the ball.");
         incTimer(quickAction);
         Random rand = new Random();
         if(rand.nextInt(101) <= playerWithTheBall.getPassing()){
