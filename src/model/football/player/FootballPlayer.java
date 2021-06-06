@@ -226,4 +226,5 @@ public abstract class FootballPlayer extends Player implements Saveable {
                 this.getPassing()    + ";" +
                 this.getCard();
     }
+
 }

@@ -145,4 +145,5 @@ public class Striker extends FootballPlayer {
                         Integer.parseInt(tokens[12])
                 );
     }
+
 }

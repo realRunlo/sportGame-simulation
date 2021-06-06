@@ -384,10 +384,11 @@ public class FootballState implements Saveable,Serializable{
 
     public String printGameHistory(){
         StringBuilder sb = new StringBuilder();
-        sb.append("****************************\n").append("\t\t\t\tGame History\n");
+        sb.append("**********************************************\n")
+                .append("\t\t\t\tGame History\n");
         gameHistory.forEach(k ->
                 sb.append(k.toString()).append("\n"));
-        sb.append(sb.append("\n****************************\n"));
+        sb.append("\n**********************************************\n");
         return sb.toString();
     }
 

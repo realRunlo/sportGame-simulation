@@ -5,9 +5,10 @@ import model.football.game.FootballGame;
 import model.football.player.*;
 import model.football.team.FootballTeam;
 
+
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FootballLineup implements Serializable {
     private String teamName;
@@ -15,6 +16,7 @@ public class FootballLineup implements Serializable {
     private int globalSkill;
     private Set<FootballPlayer> playing;
     private Set<FootballPlayer> substitutes;
+    private static final int MAX_SUBSTITUTES = 11;
 
     public FootballLineup() {
         setTeamName("None");
@@ -121,18 +123,19 @@ public class FootballLineup implements Serializable {
     }
 
     public FootballPlayer getPlayer(Class<?> player,boolean play) throws PlayerDoenstExist {
-        FootballPlayer p;
+        List<FootballPlayer> list;
+        Random rand = new Random();
         if(player != null) {
             if (play) {
                 if(getPlaying().stream().anyMatch(e -> e.getClass().equals(player))) {
-                    p = getPlaying().stream().filter(e -> e.getClass().equals(player)).findAny().get();
-                    return p;
+                    list = getPlaying().stream().filter(e -> e.getClass().equals(player)).collect(Collectors.toList());
+                    return list.get(rand.nextInt(list.size()));
                 }
                 else throw new PlayerDoenstExist(player.getName());
             } else {
                 if(getSubstitutes().stream().anyMatch(e -> e.getClass().equals(player))) {
-                    p = getSubstitutes().stream().filter(e -> e.getClass().equals(player)).findAny().get();
-                    return p;
+                    list = getSubstitutes().stream().filter(e -> e.getClass().equals(player)).collect(Collectors.toList());
+                    return list.get(rand.nextInt(list.size()));
                 }
                 else throw new PlayerDoenstExist(player.getName());
             }
@@ -157,7 +160,7 @@ public class FootballLineup implements Serializable {
         if(player!=null) {
             Set<FootballPlayer> playing = getPlaying();
             if (playing.size() < 12 && availableSpotInStrategy(player.getClass())
-                    && !playerAdded(player))
+                    && playing.stream().noneMatch(k->k.getNumber() == player.getNumber()))
             {
                 playing.add(player);
                 setPlaying(playing);
@@ -217,7 +220,7 @@ public class FootballLineup implements Serializable {
         boolean added = false;
         if(player!=null) {
             Set<FootballPlayer> substitutes = getSubstitutes();
-            if (substitutes.size() < 3 && !playerAdded(player))
+            if (substitutes.size() < MAX_SUBSTITUTES && substitutes.stream().noneMatch(k->k.getNumber() == player.getNumber()))
             {
                 substitutes.add(player);
                 setSubstitutes(substitutes);
@@ -233,6 +236,28 @@ public class FootballLineup implements Serializable {
 
         addPlaying(sub);
         addSubstitute(player);
+    }
+
+    public boolean substitutePlayer(int playing, int sub) {
+        Optional<FootballPlayer> p = getPlaying().stream().filter(k->k.getNumber() == playing).findFirst();
+        Optional<FootballPlayer> s = getSubstitutes().stream().filter(k->k.getNumber() == sub).findFirst();
+        if(p.isPresent() && s.isPresent()) {
+            if(p.get().getClass().getName().equals(s.get().getClass().getName())) {
+
+                remPlaying(playing);
+                remSubstitute(sub);
+                addPlaying(s.get());
+                addSubstitute(p.get());
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public int numberOf(boolean playing){
+        if (playing) return this.playing.size();
+        else return this.substitutes.size();
     }
 
     public int numberOfType(Class<?> player_type){
@@ -259,6 +284,11 @@ public class FootballLineup implements Serializable {
                 && playing.stream().anyMatch(p -> p instanceof Striker);
     }
 
+    public boolean existsPlayer(int shirt,boolean playing){
+        if(playing) return getPlaying().stream().anyMatch(k->k.getNumber() == shirt);
+        else return getSubstitutes().stream().anyMatch(k->k.getNumber() == shirt);
+    }
+
 
     public int strategyNormalize(int strategy){
         if(strategy == 1) return 1;
@@ -270,7 +300,10 @@ public class FootballLineup implements Serializable {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Playing : ");
-        playing.forEach(k-> sb.append(k.getName()).append(" - ").append(k.getNumber()).append("/ "));
+        playing.forEach(k-> sb.append(k.getClass().getSimpleName().charAt(0))
+                .append("->").append(k.getName())
+                .append(" - ").append(k.getNumber())
+                .append("/ "));
         return sb.toString();
     }
 
@@ -278,7 +311,10 @@ public class FootballLineup implements Serializable {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Substitutes : ");
-        substitutes.forEach(k-> sb.append(k.getName()).append(" - ").append(k.getNumber()).append("/ "));
+        substitutes.forEach(k-> sb.append(k.getClass().getSimpleName().charAt(0))
+                .append("->").append(k.getName())
+                .append(" - ").append(k.getNumber())
+                .append("/ "));
         return sb.toString();
     }
 

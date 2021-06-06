@@ -193,7 +193,7 @@ public class ExecuteFootballGame {
         return steal;
     }
 
-    public void tryPass(){
+    public void tryPass() throws PlayerDoenstExist {
         registerAction(playerWithTheBall.getName() + " tries to pass the ball.");
         incTimer(quickAction);
         Random rand = new Random();
@@ -204,7 +204,7 @@ public class ExecuteFootballGame {
     }
 
 
-    public boolean tryPass(FootballPlayer p){
+    public boolean tryPass(FootballPlayer p) throws PlayerDoenstExist {
         registerAction(playerWithTheBall.getName() + " tries to pass the ball.");
         incTimer(quickAction);
         Random rand = new Random();
@@ -220,22 +220,21 @@ public class ExecuteFootballGame {
         }
     }
 
-    public void Pass(){
+    public void Pass() throws PlayerDoenstExist {
         incTimer(averageAction);
         FootballPlayer p;
-        Class higherPosition = higherPositionClass();
         if(home){
-            p = g.getHome().getPlaying().stream().filter(e -> e.getClass().getName().equals(higherPosition.getName())).findAny().get();
+            p = g.getHome().getPlayer(higherPositionClass(),true);
         }
         else{
-            p = g.getAway().getPlaying().stream().filter(e -> e.getClass().getName().equals(higherPosition.getName())).findAny().get();
+            p = g.getAway().getPlayer(higherPositionClass(),true);
         }
         registerAction(p.getName() + " now has the ball.");
         playerWithTheBall = p;
     }
 
     public boolean tryShoot() throws PlayerDoenstExist{
-        registerAction(YELLOW + playerWithTheBall.getName() + "Tries to score!!!!!" + RESET);
+        registerAction(YELLOW + playerWithTheBall.getName() + " tries to score!!!!!" + RESET);
         incTimer(quickAction);
         Random rand = new Random();
         Striker s = (Striker) playerWithTheBall;
@@ -326,6 +325,16 @@ public class ExecuteFootballGame {
         gameReport.add(message);
     }
 
+    public double getTimer(){
+        return g.getTimer();
+    }
+
+    public void setLineup(FootballLineup l, boolean home){
+        if(l!=null) {
+            if (home) g.setHome(l);
+            else g.setAway(l);
+        }
+    }
 
 }
 

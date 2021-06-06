@@ -142,4 +142,5 @@ public class Lateral extends FootballPlayer {
                         Integer.parseInt(tokens[12])
                 );
     }
+
 }

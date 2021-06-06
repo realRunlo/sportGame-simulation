@@ -23,11 +23,11 @@ public class SPORTMController{
     private FootballState footballState;
     private final Scanner scanner;
     private final SPORTMViewer messages = new SPORTMViewer(new String[]{});
-    private static final int MaxNumberOfPlayers = 23;
+    private static final int MaxNumberOfPlayers = 22;
     private static final long quickSleep = 500;
     private static final long averageSleep = 1000;
     private static final long slowSleep = 1500;
-
+    private static final int Max_Substitutions = 3;
     private final String[] InitialMenu   = new String[]{
             "Initial Menu",
             "Load State",
@@ -428,7 +428,9 @@ public class SPORTMController{
                     int messageIndex = 0;
                     List<String> gameReport = new ArrayList<>();
                     String message;
-                    while(play.getGame().getTimer() <= 90) {
+                    boolean halfTime = false;
+
+                    while(play.getTimer() <= 90) {
                         play.ExecutePlay();
                         gameReport = play.getGameReport();
                         if (speed != 3) {
@@ -438,6 +440,14 @@ public class SPORTMController{
                                 sleepDependingOnMessage(message,speed);
                                 messageIndex++;
                             }
+                        }
+                        //intervalo para permitir fazer substituicoes
+                        if(play.getTimer() >= 45 && !halfTime){
+                            messages.titleMessage("\n\t\t\tHalf Time\n\t\t\t  "+
+                                    play.getGame().getPoints1() +" - "+play.getGame().getPoints2());
+                            play.setLineup(substitute(homeLineup,true),true);
+                            play.setLineup(substitute(visitorLineup,false),false);
+                            halfTime = true;
                         }
                     }
 
@@ -468,6 +478,8 @@ public class SPORTMController{
             Thread.sleep(slowSleep / (speed + 1));
     }
 
+
+
     public FootballLineup makeLineup(FootballTeam t,boolean home) throws IOException, ClassNotFoundException {
         SPORTMViewer lineupMenu = new SPORTMViewer(LineupMenu);
 
@@ -480,8 +492,8 @@ public class SPORTMController{
         AtomicBoolean saved = new AtomicBoolean(false);
 
         lineupMenu.setSamePreCondition(new int[]{2,3},()->strategy.get()!=-1);
-        lineupMenu.setSamePreCondition(new int[]{4,5},()-> protoLineup.get().getPlaying().size() > 0);
-
+        lineupMenu.setSamePreCondition(new int[]{4},()-> protoLineup.get().getPlaying().size() > 0);
+        lineupMenu.setPreCondition(5,()-> protoLineup.get().readyToPlay());
         lineupMenu.setHandler(1,()->
                 strategy.set(1 + lineupMenu.readOptionBetween(0,1,new String[]{"4-4-2","4-3-3"})));
         lineupMenu.setHandler(2,()-> protoLineup.set(new FootballLineup(t,strategy.get())));
@@ -492,6 +504,8 @@ public class SPORTMController{
         if(saved.get()) lineup = protoLineup.get();
         return lineup;
     }
+
+
 
 
     public void setPlaying(AtomicReference<FootballLineup> proto, FootballTeam t){
@@ -587,6 +601,54 @@ public class SPORTMController{
 
         }
     }
+
+
+    public FootballLineup substitute(FootballLineup lineup,boolean home){
+        String line = "";
+        while(!line.equals("y") && !line.equals("n")) {
+            if (home) messages.informationMessage("Home Team, do you wish to make susbtitutions?[y/n]");
+            else messages.informationMessage("Visitor Team, do you wish to make susbtitutions?[y/n]");
+            line = scanner.nextLine();
+        }
+        if(line.equals("y")){
+            boolean finish = false;
+            int subs = 0;
+            int playing = -1, substitute = -1;
+            while(!line.equals("-1") && !finish && subs < Max_Substitutions && lineup.numberOf(false) > 0) {
+                messages.normalMessage(lineup.printPlaying());
+                messages.normalMessage(lineup.printSubstitutes());
+                messages.informationMessage("Write -1 to return or 's' to save");
+                messages.informationMessage("You have " + (Max_Substitutions - subs) + " left");
+                messages.informationMessage("Choose a playing player to substitute");
+                try {
+                    line = scanner.nextLine();
+                    playing = Integer.parseInt(line);
+                } catch (NumberFormatException e) { // Não foi inscrito um int
+                    playing = -1;
+                }
+                if(line.equals("s")) finish = true;
+                if(!finish && playing >=0){
+                    if( lineup.existsPlayer(playing,true)){
+                        messages.informationMessage("Choose the substitute");
+                        try {
+                            line = scanner.nextLine();
+                            substitute = Integer.parseInt(line);
+                        } catch (NumberFormatException e) { // Não foi inscrito um int
+                            substitute = -1;
+                        }
+                        if(substitute >= 0 && substitute != playing && lineup.existsPlayer(substitute,false)){
+                            if(lineup.substitutePlayer(playing,substitute))
+                            subs++;
+                            else messages.errorMessage("Invalid substitution");
+                        }else messages.errorMessage("Invalid shirt");
+                    }else messages.errorMessage("Invalid shirt");
+                }
+            }
+            if(finish || subs == Max_Substitutions) return lineup;
+        }
+        return null;
+    }
+
 
     public void saveLineup(AtomicBoolean saved ,SPORTMViewer menu){
         saved.set(true);
