@@ -189,9 +189,6 @@ public abstract class FootballPlayer extends Player implements Saveable {
         return card;
     }
 
-    public int speedCheck( FootballPlayer p2){
-        return Math.abs(getSpeed() - p2.getSpeed());
-    }
 
     public boolean equals(Object o) {
         if (this == o)

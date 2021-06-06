@@ -186,20 +186,19 @@ public class FootballState implements Saveable,Serializable{
     public void updateTeam(FootballTeam team) {
         team.getPlayers().forEach((e,k)-> updatePlayer(k));
         this.teams.replace(team.getName(), team);
-        playersList.values().stream()
-                .filter(k->k.getCurTeam().equals(team.getName()) && !team.existsPlayerNumber(k.getName(),k.getNumber()))
-                .forEach(Player::setCurTeamNone);
     }
 
     public void updatePlayer(FootballPlayer player) {
         //da update do jogador na lista de jogadores do estado
         if (this.playersList.containsKey(player.getName()+player.getNumber())) {
-            playersList.replace(player.getName()+player.getNumber(), player);
-            //da update, caso necessario, do jogador na propria equipa
-            if(teams.containsKey(player.getCurTeam()))
-                if(teams.get(player.getCurTeam()).existsPlayerNumber(player.getName(),player.getNumber())) {
-                    teams.get(player.getCurTeam()).updatePlayer(player);
-                }
+            if(!playersList.get(player.getName()+player.getNumber()).equals(player)) {
+                playersList.replace(player.getName() + player.getNumber(), player);
+                //da update, caso necessario, do jogador na propria equipa
+                if (teams.containsKey(player.getCurTeam()))
+                    if (teams.get(player.getCurTeam()).existsPlayerNumber(player.getName(), player.getNumber())) {
+                        teams.get(player.getCurTeam()).updatePlayer(player);
+                    }
+            }
         }
         //caso nao encontre o jogador no estado, adiciona-o
         else addPlayer(player);
@@ -270,8 +269,9 @@ public class FootballState implements Saveable,Serializable{
             if(teamToTransfer != null){
                 addPlayer2Team(p,teamToTransfer.getName());
             }
-            updatePlayer(p);
             if(originalShirt != p.getNumber()) playersList.remove(p.getName()+originalShirt);
+            updatePlayer(p);
+
         }
     }
 
@@ -336,10 +336,10 @@ public class FootballState implements Saveable,Serializable{
     public String printPlayers(){
         StringBuilder sb = new StringBuilder();
         AtomicInteger changeLine = new AtomicInteger(0);
-        sb.append("Available Players:\n");
+        sb.append("Available Players:\n\t");
         playersList.values().forEach(k-> {
-            if(changeLine.get() == 5){
-                sb.append("\n");
+            if(changeLine.get() == 10){
+                sb.append("\n\t");
                 changeLine.set(0);
             }
             else changeLine.set(changeLine.get()+1);
@@ -348,17 +348,17 @@ public class FootballState implements Saveable,Serializable{
                     .append(k.getNumber())
                     .append(", ");
         });
-        return sb.toString();
+        return sb.append("\n").toString();
     }
 
     public String printPlayersWithShirt(int shirt){
         StringBuilder sb = new StringBuilder();
         AtomicInteger changeLine = new AtomicInteger(0);
-        sb.append("Available Players:\n");
+        sb.append("Available Players:\n\t");
         playersList.values().stream().filter(e->e.getNumber() == shirt)
                 .forEach(k-> {
-                    if(changeLine.get() == 5){
-                        sb.append("\n");
+                    if(changeLine.get() == 10){
+                        sb.append("\n\t");
                         changeLine.set(0);
                     }
                     else changeLine.set(changeLine.get()+1);
@@ -367,19 +367,26 @@ public class FootballState implements Saveable,Serializable{
                             .append(k.getNumber())
                             .append(", ");
                 });
-        return sb.toString();
+        return sb.append("\n").toString();
     }
 
 
     public String printTeams(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Available Teams:\n");
-        teams.forEach((e,k) ->
-                sb.append(e)
-                        .append(" - ")
-                        .append(k.calcAverageSkill())
-                        .append(", "));
-        return sb.toString();
+        AtomicInteger changeLine = new AtomicInteger(0);
+        sb.append("Available Teams:\n\t");
+        teams.forEach((e,k) -> {
+            if(changeLine.get() == 10){
+                sb.append("\n\t");
+                changeLine.set(0);
+            }
+            else changeLine.set(changeLine.get()+1);
+            sb.append(e)
+                    .append(" - ")
+                    .append(k.calcAverageSkill())
+                    .append(", ");
+        });
+        return sb.append("\n").toString();
     }
 
     public String printGameHistory(){

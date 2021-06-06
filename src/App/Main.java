@@ -25,13 +25,13 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, PlayerDoenstExist, InterruptedException {
-       SPORTMController controller = new SPORTMController();
-       controller.run();
+       //SPORTMController controller = new SPORTMController();
+       //controller.run();
         //Goalkeeper g = new Goalkeeper(" ",0,"",0,0,0,0,0,0,0,0);
         //Striker s = new Striker(" ",0,"",0,0,0,0,0,0,0,0);
 
         //System.out.println(g.getClass().getSimpleName().equals(s.getClass().getSimpleName()));
-        /*
+
 
         // SPORTMViewer viewer = new SPORTMViewer();
         //viewer.showWelcome();
@@ -115,7 +115,7 @@ public class Main {
         int messageIndex = 0;
         List<String> gameReport = new ArrayList<>();
         String message;
-        int speed = 3;
+        int speed = 2;
         while(footballGame.getGame().getTimer() < 90){
             footballGame.ExecutePlay();
             gameReport = footballGame.getGameReport();
@@ -134,7 +134,7 @@ public class Main {
 
         //viewer.showTermination();
 
-*/
+
 
 
         }

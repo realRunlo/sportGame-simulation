@@ -166,9 +166,9 @@ public class SPORTMController{
         });
         enterState.setHandler(3,()-> enterState.showInfo(this.footballState.printGameHistory()));
         enterState.setHandler(4,()-> addOrUpdateTeam(false));
-        enterState.setHandler(5,()-> newPlayer(null,true));
+        enterState.setHandler(5,()-> addOrUpdatePlayer(null,true,true));
         enterState.setHandler(6,()-> addOrUpdateTeam(true));
-        enterState.setHandler(7,()-> updatePlayer(null,true));
+        enterState.setHandler(7,()-> addOrUpdatePlayer(null,true,false));
         enterState.setHandler(8,()-> transferPlayer());
         enterState.setHandler(9,()-> removeTeam());
         enterState.setHandler(10,()-> removePlayer());
@@ -193,8 +193,8 @@ public class SPORTMController{
 
             teamMenu.setHandler(1, () -> changeTeamName(team));
             teamMenu.setHandler(2, () -> teamMenu.showInfo(team));
-            teamMenu.setHandler(3, () -> newPlayer(team, false));
-            teamMenu.setHandler(4, () -> updatePlayer(team, false));
+            teamMenu.setHandler(3, () -> addOrUpdatePlayer(team, false,true));
+            teamMenu.setHandler(4, () -> addOrUpdatePlayer(team, false,false));
             teamMenu.setHandler(5, () -> removePlayerTeam(team));
             teamMenu.setHandler(6, () -> updateTeamState(team, !update, teamMenu));
             teamMenu.setHandler(7, () -> autoFillTeam(team));
@@ -247,7 +247,7 @@ public class SPORTMController{
         }
     }
 
-    public void newPlayer(FootballTeam t,boolean updateState) throws IOException, ClassNotFoundException {
+    public void addOrUpdatePlayer(FootballTeam t,boolean updateState,boolean newPlayer) throws IOException, ClassNotFoundException {
         AtomicReference<String> name = new AtomicReference<>("");
         AtomicInteger[] atributes = new AtomicInteger[]
                 {
@@ -262,75 +262,60 @@ public class SPORTMController{
                         new AtomicInteger(-1),//8 - type
                         new AtomicInteger(-1)//9 - shirt
                 };
-        SPORTMViewer playerMenu = new SPORTMViewer(PlayerMenu);
-
-        //apenas pode mudar a camisola e o tipo de jogador se ja lhe tiver dado um nome
-        playerMenu.setSamePreCondition(new int[]{3,4},()->!name.get().equals(""));
-        playerMenu.setPreCondition(13,()->!name.get().equals("") && atributes[9].get()!=-1);
-        playerMenu.setPreCondition(2,()-> atributes[8].get() != -1);
-        //apenas pode mudar as skills do jogador,ver informacao sobre ele, se ja tiver escolhido o tipo de jogador
-        playerMenu.setSamePreCondition(new int[]{2,5,6,7,8,9,10,11,12,14},()->!name.get().equals("") && atributes[8].get() != -1 && atributes[9].get() != -1);
-
-        playerMenu.setHandler(1, ()->  name.set(getName()));
-        playerMenu.setHandler(2, ()->  playerMenu.showInfo(playerPrototype(Arrays.stream(atributes).mapToInt(e->e.get()).toArray(),name.get(),t,new ArrayList<String>())));
-        playerMenu.setHandler(3, ()->  atributes[8].set(playerMenu.readOptionBetween(0,4,new String[]{"Goalkeeper","Defender","Lateral","Midfielder","Striker"})));
-        playerMenu.setHandler(4, ()->  atributes[9].set(getShirtNumber(name.get(),t)));
-        playerMenu.setHandler(14, ()->  randomizeStats(atributes));
-        //handlers dos atributos de um jogador
-        for(int i = 0,j = 5; i<8;i++,j++) {
-            int finalI = i;
-            playerMenu.setHandler(j, () -> atributes[finalI].set(getSkillValue(playerMenu,"Current Value: " + atributes[finalI].get())));
-        }
-        //gravar o jogador
-        playerMenu.setHandler(13, ()-> updatePlayerState(playerPrototype(Arrays.stream(atributes).mapToInt(e->e.get()).toArray(),name.get(),t,new ArrayList<String>()),t,playerMenu,true,updateState));
-        playerMenu.SimpleRun();
-    }
-
-
-    public void updatePlayer(FootballTeam t,boolean updateState) throws IOException, ClassNotFoundException {
-        FootballPlayer p = choosePlayerToUpdate(t);
         AtomicReference<FootballTeam> team = new AtomicReference<>();
         team.set(t);
-        if(p!= null){
-            //caso de update diretamente no estado, pode ser necessario dar update na equipa se o jogador tiver uma
-            if(t == null & footballState.existsTeam(p.getCurTeam())) team.set(footballState.getTeam(p.getCurTeam()));
-            AtomicInteger[] atributes = new AtomicInteger[]
-                    {
-                            new AtomicInteger(p.getSpeed()),//0 - speed
-                            new AtomicInteger(p.getSpeed()),//1 - resistance
-                            new AtomicInteger(p.getSpeed()),//2 - dexterity
-                            new AtomicInteger(p.getSpeed()),//3 - implosion
-                            new AtomicInteger(p.getSpeed()),//4 - headGame
-                            new AtomicInteger(p.getSpeed()),//5 - kick
-                            new AtomicInteger(p.getSpeed()),//6 - passing
-                            new AtomicInteger(getSpecialSkill(p)),//7 - typeSpecificSkill
-                            new AtomicInteger(typeOfPlayer(p)),//8 - type
-                            new AtomicInteger(p.getNumber())//9 - shirt
-                    };
-            SPORTMViewer updatePlayer = new SPORTMViewer(PlayerMenu);
-            //nao permite que se mude o nome e numero do jogador
-            updatePlayer.setSamePreCondition(new int[]{1,4},()->false);
-            //apenas pode mudar a camisola e o tipo de jogador se ja lhe tiver dado um nome
-            updatePlayer.setPreCondition(3,()->!p.getName().equals(""));
-            updatePlayer.setPreCondition(13,()->!p.getName().equals("") && atributes[9].get()!=-1);
-            updatePlayer.setPreCondition(2,()-> atributes[8].get() != -1);
-            //apenas pode mudar as skills do jogador,ver informacao sobre ele, se ja tiver escolhido o tipo de jogador
-            updatePlayer.setSamePreCondition(new int[]{2,5,6,7,8,9,10,11,12,14},()->!p.getName().equals("") && atributes[8].get() != -1 && atributes[9].get() != -1);
+        FootballPlayer p = null;
+        AtomicReference<List<String>> background = new AtomicReference<>();
+        background.set(new ArrayList<>());
+        if(!newPlayer) {
+            p = choosePlayerToUpdate(t);
+            if(p!=null) {
+                name.set(p.getName());
+                background.set(p.getBackground()) ;
+                if (t == null && footballState.existsTeam(p.getCurTeam())) {
+                    team.set(footballState.getTeam(p.getCurTeam()));
+                }
 
-            updatePlayer.setHandler(2, ()->  updatePlayer.showInfo(playerPrototype(Arrays.stream(atributes).mapToInt(AtomicInteger::get).toArray(),p.getName(),t,p.getBackground())));
-            updatePlayer.setHandler(3, ()->  atributes[8].set(updatePlayer.readOptionBetween(0,4,new String[]{"Goalkeeper","Defender","Lateral","Midfielder","Striker"})));
-            updatePlayer.setHandler(14, ()->  randomizeStats(atributes));
+                atributes[0].set(p.getSpeed());//0 - speed
+                atributes[1].set(p.getResistance());//1 - resistance
+                atributes[2].set(p.getDexterity());//2 - dexterity
+                atributes[3].set(p.getImplosion());//3 - implosion
+                atributes[4].set(p.getHeadGame());//4 - headGame
+                atributes[5].set(p.getKick());//5 - kick
+                atributes[6].set(p.getPassing());//6 - passing
+                atributes[7].set(getSpecialSkill(p));//7 - typeSpecificSkill
+                atributes[8].set(typeOfPlayer(p));//8 - type
+                atributes[9].set(p.getNumber());//9 - shirt
+            }
+        }
+        if(p!=null || newPlayer) {
+            SPORTMViewer playerMenu = new SPORTMViewer(PlayerMenu);
+            //apenas pode mudar a camisola e o tipo de jogador se ja lhe tiver dado um nome
+            playerMenu.setSamePreCondition(new int[]{3, 4}, () -> !name.get().equals(""));
+
+            if(!newPlayer) playerMenu.setSamePreCondition(new int[]{1,4},()->false);
+
+            playerMenu.setPreCondition(13, () -> !name.get().equals("") && atributes[9].get() != -1);
+            playerMenu.setPreCondition(2, () -> atributes[8].get() != -1);
+            //apenas pode mudar as skills do jogador,ver informacao sobre ele, se ja tiver escolhido o tipo de jogador
+            playerMenu.setSamePreCondition(new int[]{2, 5, 6, 7, 8, 9, 10, 11, 12, 14}, () -> !name.get().equals("") && atributes[8].get() != -1 && atributes[9].get() != -1);
+
+            playerMenu.setHandler(1, () -> name.set(getName()));
+            playerMenu.setHandler(2, () -> playerMenu.showInfo(playerPrototype(Arrays.stream(atributes).mapToInt(e -> e.get()).toArray(), name.get(), team.get(), background.get())));
+            playerMenu.setHandler(3, () -> atributes[8].set(playerMenu.readOptionBetween(0, 4, new String[]{"Goalkeeper", "Defender", "Lateral", "Midfielder", "Striker"})));
+            playerMenu.setHandler(4, () -> atributes[9].set(getShirtNumber(name.get(), t)));
+            playerMenu.setHandler(14, () -> randomizeStats(atributes));
             //handlers dos atributos de um jogador
-            for(int i = 0,j = 5; i<8;i++,j++) {
+            for (int i = 0, j = 5; i < 8; i++, j++) {
                 int finalI = i;
-                updatePlayer.setHandler(j, () -> atributes[finalI].set(getSkillValue(updatePlayer,"Current Value: " + atributes[finalI].get())));
+                playerMenu.setHandler(j, () -> atributes[finalI].set(getSkillValue(playerMenu, "Current Value: " + atributes[finalI].get())));
             }
             //gravar o jogador
-            updatePlayer.setHandler(13, ()-> updatePlayerState(playerPrototype(Arrays.stream(atributes).mapToInt(e->e.get()).toArray(),p.getName(),team.get(),p.getBackground()),team.get(),updatePlayer,false,updateState));
-
-            updatePlayer.SimpleRun();
+            playerMenu.setHandler(13, () -> updatePlayerState(playerPrototype(Arrays.stream(atributes).mapToInt(e -> e.get()).toArray(), name.get(), team.get(), background.get()), team.get(), playerMenu, newPlayer, updateState));
+            playerMenu.SimpleRun();
         }
     }
+
 
 
 
@@ -794,6 +779,11 @@ public class SPORTMController{
 
     public FootballPlayer playerPrototype(int [] atributes, String name, FootballTeam t,List<String> background)
     {
+       /* for(int i:atributes){
+            System.out.println("\natributos"+i + " ");
+         }
+         */
+
         FootballPlayer p;
         String team = "None";
         if(t!= null) team = t.getName();
