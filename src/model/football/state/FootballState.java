@@ -487,6 +487,7 @@ public class FootballState implements Saveable,Serializable{
         br.mark(1024);
         line = br.readLine();
         if(line.equals("Our format")) {
+            line = br.readLine();
             split = line.split(":");
             fs = new FootballState(Integer.parseInt(split[1]));
         }

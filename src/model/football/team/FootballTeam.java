@@ -217,7 +217,7 @@ public class FootballTeam extends Team implements Saveable {
     }
 
     public String toCSV() {
-        return "Equipa: " + super.toCSV() + "\n";
+        return "Equipa:" + super.toCSV() + "\n";
     }
 
     public static FootballTeam load(String csvLine) {
