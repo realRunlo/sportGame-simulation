@@ -95,9 +95,6 @@ public class SPORTMController{
         scanner = new Scanner(System.in);
     }
 
-    public void setState(FootballState s){
-        footballState = s.clone();
-    }
 
 
     public void run() throws IOException, ClassNotFoundException {
@@ -112,14 +109,14 @@ public class SPORTMController{
 
     /**------------------------LOAD STATE-------------------------------**/
 
-    public void loadState() throws IOException, ClassNotFoundException {
+    private void loadState() throws IOException, ClassNotFoundException {
         SPORTMViewer loadMenu = new SPORTMViewer(LoadStateMenu);
         loadMenu.setHandler(1,()-> defaultState(loadMenu));
         loadMenu.setHandler(2,()-> costumState(loadMenu));
         loadMenu.SimpleRun();
     }
 
-    public void defaultState(SPORTMViewer viewer) throws IOException, ClassNotFoundException {
+    private void defaultState(SPORTMViewer viewer) throws IOException, ClassNotFoundException {
         try {
             this.footballState = FootballState.load("estado");
         } catch(FileNotFoundException e){
@@ -132,7 +129,7 @@ public class SPORTMController{
     }
 
 
-    public void costumState(SPORTMViewer viewer) throws IOException, ClassNotFoundException {
+    private void costumState(SPORTMViewer viewer) throws IOException, ClassNotFoundException {
         try {
             this.footballState = FootballState.load(getName());
         }
@@ -147,7 +144,7 @@ public class SPORTMController{
 
     /**------------------------ENTER STATE-------------------------------**/
 
-    public void EnterState() throws IOException, ClassNotFoundException {
+    private void EnterState() throws IOException, ClassNotFoundException {
         SPORTMViewer enterState = new SPORTMViewer(GameMenu);
         enterState.setPreCondition(2,()-> footballState.getNTeams() >= 2);
         enterState.setSamePreCondition(new int[]{7,10},()->footballState.getNPlayers()>0);
@@ -176,7 +173,7 @@ public class SPORTMController{
         enterState.SimpleRun();
     }
 
-    public void addOrUpdateTeam(boolean update) throws IOException, ClassNotFoundException {
+    private void addOrUpdateTeam(boolean update) throws IOException, ClassNotFoundException {
         FootballTeam team;
         if(update) team = chooseTeam("Insert a team to update");
         else team = new FootballTeam();
@@ -202,7 +199,7 @@ public class SPORTMController{
         }
     }
 
-    public void changeTeamName(FootballTeam t){
+    private void changeTeamName(FootballTeam t){
         String newName;
         int valido = 0;
         do{
@@ -218,7 +215,7 @@ public class SPORTMController{
         t.setName(newName);
     }
 
-    public void autoFillTeam(FootballTeam team){
+    private void autoFillTeam(FootballTeam team){
         String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
         Random rand = new Random();
 
@@ -247,7 +244,7 @@ public class SPORTMController{
         }
     }
 
-    public void addOrUpdatePlayer(FootballTeam t,boolean updateState,boolean newPlayer) throws IOException, ClassNotFoundException {
+    private void addOrUpdatePlayer(FootballTeam t,boolean updateState,boolean newPlayer) throws IOException, ClassNotFoundException {
         AtomicReference<String> name = new AtomicReference<>("");
         AtomicInteger[] atributes = new AtomicInteger[]
                 {
@@ -319,7 +316,7 @@ public class SPORTMController{
 
 
 
-    public FootballTeam chooseTeam(String message) {
+    private FootballTeam chooseTeam(String message) {
         FootballTeam t = null;
         String name = "";
         boolean valid = false;
@@ -339,18 +336,19 @@ public class SPORTMController{
         return t;
     }
 
-    public void transferPlayer(){
+    private void transferPlayer(){
         FootballPlayer p = choosePlayerToUpdate(null,true);
         if(p!=null) {
             FootballTeam teamToTransfer = chooseTeam(
                     "Insert  a team to transfer the player to\n" +
                             "Write -1 if you just wish to remove him from his team"
             );
-            footballState.transferPlayer(p,teamToTransfer);
+            if(footballState.transferPlayer(p,teamToTransfer)) messages.confirmationMessage("Transfer successful");
+            else messages.errorMessage("Can't transfer the player to that team");
         }
     }
 
-    public void removeTeam() throws IOException, ClassNotFoundException {
+    private void removeTeam() throws IOException, ClassNotFoundException {
         SPORTMViewer menu = new SPORTMViewer(RemoveTeamMenu);
         FootballTeam t = chooseTeam("Choose the Team to remove");
         if(t!=null) {
@@ -360,20 +358,20 @@ public class SPORTMController{
         }
     }
 
-    public void removeTeam(SPORTMViewer menu, FootballTeam t,boolean removeAll){
+    private void removeTeam(SPORTMViewer menu, FootballTeam t,boolean removeAll){
         if(removeAll) footballState.removeTeam(t.getName());
         else footballState.removeOnlyTeam(t.getName());
         menu.returnMenu();
     }
 
-    public void removePlayer(){
+    private void removePlayer(){
         FootballPlayer p = choosePlayerToUpdate(null,true);
         if(p!=null) footballState.removePlayer(p.getName(),p.getNumber(),p.getCurTeam());
     }
 
 
 
-    public void createGame() throws PlayerDoenstExist, IOException, ClassNotFoundException, InterruptedException {
+    private void createGame() throws PlayerDoenstExist, IOException, ClassNotFoundException, InterruptedException {
         messages.titleMessage(
                 "--------------------------------------\n" +
                 "---------------New Match--------------\n" +
@@ -451,7 +449,7 @@ public class SPORTMController{
         );
     }
 
-    public void sleepDependingOnMessage(String message, int speed) throws InterruptedException {
+    private void sleepDependingOnMessage(String message, int speed) throws InterruptedException {
         if (message.contains("steal")
                 || message.contains("pass")
                 || message.contains("score")
@@ -465,7 +463,7 @@ public class SPORTMController{
 
 
 
-    public FootballLineup makeLineup(FootballTeam t,boolean home) throws IOException, ClassNotFoundException {
+    private FootballLineup makeLineup(FootballTeam t,boolean home) throws IOException, ClassNotFoundException {
         SPORTMViewer lineupMenu = new SPORTMViewer(LineupMenu);
 
         if(home) lineupMenu.titleMessage("Home Team");
@@ -493,7 +491,7 @@ public class SPORTMController{
 
 
 
-    public void setPlaying(AtomicReference<FootballLineup> proto, FootballTeam t){
+    private void setPlaying(AtomicReference<FootballLineup> proto, FootballTeam t){
         boolean saved = false;
         String line = "";
         int shirt = -1;
@@ -541,7 +539,7 @@ public class SPORTMController{
         }
     }
 
-    public void setSubstitutes(AtomicReference<FootballLineup> proto, FootballTeam t){
+    private void setSubstitutes(AtomicReference<FootballLineup> proto, FootballTeam t){
         boolean saved = false;
         String line = "";
         int shirt = -1;
@@ -588,7 +586,7 @@ public class SPORTMController{
     }
 
 
-    public FootballLineup substitute(FootballLineup lineup,boolean home){
+    private FootballLineup substitute(FootballLineup lineup,boolean home){
         String line = "";
         while(!line.equals("y") && !line.equals("n")) {
             if (home) messages.informationMessage("Home Team, do you wish to make susbtitutions?[y/n]");
@@ -635,7 +633,7 @@ public class SPORTMController{
     }
 
 
-    public void saveLineup(AtomicBoolean saved ,SPORTMViewer menu){
+    private void saveLineup(AtomicBoolean saved ,SPORTMViewer menu){
         saved.set(true);
         menu.returnMenu();
     }
@@ -644,12 +642,12 @@ public class SPORTMController{
 
     /**------------------------General methods-----------------------------**/
 
-    public String getName(){
+    private String getName(){
         messages.informationMessage("Insert a name");
         return scanner.nextLine();
     }
 
-    public Integer getShirtNumber(String name, FootballTeam t){
+    private Integer getShirtNumber(String name, FootballTeam t){
         //caso de apenas adicionar jogador ao estado,
         //nao pode adicionar jogadores com o mesmo numero e nome
         boolean valid = false;
@@ -679,12 +677,12 @@ public class SPORTMController{
         return shirtNumber;
     }
 
-    public int getSkillValue(SPORTMViewer menu,String currentValue){
+    private int getSkillValue(SPORTMViewer menu,String currentValue){
         messages.informationMessage(currentValue);
         return menu.readOptionBetween(0, 100, null);
     }
 
-    public void updatePlayerState(FootballPlayer p,FootballTeam t, SPORTMViewer viewer,boolean newPlayer,boolean updateState){
+    private void updatePlayerState(FootballPlayer p,FootballTeam t, SPORTMViewer viewer,boolean newPlayer,boolean updateState){
         if(!newPlayer){
             if(t != null) t.updatePlayer(p); //atualiza na equipa a ser modificada atualmente (apenas menu)
             if(updateState) footballState.updatePlayer(p); //atualiza no estado por completo
@@ -696,13 +694,13 @@ public class SPORTMController{
         if(viewer != null) viewer.returnMenu();
     }
 
-    public void updateTeamState(FootballTeam t, boolean newTeam,SPORTMViewer viewer){
+    private void updateTeamState(FootballTeam t, boolean newTeam,SPORTMViewer viewer){
         if(newTeam) footballState.addTeam(t);
         else footballState.updateTeam(t);
         if(viewer != null) viewer.returnMenu();
     }
 
-    public void removePlayerTeam(FootballTeam t){
+    private void removePlayerTeam(FootballTeam t){
         boolean removed = false; int op = -2;
         while(!removed && op!=-1){
             messages.normalMessage(t.toString());
@@ -725,7 +723,7 @@ public class SPORTMController{
     }
 
 
-    public FootballPlayer choosePlayerToUpdate(FootballTeam t,boolean showTeam){
+    private FootballPlayer choosePlayerToUpdate(FootballTeam t,boolean showTeam){
         int shirtNumber = -2;
         String name = "";
         boolean valid = false;
@@ -779,7 +777,7 @@ public class SPORTMController{
         return p;
     }
 
-    public FootballPlayer playerPrototype(int [] atributes, String name, FootballTeam t,List<String> background)
+    private FootballPlayer playerPrototype(int [] atributes, String name, FootballTeam t,List<String> background)
     {
        /* for(int i:atributes){
             System.out.println("\natributos"+i + " ");
@@ -828,7 +826,7 @@ public class SPORTMController{
         return skill;
     }
 
-    public void randomizeStats(AtomicInteger[] atributes){
+    private void randomizeStats(AtomicInteger[] atributes){
         Random random = new Random();
         int i = 0;
            for(;i<8;i++){
@@ -838,12 +836,12 @@ public class SPORTMController{
     }
 
     /**------------------------SIMPLE PRINTS-------------------------------**/
-    public void terminate(){
+    private void terminate(){
         showTermination();
         System.exit(0);
     }
 
-    public void showWelcome(){
+    private void showWelcome(){
         messages.titleMessage("Welcome to SPORTM!");
         messages.titleMessage("""
                 Made by:
@@ -855,7 +853,7 @@ public class SPORTMController{
 
     }
 
-    public void showTermination(){
+    private void showTermination(){
         messages.titleMessage("Closing the Game\nWe hope you've enjoyed your time.");
     }
 

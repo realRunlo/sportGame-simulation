@@ -94,6 +94,7 @@ public class Goalkeeper extends FootballPlayer{
                 + "\nPassing: " + getPassing()
                 + "\nElasticity: " + getElasticity()
                 + "\nOverall Skill: " + calcOverallSkill()
+                + "\nBackground: " + getBackground().toString()
         );
     }
 

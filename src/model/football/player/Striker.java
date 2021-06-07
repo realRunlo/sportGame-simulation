@@ -94,6 +94,7 @@ public class Striker extends FootballPlayer {
                 + "\nPassing: " + getPassing()
                 + "\nShooting: " + getShooting()
                 + "\nOverall Skill: " + calcOverallSkill()
+                + "\nBackground: " + getBackground().toString()
         );
     }
 

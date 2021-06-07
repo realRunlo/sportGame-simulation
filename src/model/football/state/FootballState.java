@@ -262,17 +262,22 @@ public class FootballState implements Saveable,Serializable{
     }
 
 
-    public void transferPlayer(FootballPlayer p, FootballTeam teamToTransfer){
+    public boolean transferPlayer(FootballPlayer p, FootballTeam teamToTransfer){
+        boolean transfered = false;
         if(p!=null){
-            removePlayerFromTeam(p);
+
             int originalShirt = p.getNumber();
             if(teamToTransfer != null){
-                addPlayer2Team(p,teamToTransfer.getName());
+                if(teamToTransfer.getNPlayers() < (MAX_PLAYER_TEAM-1)) {
+                    removePlayerFromTeam(p);
+                    addPlayer2Team(p, teamToTransfer.getName());
+                    transfered = true;
+                }
             }
             if(originalShirt != p.getNumber()) playersList.remove(p.getName()+originalShirt);
             updatePlayer(p);
-
         }
+        return transfered;
     }
 
 

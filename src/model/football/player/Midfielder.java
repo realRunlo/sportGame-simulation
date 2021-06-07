@@ -117,6 +117,7 @@ public class Midfielder extends FootballPlayer {
                 + "\nPassing: " + getPassing()
                 + "\nBall Recovery: " + getBallRecovery()
                 + "\nOverall Skill: " + calcOverallSkill()
+                + "\nBackground: " + getBackground().toString()
         );
     }
 

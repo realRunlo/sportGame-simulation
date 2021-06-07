@@ -97,6 +97,7 @@ public class Defender extends FootballPlayer implements Saveable {
                 + "\nPassing: " + getPassing()
                 + "\nBall Retention: " + getBallRetention()
                 + "\nOverall Skill: " + calcOverallSkill()
+                + "\nBackground: " + getBackground().toString()
         );
     }
 

@@ -19,15 +19,15 @@ public class ExecuteFootballGame {
     private static final double quickAction = 0.5;
     private static final double averageAction = 1;
     private static final double slowAction = 1.5;
-    public static final String RESET = "\u001B[0m";
-    public static final String BLACK = "\u001B[30m";
-    public static final String RED = "\u001B[31m";
-    public static final String GREEN = "\u001B[32m";
-    public static final String YELLOW = "\u001B[33m";
-    public static final String BLUE = "\u001B[34m";
-    public static final String PURPLE = "\u001B[35m";
-    public static final String CYAN = "\u001B[36m";
-    public static final String WHITE = "\u001B[37m";
+    private static final String RESET = "\u001B[0m";
+    private static final String BLACK = "\u001B[30m";
+    private static final String RED = "\u001B[31m";
+    private static final String GREEN = "\u001B[32m";
+    private static final String YELLOW = "\u001B[33m";
+    private static final String BLUE = "\u001B[34m";
+    private static final String PURPLE = "\u001B[35m";
+    private static final String CYAN = "\u001B[36m";
+    private static final String WHITE = "\u001B[37m";
 
 
     public ExecuteFootballGame(FootballGame g){
@@ -48,25 +48,22 @@ public class ExecuteFootballGame {
                     .findAny().get(),true);
         }
     }
-    public FootballPlayer getPlayerWithTheBall(){
-        return playerWithTheBall.clone();
-    }
 
-    public void setPlayerWithTheBall(FootballPlayer p, boolean home){
+    private void setPlayerWithTheBall(FootballPlayer p, boolean home){
         playerWithTheBall = p;
         //caso o novo jogador seja da equipa que antes nao tinha posse da bola, inverte a posse
         if(home != getHome()) invertTeamWithBall();
     }
 
     public List<String> getGameReport(){
-        return gameReport;
+        return new ArrayList<String>(gameReport);
     }
 
-    public boolean getHome(){
+    private boolean getHome(){
         return home;
     }
 
-    public void setHome(boolean homeOrAway){
+    private void setHome(boolean homeOrAway){
         home = homeOrAway;
     }
 
@@ -134,7 +131,7 @@ public class ExecuteFootballGame {
 
 
 
-    public boolean tryStealBall(FootballPlayer p){
+    private boolean tryStealBall(FootballPlayer p){
         incTimer(quickAction);
         registerAction(p.getName() + " tries to steal the ball!");
         Random rand = new Random();
@@ -159,7 +156,7 @@ public class ExecuteFootballGame {
         return steal;
     }
 
-    public void tryPass() throws PlayerDoenstExist {
+    private void tryPass() throws PlayerDoenstExist {
         registerAction(playerWithTheBall.getName() + " tries to pass the ball.");
         incTimer(quickAction);
         Random rand = new Random();
@@ -174,7 +171,7 @@ public class ExecuteFootballGame {
     }
 
 
-    public boolean tryPass(FootballPlayer p) throws PlayerDoenstExist {
+    private boolean tryPass(FootballPlayer p) throws PlayerDoenstExist {
         registerAction(playerWithTheBall.getName() + " tries to pass the ball.");
         incTimer(quickAction);
         Random rand = new Random();
@@ -190,7 +187,7 @@ public class ExecuteFootballGame {
         }
     }
 
-    public void Pass() throws PlayerDoenstExist {
+    private void Pass() throws PlayerDoenstExist {
         incTimer(averageAction);
         FootballPlayer p;
         if(home){
@@ -203,7 +200,7 @@ public class ExecuteFootballGame {
         playerWithTheBall = p;
     }
 
-    public boolean tryShoot() throws PlayerDoenstExist{
+    private boolean tryShoot() throws PlayerDoenstExist{
         registerAction(YELLOW + playerWithTheBall.getName() + " tries to score!!!!!" + RESET);
         incTimer(quickAction);
         Random rand = new Random();
@@ -218,7 +215,7 @@ public class ExecuteFootballGame {
         }
     }
 
-    public void Shoot() throws PlayerDoenstExist{
+    private void Shoot() throws PlayerDoenstExist{
         registerAction("He shoots!!!");
         incTimer(quickAction);
         Goalkeeper goalie;
@@ -261,19 +258,19 @@ public class ExecuteFootballGame {
         invertTeamWithBall();
     }
 
-    public void invertTeamWithBall(){
+    private void invertTeamWithBall(){
         home = !home;
     }
 
 
-    public Class<? extends FootballPlayer> getFootballPlayerOppositeClass(){
+    private Class<? extends FootballPlayer> getFootballPlayerOppositeClass(){
         if(playerWithTheBall.getClass().equals(Defender.class) || playerWithTheBall.getClass().equals(Lateral.class)) return Striker.class;
         if(playerWithTheBall.getClass().equals(Midfielder.class)) return Midfielder.class;
         if(playerWithTheBall.getClass().equals(Striker.class)) return Defender.class;
         else return null;
     }
 
-    public Class<? extends FootballPlayer> higherPositionClass(){
+    private Class<? extends FootballPlayer> higherPositionClass(){
         if(playerWithTheBall.getClass().equals(Defender.class)) return Midfielder.class;
         if(playerWithTheBall.getClass().equals(Midfielder.class)|| playerWithTheBall.getClass().equals(Lateral.class)) return Striker.class;
         if(playerWithTheBall.getClass().equals(Striker.class)) return Striker.class;
@@ -287,7 +284,7 @@ public class ExecuteFootballGame {
     }
 
 
-    public void registerAction(String message){
+    private void registerAction(String message){
         gameReport.add(message);
     }
 
@@ -303,7 +300,7 @@ public class ExecuteFootballGame {
     }
 
 
-    public int speedCheck(FootballPlayer adversary){
+    private int speedCheck(FootballPlayer adversary){
         return (playerWithTheBall.getSpeed() - adversary.getSpeed());
     }
 

@@ -1,4 +1,4 @@
-FootballState: 2
+FootballState: 4
 FootballTeam: equipa2
 FootballTeam: equipa1
 Midfielder: KGV0NMUDP1;10;equipa2;;0;68;49;66;66;11;78;NONE;87
@@ -46,4 +46,5 @@ Midfielder: 842TFQG4HF;12;equipa1;;53;80;12;96;91;2;1;NONE;87
 Goalkeeper: BCQ4JT4ZHD;0;equipa2;;8;33;13;55;40;48;95;NONE;65
 Striker: 2QYV141AO2;15;equipa1;;6;9;20;88;75;91;24;NONE;14
 Midfielder: IWQJR4GP4O;11;equipa1;;4;100;71;85;1;45;87;NONE;42
-false;3;1;equipa2;equipa1
+false;2;5;equipa2;equipa1
+false;1;4;equipa2;equipa1

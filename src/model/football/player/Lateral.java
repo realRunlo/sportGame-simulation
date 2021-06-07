@@ -91,6 +91,7 @@ public class Lateral extends FootballPlayer {
                 + "\nPassing: " + getPassing()
                 + "\nCrossing: " + getCrossing()
                 + "\nOverall Skill: " + calcOverallSkill()
+                + "\nBackground: " + getBackground().toString()
         );
     }
 
