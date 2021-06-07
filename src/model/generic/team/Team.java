@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 public abstract class Team implements Saveable, Serializable {
     private String name;
-    private int GlobalSkill;
+    private int globalSkill;
 
     public Team(){
         setName(" ");
@@ -42,11 +42,11 @@ public abstract class Team implements Saveable, Serializable {
 
 
     public int getGlobalSkill(){
-        return GlobalSkill;
+        return globalSkill;
     }
 
     public void setGlobalSkill(int nGS){
-        GlobalSkill = nGS;
+        globalSkill = nGS;
     }
 
     public boolean equals(Object obj){
@@ -54,7 +54,7 @@ public abstract class Team implements Saveable, Serializable {
         if(obj == null || obj.getClass() != this.getClass()) return false;
 
         Team t = (Team) obj;
-        return name.equals(t.getName()) && GlobalSkill == t.getGlobalSkill();
+        return name.equals(t.getName()) && globalSkill == t.getGlobalSkill();
     }
 
 

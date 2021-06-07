@@ -62,8 +62,8 @@ public class GoalkeeperTest {
         String filePath = "goalkeeper.csv";
         g1.save(filePath);
         BufferedReader br = new BufferedReader(new FileReader(filePath));
-        String[] split = br.readLine().split(": ");
-        Goalkeeper gTest = Goalkeeper.load(split[1]);
+        String[] split = br.readLine().split(":");
+        Goalkeeper gTest = Goalkeeper.load(split[1],"Porto", false);
 
         assertTrue("Different goalkeepers", g1.equals(gTest));
     }

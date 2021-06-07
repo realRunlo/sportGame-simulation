@@ -452,13 +452,14 @@ public class FootballState implements Saveable,Serializable{
 
     @Override
     public String toCSV() {
-        return "FootballState: " + this.getDay() + "\n";
+        return "Estado:" + this.getDay() + "\n";
     }
 
     @Override
     public void save(String filePath) throws IOException {
         BufferedWriter br = new BufferedWriter(new FileWriter(filePath));
 
+        br.write("Our format\n");
         br.write(this.toCSV());
         br.flush();
         br.close();
@@ -479,49 +480,64 @@ public class FootballState implements Saveable,Serializable{
         String line;
         String[] split;
         FootballState fs;
+        String lastTeam = "";
+        boolean teacher = false;
+        int day = 0;
 
-        split = br.readLine().split(": ");
-        fs = new FootballState(Integer.parseInt(split[1]));
-
+        br.mark(1024);
+        line = br.readLine();
+        if(line.equals("Our format")) {
+            split = line.split(":");
+            fs = new FootballState(Integer.parseInt(split[1]));
+        }
+        else {
+            teacher = true;
+            fs = new FootballState(day);
+            br.reset();
+        }
         while((line = br.readLine()) != null) {
-            split = line.split(": ");
+            split = line.split(":");
 
             switch (split[0]) {
-                case "Defender" -> {
-                    Defender d = Defender.load(split[1]);
+                case "Defesa" -> {
+                    Defender d = Defender.load(split[1], lastTeam, teacher);
                     fs.addPlayer(d);
                     fs.addPlayer2Team(d, d.getCurTeam());
                 }
                 case "Lateral" -> {
-                    Lateral l = Lateral.load(split[1]);
+                    Lateral l = Lateral.load(split[1], lastTeam, teacher);
                     fs.addPlayer(l);
                     fs.addPlayer2Team(l, l.getCurTeam());
                 }
-                case "Midfielder" -> {
-                    Midfielder m = Midfielder.load(split[1]);
+                case "Medio" -> {
+                    Midfielder m = Midfielder.load(split[1], lastTeam, teacher);
                     fs.addPlayer(m);
                     fs.addPlayer2Team(m, m.getCurTeam());
                 }
-                case "Striker" -> {
-                    Striker s = Striker.load(split[1]);
+                case "Avancado" -> {
+                    Striker s = Striker.load(split[1], lastTeam, teacher);
                     fs.addPlayer(s);
                     fs.addPlayer2Team(s, s.getCurTeam());
                 }
-                case "Goalkeeper" -> {
-                    Goalkeeper g = Goalkeeper.load(split[1]);
+                case "Guarda-Redes" -> {
+                    Goalkeeper g = Goalkeeper.load(split[1], lastTeam, teacher);
                     fs.addPlayer(g);
                     fs.addPlayer2Team(g, g.getCurTeam());
                 }
-                case "FootballTeam" -> {
+                case "Equipa" -> {
                     FootballTeam ft = FootballTeam.load(split[1]);
                     fs.addTeam(ft);
+                    lastTeam = ft.getName();
                 }
-                /*case "FootballGame" -> {
-                    FootballGame fg = FootballGame.
-                }*/
+                case "Jogo" -> {
+                    FootballGame fg = FootballGame.load(split[1],fs.getTeams());
+                    fs.addGame(fg);
+                    day++;
+                }
             }
         }
-
+        if(teacher)
+            fs.setDay(day);
         return fs;
     }
 }

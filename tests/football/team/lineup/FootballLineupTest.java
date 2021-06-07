@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,7 +44,7 @@ public class FootballLineupTest {
         subsitutes.add(p4);
         subsitutes.add(p5);
 
-        fl1 = new FootballLineup("test", 2, playing, subsitutes);
+        fl1 = new FootballLineup("test", 2, playing, subsitutes, new ArrayList<>());
         fl2 = new FootballLineup(fl1);
     }
 

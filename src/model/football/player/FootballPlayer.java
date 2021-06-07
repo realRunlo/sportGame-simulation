@@ -189,7 +189,7 @@ public abstract class FootballPlayer extends Player implements Saveable {
         return card;
     }
 
-
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -210,6 +210,7 @@ public abstract class FootballPlayer extends Player implements Saveable {
                 this.getCard() == player.getCard();
     }
 
+    @Override
     public abstract FootballPlayer clone();
 
     public String toCSV() {

@@ -48,7 +48,7 @@ public class StrikerTest {
         s1.save(filePath);
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         String[] split = br.readLine().split(": ");
-        Striker sTest = Striker.load(split[1]);
+        Striker sTest = Striker.load(split[1], "Trofense", false);
 
         assertTrue("Different defenders", s1.equals(sTest));
     }

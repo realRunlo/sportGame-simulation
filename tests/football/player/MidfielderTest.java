@@ -60,8 +60,8 @@ public class MidfielderTest {
         String filePath = "midfielder.csv";
         m1.save(filePath);
         BufferedReader br = new BufferedReader(new FileReader(filePath));
-        String[] split = br.readLine().split(": ");
-        Midfielder mTest = Midfielder.load(split[1]);
+        String[] split = br.readLine().split(":");
+        Midfielder mTest = Midfielder.load(split[1], "ADEUS", false);
 
         assertTrue("Different midfielders", m1.equals(mTest));
     }

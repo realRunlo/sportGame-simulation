@@ -1,12 +1,14 @@
 package model.generic.game;
 
-import model.generic.team.Team;
-import model.interfaces.Saveable;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import model.generic.team.Team;
+import model.interfaces.Saveable;
 
 public abstract class Game implements Saveable,Serializable {
     private boolean ended; // information if there is or not a game
@@ -14,24 +16,27 @@ public abstract class Game implements Saveable,Serializable {
     private int points2;
     private Team t1;
     private Team t2;
+    private LocalDate date;
     private double timer;
 
     //----------------------------------Construtores------------------------------------------------
     public Game(Team t1, Team t2) {
-        this.setBol(false);
+        this.setBol(true);
         this.setPoints2(0);
         this.setPoints2(0);
-        this.setTimer(0);
         this.setT1(t1.clone());
         this.setT2(t2.clone());
+        this.setDate(LocalDate.now());
+        this.setTimer(0);
     }
 
-    public Game(boolean b, int newP1, int newP2, int newTimer, Team newt1, Team newt2) {
+    public Game(boolean b, int newP1, int newP2, LocalDate date, int newTimer, Team newt1, Team newt2) {
         this.setBol(b);
         this.setPoints1(newP1);
         this.setPoints2(newP2);
         this.setT1(newt1.clone());
         this.setT2(newt2.clone());
+        this.setDate(date);
         this.setTimer(newTimer);
     }
 
@@ -41,7 +46,17 @@ public abstract class Game implements Saveable,Serializable {
         this.setPoints2(newGame.getPoints2());
         this.setT1(newGame.getT1().clone());
         this.setT2(newGame.getT2().clone());
+        this.setDate(newGame.getDate());
         this.setTimer(newGame.getTimer());
+    }
+
+    public Game(String teamName1, String teamName2, int points1, int points2, LocalDate date) {
+        this.setBol(false);
+        this.setPoints1(points1);
+        this.setPoints2(points2);
+        this.setDate(date);
+        this.t1 = null;
+        this.t2 = null;
     }
 
     //----------------------------------Getters e Setters----------------------------------------------------------
@@ -79,6 +94,14 @@ public abstract class Game implements Saveable,Serializable {
         points2 = newPoints;
     }
 
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalDate getDate() {
+        return this.date;
+    }
+
     public double getTimer() {
         return timer;
     }
@@ -111,11 +134,11 @@ public abstract class Game implements Saveable,Serializable {
     }
 
     public String toCSV() {
-        return this.getBol()           + ";" +
+        return this.getT1().getName()  + ";" +
+                this.getT2().getName() + ";" +
                 this.getPoints1()      + ";" +
                 this.getPoints2()      + ";" +
-                this.getT1().getName() + ";" +
-                this.getT2().getName();
+                this.getDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
     public void save(String filePath) throws IOException {

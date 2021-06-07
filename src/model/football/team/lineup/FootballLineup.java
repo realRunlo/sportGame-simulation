@@ -1,14 +1,18 @@
 package model.football.team.lineup;
 
-import model.exceptions.PlayerDoenstExist;
-import model.football.game.FootballGame;
-import model.football.player.*;
-import model.football.team.FootballTeam;
-
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import model.exceptions.PlayerDoenstExist;
+import model.football.game.Substitution;
+import model.football.player.Defender;
+import model.football.player.FootballPlayer;
+import model.football.player.Goalkeeper;
+import model.football.player.Lateral;
+import model.football.player.Midfielder;
+import model.football.player.Striker;
+import model.football.team.FootballTeam;
 
 public class FootballLineup implements Serializable {
     private String teamName;
@@ -16,6 +20,7 @@ public class FootballLineup implements Serializable {
     private int globalSkill;
     private Set<FootballPlayer> playing;
     private Set<FootballPlayer> substitutes;
+    private List<Substitution> substitutions;
     private static final int MAX_SUBSTITUTES = 11;
 
     public FootballLineup() {
@@ -24,14 +29,16 @@ public class FootballLineup implements Serializable {
         setGlobalSkill(0);
         setPlaying(new HashSet<>());
         setSubstitutes(new HashSet<>());
+        setSubstituitions(new ArrayList<>());
     }
 
-    public FootballLineup(String name,int s,Set<FootballPlayer> playing, Set<FootballPlayer> substitutes) {
+    public FootballLineup(String name,int s,Set<FootballPlayer> playing, Set<FootballPlayer> substitutes, List<Substitution> substitutions) {
         setTeamName(name);
         setStrategy(s);
         setPlaying(playing);
         setSubstitutes(substitutes);
         setGlobalSkill(calcGlobalSkill());
+        setSubstituitions(substitutions);
     }
 
     public FootballLineup(FootballLineup lineup) {
@@ -39,6 +46,7 @@ public class FootballLineup implements Serializable {
         this.setStrategy(lineup.getStrategy());
         this.setPlaying(lineup.getPlaying());
         this.setSubstitutes(lineup.getSubstitutes());
+        this.setSubstituitions(lineup.getSubstituitions());
         this.setGlobalSkill(calcGlobalSkill());
     }
 
@@ -88,7 +96,7 @@ public class FootballLineup implements Serializable {
         return globalSkill;
     }
 
-   private void setPlaying(Set<FootballPlayer> playing) {
+    private void setPlaying(Set<FootballPlayer> playing) {
         this.playing = new HashSet<>(playing);
     }
     public Set<FootballPlayer> getPlaying() {
@@ -100,6 +108,18 @@ public class FootballLineup implements Serializable {
     }
     public Set<FootballPlayer> getSubstitutes() {
         return new HashSet<>(this.substitutes);
+    }
+
+    public List<Substitution> getSubstituitions() {
+        return this.substitutions.stream()
+                                  .map(Substitution::clone)
+                                  .collect(Collectors.toList());
+    }
+
+    public void setSubstituitions(List<Substitution> substitutions) {
+        this.substitutions = substitutions.stream()
+                                            .map(Substitution::clone)
+                                            .collect(Collectors.toList());
     }
 
     public int calcGlobalSkill() {
@@ -230,12 +250,18 @@ public class FootballLineup implements Serializable {
         return added;
     }
 
+    public void addSubstituition(FootballPlayer pOut, FootballPlayer pIn) {
+        this.substitutions.add(new Substitution(pOut,pIn));
+    }
+
     public void substitutePlayer(FootballPlayer player, FootballPlayer sub) {
         remPlaying(player);
         remSubstitute(sub);
 
         addPlaying(sub);
         addSubstitute(player);
+
+        addSubstituition(player,sub);
     }
 
     public boolean substitutePlayer(int playing, int sub) {

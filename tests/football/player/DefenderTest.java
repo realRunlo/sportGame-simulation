@@ -54,8 +54,8 @@ public class DefenderTest {
         String filePath = "defender.csv";
         d1.save(filePath);
         BufferedReader br = new BufferedReader(new FileReader(filePath));
-        String[] split = br.readLine().split(": ");
-        Defender dTest = Defender.load(split[1]);
+        String[] split = br.readLine().split(":");
+        Defender dTest = Defender.load(split[1], "Chelsea", false);
 
         assertTrue("Different defenders", d1.equals(dTest));
     }

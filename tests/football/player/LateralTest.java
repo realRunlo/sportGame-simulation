@@ -64,7 +64,7 @@ public class LateralTest {
         l1.save(filePath);
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         String[] split = br.readLine().split(": ");
-        Lateral lTest = Lateral.load(split[1]);
+        Lateral lTest = Lateral.load(split[1], "Rio Ave", false);
 
         assertTrue("Different laterals", l1.equals(lTest));
     }

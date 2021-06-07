@@ -81,8 +81,6 @@ public class StateTest {
     public void saveLoadTest() throws IOException {
         String filePath = "footballstate.csv";
 
-        fs2.save(filePath);
-
         FootballState fTest = FootballState.load(filePath);
 
         assertTrue("Different FootballStates", fs2.equals(fTest));

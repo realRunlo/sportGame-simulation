@@ -1,9 +1,16 @@
 package model.football.game;
 
+import model.football.player.FootballPlayer;
 import model.football.team.FootballTeam;
 import model.football.team.lineup.FootballLineup;
 import model.generic.game.Game;
 import model.generic.team.Team;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.Map;
 
 public class FootballGame extends Game {
     private FootballLineup home;
@@ -21,6 +28,23 @@ public class FootballGame extends Game {
         this.setAway(away);
     }
 
+    public FootballGame
+            (
+                    boolean b,
+                    int points1,
+                    int points2,
+                    LocalDate date,
+                    int timer,
+                    FootballTeam t1,
+                    FootballTeam t2,
+                    FootballLineup fl1,
+                    FootballLineup fl2
+            ) {
+        super(b, points1, points2, date, timer, t1, t2);
+        this.setHome(fl1);
+        this.setAway(fl2);
+    }
+
     public FootballGame(FootballGame fg) {
         super(fg);
         this.setHome(fg.getHome());
@@ -33,7 +57,7 @@ public class FootballGame extends Game {
      * @param TeamAway equipa visitante
      */
     public FootballGame(FootballTeam TeamHome, int strategyHome, FootballTeam TeamAway, int strategyAway){
-            super(true,0,0,0,TeamHome,TeamAway);
+            super(true,0,0, LocalDate.now(),0,TeamHome,TeamAway);
             setHome(new FootballLineup(TeamHome,strategyHome));
             setAway(new FootballLineup(TeamAway,strategyAway));
     }
@@ -77,12 +101,47 @@ public class FootballGame extends Game {
 
     @Override
     public String toCSV() {
-        return super.toCSV() + "\n";
-    }
-/*
-    public static FootballGame load(String csvLine) {
-        String[] tokens = csvLine.split(";");
+        StringBuilder s = new StringBuilder(super.toCSV()).append(",");
 
-        return new FootballGame(Boolean.parseBoolean(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]))
-    } */
+        for(FootballPlayer p: this.getHome().getPlaying())
+            s.append(p.getNumber()).append(",");
+        for(Substitution sub: this.getHome().getSubstituitions())
+            s.append(sub.toCSV()).append(",");
+        for(FootballPlayer p: this.getAway().getPlaying())
+            s.append(p.getName()).append(",");
+        for(Substitution sub: this.getAway().getSubstituitions())
+            s.append(sub.toCSV()).append(",");
+
+        return "Jogo:" + s.append("\n");
+    }
+
+    public static FootballGame load(String csvLine, Map<String,FootballTeam> teams) {
+        String[] tokens = csvLine.split(",");
+        FootballLineup home = new FootballLineup();
+        FootballLineup away = new FootballLineup();
+        FootballTeam t1 = teams.get(tokens[0]);
+        FootballTeam t2 = teams.get(tokens[1]);
+        String[] subTokens;
+        int i;
+        int awayIndex;
+
+        for(i = 5; i < 16; i++)
+            home.addPlaying(t1.getPlayer(Integer.parseInt(tokens[i])));
+        for(; tokens[i].contains("->"); i++) {
+            subTokens = tokens[i].split("->");
+            home.addSubstituition(t1.getPlayer(Integer.parseInt(subTokens[0])), t1.getPlayer(Integer.parseInt(subTokens[1])));
+        }
+
+        awayIndex = i;
+        for(; i < awayIndex+11; i++)
+            away.addPlaying(t2.getPlayer(Integer.parseInt(tokens[i])));
+        for(; i < tokens.length; i++) {
+            subTokens = tokens[i].split("->");
+            away.addSubstituition(t2.getPlayer(Integer.parseInt(subTokens[0])), t2.getPlayer(Integer.parseInt(subTokens[1])));
+        }
+
+        LocalDate date = LocalDate.parse(tokens[4],DateTimeFormatter.ISO_LOCAL_DATE);
+
+        return new FootballGame(true, Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]), date, 90, t1, t2, home, away);
+    } 
 }

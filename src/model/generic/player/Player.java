@@ -108,23 +108,27 @@ public abstract class Player implements Saveable,Serializable {
     }
     public abstract int calcOverallSkill();
 
-    public boolean equals(Player player) {
-        boolean ret = false;
+    @Override
+    public boolean equals(Object o) {
+        if(this == o)
+            return true;
+        if(o == null || !o.getClass().equals(this.getClass()))
+            return false;
 
-        if(this == player)
-            ret = true;
-        else if
-        (
-                this.getClass() == player.getClass()                &&
-                this.getName().equals(player.getName())             &&
-                this.getCurTeam().equals(player.getCurTeam())       &&
-                this.getBackground().equals(player.getBackground()) &&
-                this.getOverallSkill() == player.getOverallSkill()
-        ) ret = true;
+        Player p = (Player) o;
 
-        return ret;
+        return this.getName().equals(p.getName())             &&
+                this.getCurTeam().equals(p.getCurTeam())       &&
+                this.getBackground().equals(p.getBackground()) &&
+                this.getOverallSkill() == p.getOverallSkill();
     }
 
+    @Override
+    public int hashCode() {
+        return this.getName().hashCode();
+    }
+
+    @Override
     public abstract Player clone();
 
     public String toCSV(){

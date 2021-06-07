@@ -82,6 +82,7 @@ public class Striker extends FootballPlayer {
         this.shooting = shooting;
     }
 
+    @Override
     public String toString(){
         return  new String("Team : " + getCurTeam()
                 +"\nStriker: "+getName() + "\nShirt: "+ getNumber()
@@ -98,6 +99,7 @@ public class Striker extends FootballPlayer {
         );
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -116,35 +118,78 @@ public class Striker extends FootballPlayer {
     }
 
     public String toCSV() {
-        return "Striker: " +
+        return "Avancado:" +
                 super.toCSV() + ";" +
                 this.getShooting() + "\n";
     }
 
-    public static Striker load(String csvLine) {
-        String[] tokens = csvLine.split(";");
-        List<String> bg = Arrays.asList(tokens[3].split(","));
+    public static Striker load(String csvLine, String team, boolean teacher) {
+        String[] tokens;
+        String name;
+        int number;
+        String teamName;
+        List<String> bg;
+        int speed;
+        int resistance;
+        int dexterity;
+        int implosion;
+        int headGame;
+        int kick;
+        int passing;
+        int shooting;
+        Card card;
 
-        if(bg.get(0).equals("")) {
+        if(teacher) {
+            tokens = csvLine.split(",");
             bg = new ArrayList<>();
+            teamName = team;
+            speed = Integer.parseInt(tokens[2]);
+            resistance = Integer.parseInt(tokens[3]);
+            dexterity = Integer.parseInt(tokens[4]);
+            implosion = Integer.parseInt(tokens[5]);
+            headGame = Integer.parseInt(tokens[6]);
+            kick = Integer.parseInt(tokens[7]);
+            passing = Integer.parseInt(tokens[8]);
+            card = Card.NONE;
+            shooting = 0;
         }
+
+        else {
+            tokens = csvLine.split(";");
+            bg = Arrays.asList(tokens[3].split(","));
+            if(bg.get(0).equals("")) {
+                bg = new ArrayList<>();
+            }
+            teamName = tokens[2];
+            speed = Integer.parseInt(tokens[4]);
+            resistance = Integer.parseInt(tokens[5]);
+            dexterity = Integer.parseInt(tokens[6]);
+            implosion = Integer.parseInt(tokens[7]);
+            headGame = Integer.parseInt(tokens[8]);
+            kick = Integer.parseInt(tokens[9]);
+            passing = Integer.parseInt(tokens[10]);
+            card = Card.valueOf(tokens[11]);
+            shooting = Integer.parseInt(tokens[12]);
+        }
+
+        name = tokens[0];
+        number = Integer.parseInt(tokens[1]);
 
         return new Striker
                 (
-                        tokens[0],
-                        Integer.parseInt(tokens[1]),
-                        tokens[2],
+                        name,
+                        number,
+                        teamName,
                         bg,
-                        Integer.parseInt(tokens[4]),
-                        Integer.parseInt(tokens[5]),
-                        Integer.parseInt(tokens[6]),
-                        Integer.parseInt(tokens[7]),
-                        Integer.parseInt(tokens[8]),
-                        Integer.parseInt(tokens[9]),
-                        Integer.parseInt(tokens[10]),
-                        Card.valueOf(tokens[11]),
-                        Integer.parseInt(tokens[12])
+                        speed,
+                        resistance,
+                        dexterity,
+                        implosion,
+                        headGame,
+                        kick,
+                        passing,
+                        card,
+                        shooting
                 );
     }
-
 }
