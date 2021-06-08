@@ -69,7 +69,7 @@ public class Midfielder extends FootballPlayer {
         return this.ballRecovery;
     }
 
-    // TODO: Better balance the weights on the skills
+
     @Override
     public int calcOverallSkill() {
         return (int) ((this.getSpeed() * 0.20) +

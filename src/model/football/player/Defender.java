@@ -52,7 +52,7 @@ public class Defender extends FootballPlayer {
         this.changeBallRetention(defender.getBallRetention());
     }
 
-    // TODO: Better balance the weights on the skills
+
     @Override
     public int calcOverallSkill() {
         return (int) (

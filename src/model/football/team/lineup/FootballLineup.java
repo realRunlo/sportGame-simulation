@@ -55,6 +55,7 @@ public class FootballLineup implements Serializable {
         setStrategy(s);
         setPlaying(new HashSet<>());
         setSubstitutes(new HashSet<>());
+        substitutions = new ArrayList<>();
         //Adicionar os titulares
         addPlaying(t.getTypePlayer(Goalkeeper.class,playing,substitutes));
         addPlayerTypeToGroup(t,Defender.class,true);

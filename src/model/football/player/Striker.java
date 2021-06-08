@@ -54,17 +54,17 @@ public class Striker extends FootballPlayer {
         this.changeShooting(striker.getShooting());
     }
 
-    // TODO: Better balance the weights on the skills
+
     @Override
     public int calcOverallSkill() {
         return (int) (
                 (this.getSpeed() * 0.15)      +
-                (this.getResistance() * 0.5) +
-                (this.getDexterity() * 0.10)  +
-                (this.getImplosion() * 0.10)  +
-                (this.getHeadGame() * 0.5)   +
-                (this.getKick() * 0.25)       +
-                (this.getPassing() * 0.10)    +
+                (this.getResistance() * 0.15) +
+                (this.getDexterity() * 0.05)  +
+                (this.getImplosion() * 0.1)  +
+                (this.getHeadGame() * 0.15)   +
+                (this.getKick() * 0.15)       +
+                (this.getPassing() * 0.05)    +
                 (this.getShooting() * 0.2)
         );
     }

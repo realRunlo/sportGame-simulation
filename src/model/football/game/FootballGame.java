@@ -122,6 +122,8 @@ public class FootballGame extends Game {
         FootballTeam t1 = teams.get(tokens[0]);
         FootballTeam t2 = teams.get(tokens[1]);
         String[] subTokens;
+        home.setTeamName(t1.getName());
+        away.setTeamName(t2.getName());
         int i;
         int awayIndex;
 
