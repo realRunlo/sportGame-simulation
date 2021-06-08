@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 public abstract class FootballPlayer extends Player implements Saveable {
     private int speed;
@@ -188,6 +189,14 @@ public abstract class FootballPlayer extends Player implements Saveable {
     public Card getCard() {
         return card;
     }
+
+
+    public static int averageValue(int speed, int resistance, int dexterity, int implosion, int headGame, int kick, int passing){
+        Random rand = new Random();
+
+        return ((speed+resistance+dexterity+implosion+headGame+kick+passing)/7) -5 + rand.nextInt(11);
+    }
+
 
     @Override
     public boolean equals(Object o) {

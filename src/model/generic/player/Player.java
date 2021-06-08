@@ -123,6 +123,7 @@ public abstract class Player implements Saveable,Serializable {
                 this.getOverallSkill() == p.getOverallSkill();
     }
 
+
     @Override
     public int hashCode() {
         return this.getName().hashCode();

@@ -150,7 +150,7 @@ public class Defender extends FootballPlayer {
             kick = Integer.parseInt(tokens[7]);
             passing = Integer.parseInt(tokens[8]);
             card = Card.NONE;
-            ballRetention = 0;
+            ballRetention = averageValue( speed,  resistance, dexterity,  implosion,  headGame, kick, passing);
         }
 
         else {

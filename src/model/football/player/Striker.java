@@ -151,7 +151,7 @@ public class Striker extends FootballPlayer {
             kick = Integer.parseInt(tokens[7]);
             passing = Integer.parseInt(tokens[8]);
             card = Card.NONE;
-            shooting = 0;
+            shooting = averageValue( speed,  resistance, dexterity,  implosion,  headGame, kick, passing);
         }
 
         else {
@@ -174,7 +174,6 @@ public class Striker extends FootballPlayer {
 
         name = tokens[0];
         number = Integer.parseInt(tokens[1]);
-
         return new Striker
                 (
                         name,
