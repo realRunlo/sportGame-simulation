@@ -59,11 +59,11 @@ public class Striker extends FootballPlayer {
     public int calcOverallSkill() {
         return (int) (
                 (this.getSpeed() * 0.15)      +
-                (this.getResistance() * 0.15) +
+                (this.getResistance() * 0.10) +
                 (this.getDexterity() * 0.05)  +
                 (this.getImplosion() * 0.1)  +
                 (this.getHeadGame() * 0.15)   +
-                (this.getKick() * 0.15)       +
+                (this.getKick() * 0.2)       +
                 (this.getPassing() * 0.05)    +
                 (this.getShooting() * 0.2)
         );

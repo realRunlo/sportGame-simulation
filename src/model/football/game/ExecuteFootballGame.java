@@ -279,7 +279,7 @@ public class ExecuteFootballGame {
     }
 
 
-    public void incTimer(double action){
+    private void incTimer(double action){
         g.incTimerBy(action);
     }
 

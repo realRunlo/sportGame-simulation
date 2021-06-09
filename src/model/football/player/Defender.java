@@ -58,10 +58,10 @@ public class Defender extends FootballPlayer {
         return (int) (
                 (this.getSpeed() * 0.15) +
                         (this.getResistance() * 0.15) +
-                        (this.getDexterity() * 0.10) +
+                        (this.getDexterity() * 0.15) +
                         (this.getImplosion() * 0.05) +
                         (this.getHeadGame() * 0.15) +
-                        (this.getKick() * 0.10) +
+                        (this.getKick() * 0.05) +
                         (this.getPassing() * 0.10) +
                         (this.getBallRetention() * 0.2)
         );
