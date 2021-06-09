@@ -108,7 +108,7 @@ public class FootballGame extends Game {
         for(Substitution sub: this.getHome().getSubstituitions())
             s.append(sub.toCSV()).append(",");
         for(FootballPlayer p: this.getAway().getPlaying())
-            s.append(p.getName()).append(",");
+            s.append(p.getNumber()).append(",");
         for(Substitution sub: this.getAway().getSubstituitions())
             s.append(sub.toCSV()).append(",");
 

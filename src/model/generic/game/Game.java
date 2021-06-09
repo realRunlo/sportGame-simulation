@@ -134,10 +134,10 @@ public abstract class Game implements Saveable,Serializable {
     }
 
     public String toCSV() {
-        return this.getT1().getName()  + ";" +
-                this.getT2().getName() + ";" +
-                this.getPoints1()      + ";" +
-                this.getPoints2()      + ";" +
+        return this.getT1().getName()  + "," +
+                this.getT2().getName() + "," +
+                this.getPoints1()      + "," +
+                this.getPoints2()      + "," +
                 this.getDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 

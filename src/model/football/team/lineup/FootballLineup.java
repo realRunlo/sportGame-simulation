@@ -275,6 +275,7 @@ public class FootballLineup implements Serializable {
                 remSubstitute(sub);
                 addPlaying(s.get());
                 addSubstitute(p.get());
+                addSubstituition(p.get(),s.get());
                 return true;
             }
         }
