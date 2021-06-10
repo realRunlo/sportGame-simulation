@@ -1,6 +1,5 @@
 package football.player;
 
-import model.football.player.Defender;
 import model.football.player.Striker;
 import org.junit.After;
 import org.junit.Before;
@@ -34,12 +33,12 @@ public class StrikerTest {
 
     @Test
     public void calcOverallSkillTest() {
-        assertEquals("Same value returned not equals", (int) 77, s1.calcOverallSkill());
-        assertEquals("Same value returned not equals", (int) 77, s2.calcOverallSkill());
+        assertEquals("Same value returned not equals", 48, s1.calcOverallSkill());
+        assertEquals("Same value returned not equals", 48, s2.calcOverallSkill());
     }
     @Test
     public void toCSVTest() {
-        assertEquals("Equal players returned different", "Striker: João;1;Trofense;;100;0;76;45;56;32;76;NONE;32\n", s1.toCSV());
+        assertEquals("Equal players returned different", "Avancado:João;1;Trofense;;100;0;76;45;56;32;76;NONE;32\n", s1.toCSV());
     }
 
     @Test
@@ -47,7 +46,7 @@ public class StrikerTest {
         String filePath = "striker.csv";
         s1.save(filePath);
         BufferedReader br = new BufferedReader(new FileReader(filePath));
-        String[] split = br.readLine().split(": ");
+        String[] split = br.readLine().split(":");
         Striker sTest = Striker.load(split[1], "Trofense", false);
 
         assertTrue("Different defenders", s1.equals(sTest));

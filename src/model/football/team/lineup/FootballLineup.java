@@ -1,18 +1,13 @@
 package model.football.team.lineup;
 
+import model.exceptions.PlayerDoenstExist;
+import model.football.game.Substitution;
+import model.football.player.*;
+import model.football.team.FootballTeam;
+
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import model.exceptions.PlayerDoenstExist;
-import model.football.game.Substitution;
-import model.football.player.Defender;
-import model.football.player.FootballPlayer;
-import model.football.player.Goalkeeper;
-import model.football.player.Lateral;
-import model.football.player.Midfielder;
-import model.football.player.Striker;
-import model.football.team.FootballTeam;
 
 public class FootballLineup implements Serializable {
     private String teamName;
@@ -170,10 +165,12 @@ public class FootballLineup implements Serializable {
         playing.remove(player);
 
         this.setPlaying(playing);
+        this.setGlobalSkill(this.calcGlobalSkill());
     }
 
     public void remPlaying(int shirt){
         if(playing.stream().anyMatch(k->k.getNumber() == shirt)) playing.removeIf(k->k.getNumber() == shirt);
+        this.setGlobalSkill(this.calcGlobalSkill());
     }
 
     public boolean addPlaying(FootballPlayer player) {
@@ -186,6 +183,7 @@ public class FootballLineup implements Serializable {
                 playing.add(player);
                 setPlaying(playing);
                 added = true;
+                this.setGlobalSkill(this.calcGlobalSkill());
             }
         }
         return added;
@@ -219,8 +217,6 @@ public class FootballLineup implements Serializable {
             nToAdd = 2;
             for(int i =0; i<nToAdd;i++) addSubstitute(t.getTypePlayer(playerType,getPlaying(),getSubstitutes()));
         }
-
-
     }
 
 
@@ -245,6 +241,7 @@ public class FootballLineup implements Serializable {
             {
                 substitutes.add(player);
                 setSubstitutes(substitutes);
+                this.setGlobalSkill(this.calcGlobalSkill());
                 added = true;
             }
         }
@@ -253,6 +250,7 @@ public class FootballLineup implements Serializable {
 
     public void addSubstituition(FootballPlayer pOut, FootballPlayer pIn) {
         this.substitutions.add(new Substitution(pOut,pIn));
+        this.setGlobalSkill(this.calcGlobalSkill());
     }
 
     public void substitutePlayer(FootballPlayer player, FootballPlayer sub) {

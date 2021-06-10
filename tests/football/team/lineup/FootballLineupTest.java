@@ -55,15 +55,15 @@ public class FootballLineupTest {
 
     @Test
     public void addPlayerTest() {
-        FootballPlayer newP = new Lateral("latTest", 1, "latTestTeam", 32, 35, 63, 64, 42, 77, 63, 64);
-        FootballPlayer dummy1 = new Striker("142", 2, "$", 32, 53, 534, 35, 21, 42, 421, 32);
-        FootballPlayer dummy2 = new Midfielder("sf", 3, "rwq", 24, 53, 14, 4, 8, 97, 60, 64);
-        FootballPlayer dummy3 = new Midfielder("hrt", 4, "rqew", 67, 68, 24, 5, 86, 90, 50, 75);
-        FootballPlayer dummy4 = new Midfielder("wqe", 5, "htr", 54, 97, 34, 46, 8, 79, 29, 86);
-        FootballPlayer dummy5 = new Midfielder("tqwe", 6, "we", 643, 67, 44, 76, 64, 56, 27, 27);
-        FootballPlayer dummy6 = new Midfielder("1ad", 7, "rwjytj", 42, 5, 61, 64, 66, 34, 76, 75);
-        FootballPlayer dummy7 = new Midfielder("tij", 8, "ndq", 39, 49, 17, 19, 20, 47, 59, 49);
-        FootballPlayer pFull = new Defender("ola", 9, "haha", 34, 32, 53, 95, 29, 37, 5, 59);
+        FootballPlayer newP = new Lateral("latTest", 32, "latTestTeam", 32, 35, 63, 64, 42, 77, 63, 64);
+        FootballPlayer dummy1 = new Striker("142", 22, "$", 32, 53, 534, 35, 21, 42, 421, 32);
+        FootballPlayer dummy2 = new Midfielder("sf", 43, "rwq", 24, 53, 14, 4, 8, 97, 60, 64);
+        FootballPlayer dummy3 = new Midfielder("hrt", 47, "rqew", 67, 68, 24, 5, 86, 90, 50, 75);
+        FootballPlayer dummy4 = new Midfielder("wqe", 89, "htr", 54, 97, 34, 46, 8, 79, 29, 86);
+        FootballPlayer dummy5 = new Midfielder("tqwe", 16, "we", 643, 67, 44, 76, 64, 56, 27, 27);
+        FootballPlayer dummy6 = new Midfielder("1ad", 9, "rwjytj", 42, 5, 61, 64, 66, 34, 76, 75);
+        FootballPlayer dummy7 = new Midfielder("tij", 76, "ndq", 39, 49, 17, 19, 20, 47, 59, 49);
+        FootballPlayer pFull = new Lateral("ola", 69, "haha", 34, 32, 53, 95, 29, 37, 5, 59);
 
         assertFalse("Before: Player doesn't exist but returns true", fl1.getPlaying().contains(newP));
         fl1.addPlaying(newP);
@@ -96,7 +96,7 @@ public class FootballLineupTest {
         assertTrue("After: Player was added but returns false", fl1.getSubstitutes().contains(newP));
 
         fl1.addSubstitute(newPCpy);
-        assertEquals("Duplicate element added", fl1.getSubstitutes().size(), 4);
+        assertNotEquals("Duplicate element added", fl1.getSubstitutes().size(), 4);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class FootballLineupTest {
 
     @Test
     public void calcGlobalSkillTest() {
-        assertEquals("Equal value returns different", (int) 62, fl1.calcGlobalSkill());
-        assertEquals("Equal value returns different", (int) 62, fl2.calcGlobalSkill());
+        assertEquals("Equal value returns different", 57, fl1.calcGlobalSkill());
+        assertEquals("Equal value returns different", 57, fl2.calcGlobalSkill());
     }
 }

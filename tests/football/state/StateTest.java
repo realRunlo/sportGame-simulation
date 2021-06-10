@@ -40,15 +40,15 @@ public class StateTest {
         FootballTeam t2 = new FootballTeam("t2");
         FootballTeam t3 = new FootballTeam("t3");
 
-        players.put(dummy0.getName(), dummy0);
-        players.put(dummy1.getName(), dummy1);
-        players.put(dummy2.getName(), dummy2);
-        players.put(dummy3.getName(), dummy3);
-        players.put(dummy4.getName(), dummy4);
-        players.put(dummy5.getName(), dummy5);
-        players.put(dummy6.getName(), dummy6);
-        players.put(dummy7.getName(), dummy7);
-        players.put(dummy8.getName(), dummy8);
+        players.put(dummy0.getName()+dummy0.getNumber(), dummy0);
+        players.put(dummy1.getName()+dummy1.getNumber(), dummy1);
+        players.put(dummy2.getName()+dummy2.getNumber(), dummy2);
+        players.put(dummy3.getName()+dummy3.getNumber(), dummy3);
+        players.put(dummy4.getName()+dummy4.getNumber(), dummy4);
+        players.put(dummy5.getName()+dummy5.getNumber(), dummy5);
+        players.put(dummy6.getName()+dummy6.getNumber(), dummy6);
+        players.put(dummy7.getName()+dummy7.getNumber(), dummy7);
+        players.put(dummy8.getName()+dummy8.getNumber(), dummy8);
 
         t1.addPlayer(dummy0);
         t1.addPlayer(dummy1);
@@ -74,7 +74,7 @@ public class StateTest {
 
     @Test
     public void toCSVTest() {
-        assertEquals("Different csvs", "FootballState: 23\n", fs2.toCSV());
+        assertEquals("Different csvs", "Estado:23\n", fs2.toCSV());
     }
 
     @Test

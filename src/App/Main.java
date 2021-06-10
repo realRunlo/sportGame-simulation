@@ -2,17 +2,7 @@ package App;
 
 import controller.SPORTMController;
 import model.exceptions.PlayerDoenstExist;
-import model.football.game.ExecuteFootballGame;
-import model.football.game.FootballGame;
-import model.football.player.*;
-import model.football.team.FootballTeam;
-import readFile.readFile;
-import viewer.SPORTMViewer;
-import model.football.state.FootballState;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Main {

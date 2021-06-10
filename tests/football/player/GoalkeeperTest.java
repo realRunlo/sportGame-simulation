@@ -1,6 +1,5 @@
 package football.player;
 
-import model.football.player.Defender;
 import model.football.player.Goalkeeper;
 import org.junit.After;
 import org.junit.Before;
@@ -48,13 +47,13 @@ public class GoalkeeperTest {
     
     @Test
     public void calcOverallSkillTest() {
-        assertEquals((int) 44.5, g1.calcOverallSkill());
-        assertEquals((int) 44.5, g2.calcOverallSkill());
+        assertEquals(51, g1.calcOverallSkill());
+        assertEquals(51, g2.calcOverallSkill());
     }
 
     @Test
     public void toCSVTest() {
-        assertEquals("Different strings","Goalkeeper: Maria;1;Porto;;76;32;100;54;78;98;54;NONE;12\n", g1.toCSV());
+        assertEquals("Different strings","Guarda-Redes:Maria;1;Porto;;76;32;100;54;78;98;54;NONE;12\n", g1.toCSV());
     }
 
     @Test

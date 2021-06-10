@@ -7,7 +7,6 @@ import model.football.player.*;
 import model.football.state.FootballState;
 import model.football.team.FootballTeam;
 import model.football.team.lineup.FootballLineup;
-import readFile.readFile;
 import viewer.SPORTMViewer;
 
 import java.io.FileNotFoundException;
@@ -16,7 +15,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 
 public class SPORTMController{
