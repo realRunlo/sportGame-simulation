@@ -9,6 +9,20 @@ import java.util.List;
 public class Midfielder extends FootballPlayer {
     private int ballRecovery;
 
+    /**
+     * Construtor de Midfielder
+     * @param name nome do jogador
+     * @param number numero da camisola
+     * @param team equipa do jogador
+     * @param speed velocidade do jogador
+     * @param resistance resistencia do jogador
+     * @param dexterity destreza do jogador
+     * @param implosion implosao do jogador
+     * @param headGame jogo de cabeca do jogador
+     * @param kick pontape do jogdor
+     * @param passing passe do jogador
+     * @param ballRecovery recuperacao de bola do jogador
+     */
     public Midfielder
             (
                     String name,
@@ -28,6 +42,22 @@ public class Midfielder extends FootballPlayer {
         this.changeBallRecovery(ballRecovery);
     }
 
+    /**
+     * Construtor de Midfielder
+     * @param name nome do jogador
+     * @param number numero da camisola
+     * @param team equipa do jogador
+     * @param background lista de equipas por onde o jogador passou
+     * @param speed velocidade do jogador
+     * @param resistance resistencia do jogador
+     * @param dexterity destreza do jogador
+     * @param implosion implosao do jogador
+     * @param headGame jogo de cabeca do jogador
+     * @param kick pontape do jogdor
+     * @param passing passe do jogador
+     * @param card cartao do jogador
+     * @param ballRecovery recuperacao de bola do jogador
+     */
     public Midfielder
             (
                     String name,
@@ -49,27 +79,46 @@ public class Midfielder extends FootballPlayer {
         this.changeBallRecovery(ballRecovery);
     }
 
+    /**
+     * Construtor de Midfielder
+     * @param midfielder jogador a copiar
+     */
     public Midfielder(Midfielder midfielder) {
         super(midfielder);
         this.changeBallRecovery(midfielder.getBallRecovery());
     }
 
+    /**
+     * Modificar da recuperacao de bola
+     * @param ballRecovery nova recuperacao de bola
+     */
     public void changeBallRecovery(int ballRecovery) {
         this.setBallRecovery(ballRecovery);
         updateOverallSkill();
     }
 
+    /**
+     * Setter da recuperacao de bola
+     * @param ballRecovery nova recuperacao de bola
+     */
     private void setBallRecovery(int ballRecovery) {
         if(ballRecovery > 100) ballRecovery = 100;
         else if(ballRecovery < 0) ballRecovery = 0;
         this.ballRecovery = ballRecovery;
     }
 
+    /**
+     * Getter da recuperacao de bola
+     * @return recuperacao de bola
+     */
     public int getBallRecovery() {
         return this.ballRecovery;
     }
 
-
+    /**
+     * Calcula a habilidade de um medio
+     * @return habilidade do jogador
+     */
     @Override
     public int calcOverallSkill() {
         return (int) ((this.getSpeed() * 0.20) +
@@ -82,6 +131,11 @@ public class Midfielder extends FootballPlayer {
                 (this.getBallRecovery() * 0.20));
     }
 
+    /**
+     * Equals da classe Midfielder
+     * @param o objeto a comparar
+     * @return resultado da comparacao
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -95,17 +149,29 @@ public class Midfielder extends FootballPlayer {
         return super.equals(midfielder) && this.getBallRecovery() == midfielder.getBallRecovery();
     }
 
+    /**
+     * Clone da classe Midfielder
+     * @return clone
+     */
     @Override
     public Midfielder clone() {
         return new Midfielder(this);
     }
 
+    /**
+     * Torna Midfielder em uma string saveable
+     * @return string saveable
+     */
     public String toCSV() {
         return "Medio:" +
                 super.toCSV() + ";" +
                 this.getBallRecovery() + "\n";
     }
 
+    /**
+     * ToString da classe Midfielder
+     * @return midfielder em formato string
+     */
     @Override
     public String toString(){
         return  new String("Team : " + getCurTeam()
@@ -123,6 +189,13 @@ public class Midfielder extends FootballPlayer {
         );
     }
 
+    /**
+     * Carrega um Midfielder a partir de uma string
+     * @param csvLine string a analisar
+     * @param team equipa do jogador
+     * @param teacher indicador do formato do ficheiro de dados
+     * @return Midfielder carregado
+     */
     public static Midfielder load(String csvLine, String team, boolean teacher) {
         String[] tokens;
         String name;

@@ -9,6 +9,20 @@ import java.util.List;
 public class Striker extends FootballPlayer {
     private int shooting;
 
+    /**
+     * Construtor de Striker
+     * @param name nome do jogador
+     * @param number numero da camisola
+     * @param team equipa do jogador
+     * @param speed velocidade do jogador
+     * @param resistance resistencia do jogador
+     * @param dexterity destreza do jogador
+     * @param implosion implosao do jogador
+     * @param headGame jogo de cabeca do jogador
+     * @param kick pontape do jogdor
+     * @param passing passe do jogador
+     * @param shooting remate do jogador
+     */
     public Striker
             (
                     String name,
@@ -28,6 +42,22 @@ public class Striker extends FootballPlayer {
         this.changeShooting(shooting);
     }
 
+    /**
+     * Construtor de Striker
+     * @param name nome do jogador
+     * @param number numero da camisola
+     * @param team equipa do jogador
+     * @param background lista de equipas por onde o jogador passou
+     * @param speed velocidade do jogador
+     * @param resistance resistencia do jogador
+     * @param dexterity destreza do jogador
+     * @param implosion implosao do jogador
+     * @param headGame jogo de cabeca do jogador
+     * @param kick pontape do jogdor
+     * @param passing passe do jogador
+     * @param card cartao do jogador
+     * @param shooting remate do jogador
+     */
     public Striker
             (
                     String name,
@@ -49,12 +79,20 @@ public class Striker extends FootballPlayer {
         this.changeShooting(shooting);
     }
 
+    /**
+     * Construtor da classe Striker
+     * @param striker jogador a copiar
+     */
     public Striker(Striker striker) {
         super(striker);
         this.changeShooting(striker.getShooting());
     }
 
 
+    /**
+     * Calculo da habilidade de um striker
+     * @return habilidade do jogador
+     */
     @Override
     public int calcOverallSkill() {
         return (int) (
@@ -69,19 +107,37 @@ public class Striker extends FootballPlayer {
         );
     }
 
+    /**
+     * Modificador de remate
+     * @param shooting novo remate
+     */
     public void changeShooting(int shooting) {
         this.setShooting(shooting);
         this.updateOverallSkill();
     }
+
+    /**
+     * Getter de remate
+     * @return remate
+     */
     public int getShooting(){
         return shooting;
     }
+
+    /**
+     * Setter de remate
+     * @param shooting novo remate
+     */
     public void setShooting(int shooting){
         if(shooting > 100) shooting = 100;
         else if(shooting < 0) shooting = 0;
         this.shooting = shooting;
     }
 
+    /**
+     * ToString da classe Striker
+     * @return Striker no formato de string
+     */
     @Override
     public String toString(){
         return  new String("Team : " + getCurTeam()
@@ -99,6 +155,11 @@ public class Striker extends FootballPlayer {
         );
     }
 
+    /**
+     * Equals da classe Striker
+     * @param o objeto a comparar
+     * @return resultado da comparacao
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -112,17 +173,32 @@ public class Striker extends FootballPlayer {
         return super.equals(striker) && this.getShooting() == striker.getShooting();
     }
 
+    /**
+     * Clone da classe Striker
+     * @return clone
+     */
     @Override
     public Striker clone() {
         return new Striker(this);
     }
 
+    /**
+     * Torna Striker em uma string saveable
+     * @return string saveable
+     */
     public String toCSV() {
         return "Avancado:" +
                 super.toCSV() + ";" +
                 this.getShooting() + "\n";
     }
 
+    /**
+     * Carrega um Striker a partir de uma string
+     * @param csvLine string a analisar
+     * @param team equipa do lateral
+     * @param teacher indicador do formato do ficheiro de dados
+     * @return Striker carregado
+     */
     public static Striker load(String csvLine, String team, boolean teacher) {
         String[] tokens;
         String name;

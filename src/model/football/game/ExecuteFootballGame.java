@@ -30,6 +30,10 @@ public class ExecuteFootballGame {
     private static final String WHITE = "\u001B[37m";
 
 
+    /**
+     * Contrutor de classe
+     * @param g jogo a ser executado
+     */
     public ExecuteFootballGame(FootballGame g){
         Random rand = new Random();
         setGame(g);
@@ -49,32 +53,62 @@ public class ExecuteFootballGame {
         }
     }
 
+    /**
+     * Metodo que define o jogador com a bola
+     * @param p jogador a fichar com a posse da bola
+     * @param home equipa do jogador
+     */
     private void setPlayerWithTheBall(FootballPlayer p, boolean home){
         playerWithTheBall = p;
         //caso o novo jogador seja da equipa que antes nao tinha posse da bola, inverte a posse
         if(home != getHome()) invertTeamWithBall();
     }
 
+    /**
+     * Metodo que devolve o relatorio do jogo
+     * @return relatorio do jogo
+     */
     public List<String> getGameReport(){
         return new ArrayList<String>(gameReport);
     }
 
+    /**
+     * Metodo que indica se a equipa com posse de bola e a da casa ou visitante
+     * @return booleano
+     */
     private boolean getHome(){
         return home;
     }
 
+    /**
+     * Metodo para definir a equipa com posse de bola
+     * @param homeOrAway booleano que indica se a equipa com posse de bola ser a
+     *                   da casa ou a visitante
+     */
     private void setHome(boolean homeOrAway){
         home = homeOrAway;
     }
 
+    /**
+     * Metodo que devolve o jogo a ser executado
+     * @return jogo
+     */
     public FootballGame getGame(){
         return g.clone();
     }
 
+    /**
+     * Metodo que permite definir/atualizar o jogo a ser executado
+     * @param g jogo atualizado
+     */
     public void setGame(FootballGame g){
         this.g = g.clone();
     }
 
+    /**
+     * Metodo principal que simula uma acao no jogo
+     * @throws PlayerDoenstExist
+     */
     public void ExecutePlay() throws PlayerDoenstExist {
         FootballGame g = getGame();
         FootballLineup playing = new FootballLineup();
@@ -129,8 +163,11 @@ public class ExecuteFootballGame {
     }
 
 
-
-
+    /**
+     * Metodo auxiliar que simula uma tentativa de roubo de bola
+     * @param p jogador que tenta roubar a bola
+     * @return booleano que indica se o jogador foi sucedido
+     */
     private boolean tryStealBall(FootballPlayer p){
         incTimer(quickAction);
         registerAction(p.getName() + " tries to steal the ball!");
@@ -156,6 +193,10 @@ public class ExecuteFootballGame {
         return steal;
     }
 
+    /**
+     * Metodo que simula a tentativa de passe de bola
+     * @throws PlayerDoenstExist
+     */
     private void tryPass() throws PlayerDoenstExist {
         registerAction(playerWithTheBall.getName() + " tries to pass the ball.");
         incTimer(quickAction);
@@ -170,7 +211,13 @@ public class ExecuteFootballGame {
         }
     }
 
-
+    /**
+     * Metodo opcional de simulacao de tentativa de passe caso haja intersecao
+     * da bola no caso de falha de passe
+     * @param p jogador que intercetara a bola
+     * @return booleano sobre o sucesso do passe
+     * @throws PlayerDoenstExist
+     */
     private boolean tryPass(FootballPlayer p) throws PlayerDoenstExist {
         registerAction(playerWithTheBall.getName() + " tries to pass the ball.");
         incTimer(quickAction);
@@ -187,6 +234,10 @@ public class ExecuteFootballGame {
         }
     }
 
+    /**
+     * Metodo que simula um passe
+     * @throws PlayerDoenstExist
+     */
     private void Pass() throws PlayerDoenstExist {
         incTimer(averageAction);
         FootballPlayer p;
@@ -200,6 +251,11 @@ public class ExecuteFootballGame {
         playerWithTheBall = p;
     }
 
+    /**
+     * Metodo que simula a tentativa de um remate
+     * @return booleano que indica o sucesso da tentativa de remate
+     * @throws PlayerDoenstExist
+     */
     private boolean tryShoot() throws PlayerDoenstExist{
         registerAction(YELLOW + playerWithTheBall.getName() + " tries to score!!!!!" + RESET);
         incTimer(quickAction);
@@ -215,6 +271,10 @@ public class ExecuteFootballGame {
         }
     }
 
+    /**
+     * Metodo que simula um remate
+     * @throws PlayerDoenstExist
+     */
     private void Shoot() throws PlayerDoenstExist{
         registerAction("He shoots!!!");
         incTimer(quickAction);
@@ -251,18 +311,25 @@ public class ExecuteFootballGame {
             }
         }
         else{// se a skill do guarda-redes for muito superior a do avancado, fica com a bola
-            registerAction(RED + "But the goalkeeper doens't let that slide!" + RED);
+            registerAction(RED + "But the goalkeeper doens't let that slide!" + RESET);
             playerWithTheBall = goalie;
         }
 
         invertTeamWithBall();
     }
 
+    /**
+     * Metodo que inverte a equipa com a posse de bola
+     */
     private void invertTeamWithBall(){
         home = !home;
     }
 
 
+    /**
+     * Metodo que devolve a classe adversaria do jogador com posse de bola
+     * @return classe adversaria
+     */
     private Class<? extends FootballPlayer> getFootballPlayerOppositeClass(){
         if(playerWithTheBall.getClass().equals(Defender.class) || playerWithTheBall.getClass().equals(Lateral.class)) return Striker.class;
         if(playerWithTheBall.getClass().equals(Midfielder.class)) return Midfielder.class;
@@ -270,6 +337,10 @@ public class ExecuteFootballGame {
         else return null;
     }
 
+    /**
+     * Metodo que devolve a classe de nivel superior ao jogador atual
+     * @return classe de nivel superior
+     */
     private Class<? extends FootballPlayer> higherPositionClass(){
         if(playerWithTheBall.getClass().equals(Defender.class)) return Midfielder.class;
         if(playerWithTheBall.getClass().equals(Midfielder.class)|| playerWithTheBall.getClass().equals(Lateral.class)) return Striker.class;
@@ -279,19 +350,36 @@ public class ExecuteFootballGame {
     }
 
 
+    /**
+     * Metodo que incrementa o contador do jogo
+     * @param action tempo a icrementar no contador
+     */
     private void incTimer(double action){
         g.incTimerBy(action);
     }
 
 
+    /**
+     * Regista uma mensagem no relatorio
+     * @param message mensagem a registar
+     */
     private void registerAction(String message){
         gameReport.add(message);
     }
 
+    /**
+     * Devolve o contador do jogo
+     * @return contador do jogo
+     */
     public double getTimer(){
         return g.getTimer();
     }
 
+    /**
+     * Atualiza o plantel de uma das equipas
+     * @param l novo plantel
+     * @param home equipa a atualizar
+     */
     public void setLineup(FootballLineup l, boolean home){
         if(l!=null) {
             if (home) g.setHome(l);
@@ -299,7 +387,11 @@ public class ExecuteFootballGame {
         }
     }
 
-
+    /**
+     * Metodo que realizar um speedCheck entre o jogador atual e o adversario
+     * @param adversary jogador adversario a comprar a velocidade
+     * @return resultado da comparacao
+     */
     private int speedCheck(FootballPlayer adversary){
         return (playerWithTheBall.getSpeed() - adversary.getSpeed());
     }

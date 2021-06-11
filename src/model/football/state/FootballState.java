@@ -24,6 +24,10 @@ public class FootballState implements Saveable,Serializable{
     private int day;
 
     private static final int MAX_PLAYER_TEAM = 23;
+
+    /**
+     * Construtor de FootballState
+     */
     public FootballState(){
         setPlayersList(new HashMap<>());
         setTeams(new HashMap<>());
@@ -33,6 +37,10 @@ public class FootballState implements Saveable,Serializable{
         setDay(0);
     }
 
+    /**
+     * Construtor de FootballState
+     * @param day dia de criacao do estado
+     */
     public FootballState(int day) {
         this.setPlayersList(new HashMap<>());
         this.setTeams(new HashMap<>());
@@ -42,6 +50,14 @@ public class FootballState implements Saveable,Serializable{
         this.setDay(day);
     }
 
+    /**
+     * Construtor de FootballState
+     * @param newList jogadores disponiveis
+     * @param newTeams equipas disponiveis
+     * @param newPlayers quantidade de jogadores
+     * @param newNumbTeams quantidade de equipas
+     * @param newDay dia de criacao do estado
+     */
     public FootballState(Map<String, FootballPlayer> newList, Map<String, FootballTeam> newTeams, int newPlayers, int newNumbTeams, int newDay){
         setPlayersList(newList);
         setTeams(newTeams);
@@ -51,6 +67,10 @@ public class FootballState implements Saveable,Serializable{
         setDay(newDay);
     }
 
+    /**
+     * Construtor de FootballState
+     * @param s FootballState a copiar
+     */
     public FootballState(FootballState s){
         setPlayersList(s.getPlayersList());
         setTeams(s.getTeams());
@@ -60,56 +80,119 @@ public class FootballState implements Saveable,Serializable{
         setDay(s.getDay());
     }
 
+    /**
+     * Getter da lista de jogadores
+     * @return lista dos jogadores
+     */
     public Map<String, FootballPlayer> getPlayersList(){
         return playersList.entrySet().stream().collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
     }
 
+    /**
+     * Setter da lista de jogadores
+     * @param newList nova lista de jogadores
+     */
     public void setPlayersList(Map<String, FootballPlayer> newList){
         playersList = newList.entrySet().stream().collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
         setNumbPlayers(playersList.size());
     }
 
+    /**
+     * Getter da lista de equipas
+     * @return lista de equipas
+     */
     public Map<String, FootballTeam> getTeams(){
         return teams.entrySet().stream().collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
     }
 
+    /**
+     * Rertorna uma Team com o nome indicado
+     * @param teamName nome da equipa
+     * @return Team
+     */
     public FootballTeam getTeam(String teamName){
         return getTeams().get(teamName).clone();
     }
 
+    /**
+     * Setter da lista de equipas
+     * @param newTeams nova lista de equipas
+     */
     public void setTeams(Map<String, FootballTeam> newTeams){
         teams = newTeams.entrySet().stream().collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
         setNTeams(teams.size());
     }
 
+    /**
+     * Getter do historico de partidas
+     * @return historico de partidas
+     */
     public List<FootballGame> getGameHistory(){
         return new ArrayList<>(gameHistory);
     }
 
+    /**
+     * Setter do historico de partidas
+     * @param newHistory novo historico de partidas
+     */
     public void setGameHistory(List<FootballGame> newHistory){
         gameHistory = new ArrayList<>(newHistory);
     }
 
+    /**
+     * Getter do numero de jogadores
+     * @return numero de jogadores
+     */
     public int getNPlayers(){
         return numbPlayers;
     }
 
+    /**
+     * Setter do numero de jogadores
+     * @param nP novo numero de jogadores
+     */
     public void setNumbPlayers(int nP){
         numbPlayers = nP;
     }
 
+    /**
+     * Getter do numero de equipas
+     * @return numero de equipas
+     */
     public int getNTeams(){
         return numbTeams;
     }
 
+    /**
+     * Setter do numero de equipas
+     * @param nTeams novo numero de equipas
+     */
     public void setNTeams(int nTeams){
         numbTeams = nTeams;
     }
 
+    /**
+     * Getter do dia atual do estado
+     * @return dia atual do estado
+     */
     public int getDay(){
         return day;
     }
 
+    /**
+     * Setter do dia
+     * @param nDay novo dia
+     */
+    public void setDay(int nDay){
+        day = nDay;
+    }
+
+    /**
+     * Procura um jogador com um certo nome e camisola
+     * @param name nome do jogador
+     * @param shirt camisola
+     * @return FootballPlayer com o nome e camisola indicados
+     */
     public FootballPlayer getPlayer(String name, Integer shirt){
         if(playersList.containsKey(name+shirt)){
             return playersList.get(name+shirt).clone();
@@ -117,10 +200,10 @@ public class FootballState implements Saveable,Serializable{
         return null;
     }
 
-    public void setDay(int nDay){
-        day = nDay;
-    }
-
+    /**
+     * Adiciona um novo jogo no historico
+     * @param g jogo a adicionar
+     */
     public void addGame(FootballGame g){
         List<FootballGame> gHistory = getGameHistory();
         gHistory.add(g.clone());
@@ -128,13 +211,20 @@ public class FootballState implements Saveable,Serializable{
         day++;
     }
 
+    /**
+     * Remove um jogo do historico
+     * @param i posicao no historico a remover
+     */
     public void removeIndexGame(int i){
         List<FootballGame> gHistory = getGameHistory();
         gHistory.remove(Math.min(i, gHistory.size() - 1));
         setGameHistory(gHistory);
     }
 
-
+    /**
+     * Adiciona um novo jogador, caso esse jogador tenha uma equipa, e adicionado nessa equipa
+     * @param p jogador a adicionar
+     */
     public void addPlayer(FootballPlayer p){
         Map<String,FootballPlayer> pList = getPlayersList();
         //caso nao exista jogador com o mesmo nome adiciona imediatamente
@@ -151,6 +241,12 @@ public class FootballState implements Saveable,Serializable{
             }
         }
     }
+
+    /**
+     * Adiciona um jogador em uma equipa
+     * @param p jogador a adicionar
+     * @param team equipa a ser adicionado
+     */
     public void addPlayer2Team(FootballPlayer p ,String team){
         if(teams.containsKey(team) && p!= null){
             FootballTeam t = getTeam(team);
@@ -165,6 +261,13 @@ public class FootballState implements Saveable,Serializable{
         }
     }
 
+    /**
+     * Procura um numero de camisola disponivel para um dado nome e equipa
+     * verifica se no estado ja existe um jogador com o mesmo nome e camisola
+     * @param name nome do jogador
+     * @param t equipa do jogador
+     * @return numero de camisola valido
+     */
     public int findAvailableShirt(String name, FootballTeam t){
         boolean available = false;
         int shirt = 0;
@@ -175,6 +278,11 @@ public class FootballState implements Saveable,Serializable{
         return shirt;
     }
 
+    /**
+     * Adiciona uma nova equipa
+     * se a equipa tiver novos jogadores, adiciona-os no estado
+     * @param t equipa a adicionar
+     */
     public void addTeam(FootballTeam t){
         Map<String,FootballTeam> tList = getTeams();
         Map<String,FootballPlayer> pList = getPlayersList();
@@ -183,11 +291,19 @@ public class FootballState implements Saveable,Serializable{
         t.getPlayers().forEach((k,v)-> updatePlayer(v)); //adiciona-os ao estadoF
     }
 
+    /**
+     * Atualiza uma equipa e os seus jogadores
+     * @param team equipa a atualizar
+     */
     public void updateTeam(FootballTeam team) {
         team.getPlayers().forEach((e,k)-> updatePlayer(k));
         this.teams.replace(team.getName(), team);
     }
 
+    /**
+     * Atualiza um jogador
+     * @param player jogador a atualizar
+     */
     public void updatePlayer(FootballPlayer player) {
         //da update do jogador na lista de jogadores do estado
         if (this.playersList.containsKey(player.getName()+player.getNumber())) {
@@ -204,7 +320,12 @@ public class FootballState implements Saveable,Serializable{
         else addPlayer(player);
     }
 
-
+    /**
+     * Remove um jogador do estado e da sua equipa
+     * @param name nome do jogador a remover
+     * @param shirt camisola do jogador a remover
+     * @param team equipa do jogador a remover
+     */
     public void removePlayer(String name,int shirt, String team){
         Map<String,FootballPlayer> pList = getPlayersList();
         if(pList.containsKey(name+shirt)){
@@ -220,7 +341,10 @@ public class FootballState implements Saveable,Serializable{
     }
 
 
-
+    /**
+     * Remove uma equipa, removendo todos os seus jogadores dos estado
+     * @param team equipa a remover
+     */
     public void removeTeam(String team){
         Map<String,FootballTeam> tList = getTeams();
         Map<String,FootballPlayer> pList = getPlayersList();
@@ -234,7 +358,10 @@ public class FootballState implements Saveable,Serializable{
         }
     }
 
-    //remove apenas a equipa, nao removendo os jogadores
+    /**
+     * Remove uma equipa, mantendo os jogadores no estado
+     * @param team equipa a remover
+     */
     public void removeOnlyTeam(String team){
         Map<String,FootballTeam> tList = getTeams();
         if(tList.containsKey(team)) {
@@ -247,6 +374,10 @@ public class FootballState implements Saveable,Serializable{
         }
     }
 
+    /**
+     * Remove um jogador da sua equipa, mantendo-o no estado
+     * @param p jogador a remover
+     */
     public void removePlayerFromTeam(FootballPlayer p){
         if(getTeams().containsKey(p.getCurTeam())){
             FootballTeam t = getTeam(p.getCurTeam());
@@ -261,7 +392,12 @@ public class FootballState implements Saveable,Serializable{
         }
     }
 
-
+    /**
+     * Transfere um jogador da sua equipa atual para uma nova equipa caso possivel
+     * @param p jogador a transferir
+     * @param teamToTransfer equipa de destino
+     * @return resultado de sucesso da transferencia
+     */
     public boolean transferPlayer(FootballPlayer p, FootballTeam teamToTransfer){
         boolean transfered = false;
         if(p!=null){
@@ -280,23 +416,39 @@ public class FootballState implements Saveable,Serializable{
         return transfered;
     }
 
-
+    /**
+     * Incrementa o numero de jogadores
+     */
     public void incNPlayers(){
         numbPlayers++;
     }
 
+    /**
+     * Decrementa o numero de jogadores
+     */
     public void decNPlayers(){
         numbPlayers--;
     }
 
+    /**
+     * Incrementa o numero de equipas
+     */
     public void incNTeams(){
         numbTeams++;
     }
 
+    /**
+     * Decrementa o numero de equipas
+     */
     public void decNTeams(){
         numbTeams--;
     }
 
+    /**
+     * Verifica se um dado jogador existe no estado
+     * @param p jogador a procurar
+     * @return resultado da procura
+     */
     public boolean existsPlayer(FootballPlayer p){
         Map<String,FootballPlayer> pList = getPlayersList();
         for(FootballPlayer player: pList.values()){
@@ -305,6 +457,12 @@ public class FootballState implements Saveable,Serializable{
         return false;
     }
 
+    /**
+     * Verifica se existe um jogador com um dado nome e camisola no estado
+     * @param name nome do jogador a procurar
+     * @param shirt camisola do jogador a procurar
+     * @return resultado da procura
+     */
     public boolean existsPlayer(String name, Integer shirt){
         if(playersList.containsKey(name+shirt)){
             return playersList.get(name+shirt).getName().equals(name);
@@ -312,11 +470,20 @@ public class FootballState implements Saveable,Serializable{
         return false;
     }
 
+    /**
+     * Procura se existe uma equipa com o dado nome no estado
+     * @param name nome da equipa a procurar
+     * @return resultado da procura
+     */
     public boolean existsTeam(String name){
         return teams.containsKey(name);
     }
 
-
+    /**
+     * Cria um novo jogo entre duas equipas
+     * @param team1 equipa da casa
+     * @param team2 equipa visitante
+     */
     public void createGame(String team1, String team2){
         Map<String,FootballTeam> tList = getTeams();
         //Se as equipas existirem e tiverem jogadores suficientes e adicionado um novo jogo
@@ -330,6 +497,11 @@ public class FootballState implements Saveable,Serializable{
         }
     }
 
+    /**
+     * Grava o estado num ficheiro de objetos
+     * @param filename ficheiro onde gravar
+     * @throws IOException
+     */
     public void saveState(String filename) throws IOException {
         FileOutputStream fos = new FileOutputStream(filename);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -338,6 +510,11 @@ public class FootballState implements Saveable,Serializable{
         oos.close();
     }
 
+    /**
+     * Torna a lista de jogadores em uma string, escrevendo o seu nome e habilidade
+     * @param showTeam indica se deve ser incluido a equipa do jogador para cada jogador
+     * @return string com a lista de jogadores
+     */
     public String printPlayers(boolean showTeam){
         StringBuilder sb = new StringBuilder();
         AtomicInteger changeLine = new AtomicInteger(0);
@@ -360,6 +537,13 @@ public class FootballState implements Saveable,Serializable{
         return sb.append("\n").toString();
     }
 
+    /**
+     * Torna a lista de jogadores em uma string, escrevendo apenas os jogadores com a camisola
+     * indicada como argumento
+     * @param shirt camisola a filtrar
+     * @param showTeam indica se deve ser incluido a equipa do jogador para cada jogador
+     * @return string com a lista de jogadores
+     */
     public String printPlayersWithShirt(int shirt,boolean showTeam){
         StringBuilder sb = new StringBuilder();
         AtomicInteger changeLine = new AtomicInteger(0);
@@ -384,7 +568,10 @@ public class FootballState implements Saveable,Serializable{
         return sb.append("\n").toString();
     }
 
-
+    /**
+     * Torna a lista de equipas em uma string, gravando o seu nome e habilidade media
+     * @return string com lista de equipas
+     */
     public String printTeams(){
         StringBuilder sb = new StringBuilder();
         AtomicInteger changeLine = new AtomicInteger(0);
@@ -403,6 +590,11 @@ public class FootballState implements Saveable,Serializable{
         return sb.append("\n").toString();
     }
 
+    /**
+     * Torna o historico de jogos em uma string, gravando o seu score e respetivos planteis das equipas
+     * que jogaram
+     * @return string com historico de jogos
+     */
     public String printGameHistory(){
         StringBuilder sb = new StringBuilder();
         sb.append("**********************************************\n")
@@ -414,8 +606,11 @@ public class FootballState implements Saveable,Serializable{
     }
 
 
-
-
+    /**
+     * Equals da classe FootballState
+     * @param o objeto a comparar
+     * @return resultado da comparacao
+     */
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -430,11 +625,19 @@ public class FootballState implements Saveable,Serializable{
                 this.getDay() == s.getDay();
     }
 
+    /**
+     * Clone da classe FootballState
+     * @return clone
+     */
     @Override
     public FootballState clone(){
         return new FootballState(this);
     }
 
+    /**
+     * ToString da classe FootballState
+     * @return FootballState em formato string
+     */
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("\n*************************************\n")
@@ -450,11 +653,20 @@ public class FootballState implements Saveable,Serializable{
         return sb.toString();
     }
 
+    /**
+     * Torna FootballState em uma string saveable
+     * @return string saveable
+     */
     @Override
     public String toCSV() {
         return "Estado:" + this.getDay() + "\n";
     }
 
+    /**
+     * Grava o estado em um ficheiro de texto
+     * @param filePath ficheiro em que vai gravar
+     * @throws IOException
+     */
     @Override
     public void save(String filePath) throws IOException {
         BufferedWriter br = new BufferedWriter(new FileWriter(filePath));
@@ -475,6 +687,12 @@ public class FootballState implements Saveable,Serializable{
         }
     }
 
+    /**
+     * Carrega um estado a partir de um ficheiro de texto
+     * @param filePath ficheiro a analisar
+     * @return estado carregado
+     * @throws IOException
+     */
     public static FootballState load(String filePath) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         String line;

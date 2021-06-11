@@ -16,18 +16,42 @@ public class FootballGame extends Game {
     private FootballLineup home;
     private FootballLineup away;
 
+    /**
+     * Construtor de FootballGame
+     * @param t1 equipa da casa
+     * @param t2 equipa visitante
+     */
     public FootballGame(Team t1, Team t2) {
         super(t1, t2);
         this.setHome(new FootballLineup());
         this.setAway(new FootballLineup());
     }
 
+    /**
+     * Construtor de FootballGame
+     * @param t1 equipa da casa
+     * @param t2 equipa visitante
+     * @param home plantel da equipa da casa
+     * @param away plantel da equipa visitante
+     */
     public FootballGame(Team t1, Team t2, FootballLineup home, FootballLineup away) {
         super(t1, t2);
         this.setHome(home);
         this.setAway(away);
     }
 
+    /**
+     * Construtor de FootballGame
+     * @param b booleano que indica se o jogo ja terminou
+     * @param points1 score da equipa da casa
+     * @param points2 score da equipa visitante
+     * @param date data de criacao do jogo
+     * @param timer contador
+     * @param t1 equipa da casa
+     * @param t2 equipa visitante
+     * @param fl1 plantel da equipa da casa
+     * @param fl2 plantel da equipa visitante
+     */
     public FootballGame
             (
                     boolean b,
@@ -45,6 +69,10 @@ public class FootballGame extends Game {
         this.setAway(fl2);
     }
 
+    /**
+     * Construtor de FootballGame
+     * @param fg jogo a copiar
+     */
     public FootballGame(FootballGame fg) {
         super(fg);
         this.setHome(fg.getHome());
@@ -52,9 +80,12 @@ public class FootballGame extends Game {
     }
 
     /**
-     * Dados dois nomes de equipas, automaticamente cria uma lineup para cada uma
-     * @param TeamHome equipa visitada
+     * Construtor de FootballGame
+     * cria automaticamente o plantel de cada equipa
+     * @param TeamHome equipa da casa
+     * @param strategyHome estrategia da equipa da casa
      * @param TeamAway equipa visitante
+     * @param strategyAway estrategia da equipa visitante
      */
     public FootballGame(FootballTeam TeamHome, int strategyHome, FootballTeam TeamAway, int strategyAway){
             super(true,0,0, LocalDate.now(),0,TeamHome,TeamAway);
@@ -62,35 +93,68 @@ public class FootballGame extends Game {
             setAway(new FootballLineup(TeamAway,strategyAway));
     }
 
+    /**
+     * Setter do plantel da casa
+     * @param home plantel a copiar
+     */
     public void setHome(FootballLineup home) {
         this.home = new FootballLineup(home);
     }
+
+    /**
+     * Getter do plantel da casa
+     * @return plantel da casa
+     */
     public FootballLineup getHome() {
         return new FootballLineup(this.home);
     }
 
+    /**
+     * Setter do plantel visitante
+     * @param away plantel a copiar
+     */
     public void setAway(FootballLineup away) {
         this.away = new FootballLineup(away);
     }
+
+    /**
+     * Getter do plantel visitante
+     * @return
+     */
     public FootballLineup getAway() {
         return new FootballLineup(this.away);
     }
 
-    public boolean equals(FootballGame fg) {
-        boolean bool = false;
-        if(this == fg)
-            bool = true;
-        else if(this.getHome().equals(fg.getHome()) && this.getAway().equals(fg.getHome()))
-            bool = true;
+    /**
+     * Equals da classe
+     * @param o objeto a comparar
+     * @return booleano que indica resultado da comparacao
+     */
+    public boolean equals(Object o) {
+        if(this == o)
+            return true;
+        if(o == null || !this.getClass().equals(o.getClass()))
+            return false;
 
-        return bool;
+        FootballGame g = (FootballGame) o;
+
+        return this.home.equals(g.getHome()) &&
+                this.away.equals(g.getAway()) &&
+                super.equals(o);
     }
 
     @Override
+    /**
+     * Cloner de FootballGame
+     */
     public FootballGame clone() {
         return new FootballGame(this);
     }
 
+    /**
+     * Torna os dados de FootballGame em uma string
+     * @return FootballGame em forma de string
+     */
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("Game \n").append(getPoints1()).append("-").append(getPoints2())
@@ -100,6 +164,9 @@ public class FootballGame extends Game {
     }
 
     @Override
+    /**
+     * Metodo que torna FootballGame no formato de uma string gravavel
+     */
     public String toCSV() {
         StringBuilder s = new StringBuilder(super.toCSV()).append(",");
 
@@ -115,6 +182,12 @@ public class FootballGame extends Game {
         return "Jogo:" + s.append("\n");
     }
 
+    /**
+     * Metodo que carrega de uma string um FootballGame
+     * @param csvLine string a ler
+     * @param teams map de equipas para verificar se equipas na string sao validas
+     * @return FootballGame carregado
+     */
     public static FootballGame load(String csvLine, Map<String,FootballTeam> teams) {
         String[] tokens = csvLine.split(",");
         FootballLineup home = new FootballLineup();

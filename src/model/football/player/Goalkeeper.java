@@ -9,6 +9,20 @@ import java.util.List;
 public class Goalkeeper extends FootballPlayer{
     private int elasticity;
 
+    /**
+     * Construtor de Goalkeeper
+     * @param name nome do jogador
+     * @param number numero da camisola
+     * @param team equipa do jogador
+     * @param speed velocidade do jogador
+     * @param resistance resistencia do jogador
+     * @param dexterity destreza do jogador
+     * @param implosion implosao do jogador
+     * @param headGame jogo de cabeca do jogador
+     * @param kick pontape do jogdor
+     * @param passing passe do jogador
+     * @param elasticity elasticidade do jogador
+     */
     public Goalkeeper
             (
                     String name,
@@ -28,6 +42,22 @@ public class Goalkeeper extends FootballPlayer{
         this.changeElasticity(elasticity);
     }
 
+    /**
+     * Construtor de Goalkeeper
+     * @param name nome do jogador
+     * @param number numero da camisola
+     * @param team equipa do jogador
+     * @param background lista de equipas por onde o jogador passou
+     * @param speed velocidade do jogador
+     * @param resistance resistencia do jogador
+     * @param dexterity destreza do jogador
+     * @param implosion implosao do jogador
+     * @param headGame jogo de cabeca do jogador
+     * @param kick pontape do jogdor
+     * @param passing passe do jogador
+     * @param card cartao do jogador
+     * @param elasticity elasticidade do jogador
+     */
     public Goalkeeper
             (
                     String name,
@@ -50,26 +80,46 @@ public class Goalkeeper extends FootballPlayer{
     }
 
 
-
+    /**
+     * Construtor de Goalkeeper
+     * @param goalkeeper jogador a copiar
+     */
     public Goalkeeper(Goalkeeper goalkeeper) {
         super(goalkeeper);
         this.changeElasticity(goalkeeper.getElasticity());
     }
 
+    /**
+     * Modificador de elasticidade
+     * @param elasticity nova elasticidade
+     */
     public void changeElasticity(int elasticity) {
         setElasticity(elasticity);
         updateOverallSkill();
     }
+
+    /**
+     * Setter de elasticidade
+     * @param elasticity nova elasticidade
+     */
     private void setElasticity(int elasticity) {
         if(elasticity > 100) elasticity = 100;
         else if(elasticity < 0) elasticity = 0;
         this.elasticity = elasticity;
     }
+
+    /**
+     * Getter de elasticidade
+     * @return elasticidade
+     */
     public int getElasticity() {
         return this.elasticity;
     }
 
-
+    /**
+     * Calculo da habilidade de um guarda-redes
+     * @return habilidade
+     */
     @Override
     public int calcOverallSkill() {
         return (int) ((this.getSpeed() * 0.15)      +
@@ -82,6 +132,10 @@ public class Goalkeeper extends FootballPlayer{
                       (this.getElasticity() * 0.30));
     }
 
+    /**
+     * ToString da classe Goalkeeper
+     * @return goalkeeper no formato de string
+     */
     @Override
     public String toString(){
         return  new String("Team : " + getCurTeam()
@@ -99,6 +153,11 @@ public class Goalkeeper extends FootballPlayer{
         );
     }
 
+    /**
+     * Equals da classe Goalkeeper
+     * @param o objeto a comparar
+     * @return resultado da comparacao
+     */
     @Override
     public boolean equals(Object o) {
         if(this == o)
@@ -112,17 +171,32 @@ public class Goalkeeper extends FootballPlayer{
         return super.equals(goalkeeper) && this.getElasticity() == goalkeeper.getElasticity();
     }
 
+    /**
+     * Cloner da classe Goalkeeper
+     * @return clone
+     */
     @Override
     public Goalkeeper clone() {
         return new Goalkeeper(this);
     }
 
+    /**
+     * Torna goalkeeper em uma string saveable
+     * @return string saveable
+     */
     public String toCSV() {
         return "Guarda-Redes:" +
                 super.toCSV() + ";" +
                 this.getElasticity() + "\n";
     }
 
+    /**
+     * Carrega um goalkeeper a partir de uma sting
+     * @param csvLine string a analisar
+     * @param team equipa do guarda-redes
+     * @param teacher indicador do formato do ficheiro de dados
+     * @return Goalkeeper carregado
+     */
     public static Goalkeeper load(String csvLine, String team, boolean teacher) {
         String[] tokens;
         String name;

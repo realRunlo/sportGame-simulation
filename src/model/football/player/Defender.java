@@ -9,6 +9,20 @@ import java.util.List;
 public class Defender extends FootballPlayer {
     private int ballRetention;
 
+    /**
+     * Construtor de Defender
+     * @param name nome do jogador
+     * @param number numero da camisola
+     * @param team equipa do jogador
+     * @param speed velocidade do jogador
+     * @param resistance resistencia do jogador
+     * @param dexterity destreza do jogador
+     * @param implosion implosao do jogador
+     * @param headGame jogo de cabeca do jogador
+     * @param kick pontape do jogdor
+     * @param passing passe do jogador
+     * @param ballRetention retencao de bola do jogador
+     */
     public Defender
             (
                     String name,
@@ -27,6 +41,22 @@ public class Defender extends FootballPlayer {
         this.changeBallRetention(ballRetention);
     }
 
+    /**
+     * Construtor de Defender
+     * @param name nome do jogador
+     * @param number numero da camisola
+     * @param curTeam equipa do jogador
+     * @param background lista de equipas por onde ja passou
+     * @param speed velocidade do jogador
+     * @param resistance resistencia do jogador
+     * @param dexterity destreza do jogador
+     * @param implosion implosao do jogador
+     * @param headGame jogo de cabeca do jogador
+     * @param kick pontape do jogdor
+     * @param passing passe do jogador
+     * @param card cartao do jogador
+     * @param ballRetention retencao de bola do jogador
+     */
     public Defender
             (
                     String name,
@@ -47,12 +77,19 @@ public class Defender extends FootballPlayer {
         this.changeBallRetention(ballRetention);
     }
 
+    /**
+     * Contrutor de Defender
+     * @param defender jogador a copiar
+     */
     public Defender(Defender defender) {
         super(defender);
         this.changeBallRetention(defender.getBallRetention());
     }
 
-
+    /**
+     * Calcula a habilidade do jogador
+     * @return valor da habilidade
+     */
     @Override
     public int calcOverallSkill() {
         return (int) (
@@ -67,19 +104,37 @@ public class Defender extends FootballPlayer {
         );
     }
 
+    /**
+     * Modificador do valor de retencao de bola
+     * @param ballRetention
+     */
     public void changeBallRetention(int ballRetention) {
         this.setBallRetention(ballRetention);
         this.updateOverallSkill();
     }
+
+    /**
+     * Getter do valor da retencao de bola
+     * @return
+     */
     public int getBallRetention(){
         return this.ballRetention;
     }
+
+    /**
+     * Setter do valor de retencao de bola
+     * @param ballRetention
+     */
     public void setBallRetention(int ballRetention){
         if(ballRetention > 100) ballRetention = 100;
         else if(ballRetention < 0) ballRetention = 0;
         this.ballRetention = ballRetention;
     }
 
+    /**
+     * ToString da classe Defender
+     * @return string representante da classe Defender
+     */
     @Override
     public String toString(){
         return  new String("Team : " + getCurTeam()
@@ -97,6 +152,11 @@ public class Defender extends FootballPlayer {
         );
     }
 
+    /**
+     * Equals da classe Defender
+     * @param o objeto a comparar
+     * @return resultado da comparacao
+     */
     @Override
     public boolean equals(Object o) {
         if(this == o)
@@ -110,11 +170,19 @@ public class Defender extends FootballPlayer {
         return super.equals(defender) && this.getBallRetention() == defender.getBallRetention();
     }
 
+    /**
+     * Cloner da classe Defender
+     * @return clone
+     */
     @Override
     public Defender clone() {
         return new Defender(this);
     }
 
+    /**
+     * Cria uma string saveable com os dados do Defender
+     * @return os dados em forma de string saveable
+     */
     @Override
     public String toCSV() {
         return "Defesa:" +
@@ -122,6 +190,13 @@ public class Defender extends FootballPlayer {
                 this.getBallRetention() + "\n";
     }
 
+    /**
+     * Carrega um Defender a partir de uma string
+     * @param csvLine string a analisar
+     * @param team equipa do jogador
+     * @param teacher booleano que indica o tipo de estrutura de dados lidos
+     * @return Defender carregado
+     */
     public static Defender load(String csvLine, String team, boolean teacher) {
         String[] tokens;
         String name;

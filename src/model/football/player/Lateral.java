@@ -9,6 +9,20 @@ import java.util.List;
 public class Lateral extends FootballPlayer {
     private int crossing;
 
+    /**
+     * Construtor de Lateral
+     * @param name nome do jogador
+     * @param number numero da camisola
+     * @param team equipa do jogador
+     * @param speed velocidade do jogador
+     * @param resistance resistencia do jogador
+     * @param dexterity destreza do jogador
+     * @param implosion implosao do jogador
+     * @param headGame jogo de cabeca do jogador
+     * @param kick pontape do jogdor
+     * @param passing passe do jogador
+     * @param crossing cruze do jogador
+     */
     public Lateral
             (
                     String name,
@@ -28,6 +42,22 @@ public class Lateral extends FootballPlayer {
         changeCrossing(crossing);
     }
 
+    /**
+     * Construtor de Lateral
+     * @param name nome do jogador
+     * @param number numero da camisola
+     * @param team equipa do jogador
+     * @param background lista de equipas por onde o jogador passou
+     * @param speed velocidade do jogador
+     * @param resistance resistencia do jogador
+     * @param dexterity destreza do jogador
+     * @param implosion implosao do jogador
+     * @param headGame jogo de cabeca do jogador
+     * @param kick pontape do jogdor
+     * @param passing passe do jogador
+     * @param card cartao do jogador
+     * @param crossing cruze do jogador
+     */
     public Lateral
             (
                     String name,
@@ -49,24 +79,46 @@ public class Lateral extends FootballPlayer {
         changeCrossing(crossing);
     }
 
+    /**
+     * Construtor da classe Lateral
+     * @param lateral jogador a copiar
+     */
     public Lateral(Lateral lateral) {
         super(lateral);
         changeCrossing(lateral.getCrossing());
     }
 
+    /**
+     * Setter de cruze
+     * @param crossing novo cruze
+     */
     private void setCrossing(int crossing) {
         if(crossing > 100) crossing = 100;
         else if(crossing < 0) crossing = 0;
         this.crossing = crossing;
     }
+
+    /**
+     * Getter de cruze
+     * @return cruze
+     */
     public int getCrossing() {
         return this.crossing;
     }
+
+    /**
+     * Modificador de cruze
+     * @param crossing novo cruze
+     */
     public void changeCrossing(int crossing) {
        setCrossing(crossing);
        updateOverallSkill();
     }
 
+    /**
+     * Calculo da habilidade de um lateral
+     * @return habilidade do jogador
+     */
     @Override
     public int calcOverallSkill() {
         return (int) ((this.getSpeed() * 0.15)      +
@@ -79,6 +131,10 @@ public class Lateral extends FootballPlayer {
                 (this.getCrossing() * 0.15));
     }
 
+    /**
+     * ToString da classe Lateral
+     * @return lateral no formato string
+     */
     @Override
     public String toString(){
         return  new String("Team : " + getCurTeam()
@@ -96,6 +152,11 @@ public class Lateral extends FootballPlayer {
         );
     }
 
+    /**
+     * Equals da classe Lateral
+     * @param o objeto a comparar
+     * @return resultado da comparacao
+     */
     @Override
     public boolean equals(Object o) {
         if(this == o)
@@ -109,17 +170,32 @@ public class Lateral extends FootballPlayer {
         return super.equals(lateral) && this.getCrossing() == lateral.getCrossing();
     }
 
+    /**
+     * Torna lateral em uma string saveable
+     * @return string saveable
+     */
     public String toCSV() {
         return "Lateral:" +
                 super.toCSV() + ";" +
                 this.getCrossing() + "\n";
     }
 
+    /**
+     * Cloner da classe Lateral
+     * @return clone
+     */
     @Override
     public Lateral clone() {
         return new Lateral(this);
     }
 
+    /**
+     * Carrega um lateral a partir de uma string
+     * @param csvLine string a analisar
+     * @param team equipa do lateral
+     * @param teacher indicador do formato do ficheiro de dados
+     * @return lateral carregado
+     */
     public static Lateral load(String csvLine, String team, boolean teacher) {
         String[] tokens;
         String name;

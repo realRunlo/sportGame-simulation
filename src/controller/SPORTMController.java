@@ -88,13 +88,21 @@ public class SPORTMController{
             "Assign substitutes",
             "Save lineup"
     };
+
+    /**
+     * Construtor do controller
+     */
     public SPORTMController(){
         footballState = new FootballState();
         scanner = new Scanner(System.in);
     }
 
 
-
+    /**
+     * Unico metodo publico da classe, coloca a correr o programa
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public void run() throws IOException, ClassNotFoundException {
         showWelcome();
         SPORTMViewer initialMenu = new SPORTMViewer(InitialMenu);
@@ -107,6 +115,11 @@ public class SPORTMController{
 
     /**------------------------LOAD STATE-------------------------------**/
 
+    /**
+     * Menu que permite a leitura de um estado previamente gravado
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void loadState() throws IOException, ClassNotFoundException {
         SPORTMViewer loadMenu = new SPORTMViewer(LoadStateMenu);
         loadMenu.setHandler(1,()-> defaultState(loadMenu));
@@ -114,9 +127,15 @@ public class SPORTMController{
         loadMenu.SimpleRun();
     }
 
+    /**
+     * Opcao que le um estado escolhido por default
+     * @param viewer menu de load de estado
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void defaultState(SPORTMViewer viewer) throws IOException, ClassNotFoundException {
         try {
-            this.footballState = FootballState.load("estado");
+            this.footballState = FootballState.load("logs.txt");
         } catch(FileNotFoundException e){
             messages.errorMessage("File not found");
         }
@@ -126,7 +145,12 @@ public class SPORTMController{
         viewer.returnMenu();
     }
 
-
+    /**
+     * Opcao que le um estado de um ficheiro escolhido pelo utilizador
+     * @param viewer menu de load de estado
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void costumState(SPORTMViewer viewer) throws IOException, ClassNotFoundException {
         try {
             this.footballState = FootballState.load(getName());
@@ -142,6 +166,12 @@ public class SPORTMController{
 
     /**------------------------ENTER STATE-------------------------------**/
 
+    /**
+     * Menu principal do jogo onde se pode adicionar/editar jogadores e equipas, vizualizar as entidades
+     * do programa, criar novas partidas, gravar o estado e realizar transferencias entre equipas
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void EnterState() throws IOException, ClassNotFoundException {
         SPORTMViewer enterState = new SPORTMViewer(GameMenu);
         enterState.setPreCondition(2,()-> footballState.getNTeams() >= 2);
@@ -171,6 +201,12 @@ public class SPORTMController{
         enterState.SimpleRun();
     }
 
+    /**
+     * Menu de update/criacao de uma equipa, com opcoes de editar os jogadores dentro dessa equipa
+     * @param update booleano que indica se a equipa esta a ser criada ou atualizada
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void addOrUpdateTeam(boolean update) throws IOException, ClassNotFoundException {
         FootballTeam team;
         if(update) team = chooseTeam("Insert a team to update");
@@ -197,6 +233,10 @@ public class SPORTMController{
         }
     }
 
+    /**
+     * Metodo que recebe o nome dado por um utilizador para uma dada equipa
+     * @param t equipa a mudar o nome
+     */
     private void changeTeamName(FootballTeam t){
         String newName;
         int valido = 0;
@@ -213,6 +253,11 @@ public class SPORTMController{
         t.setName(newName);
     }
 
+    /**
+     * Metodo que automaticamente cria os jogadores restantes, nas posicoes necessarias,
+     * em uma equipa
+     * @param team equipa a adicionar os jogadores
+     */
     private void autoFillTeam(FootballTeam team){
         String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
         Random rand = new Random();
@@ -242,6 +287,14 @@ public class SPORTMController{
         }
     }
 
+    /**
+     * Menu de update/criacao de um jogador
+     * @param t equipa onde adicionar o jogador, caso seja nula ele nao tera equipa
+     * @param updateState booleano que indica se o jogador vai ser diretamente adicionado no estado
+     * @param newPlayer booleano que indica se o jogador esta a ser criado ou atualizado
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void addOrUpdatePlayer(FootballTeam t,boolean updateState,boolean newPlayer) throws IOException, ClassNotFoundException {
         AtomicReference<String> name = new AtomicReference<>("");
         AtomicInteger[] atributes = new AtomicInteger[]
@@ -312,15 +365,18 @@ public class SPORTMController{
     }
 
 
-
-
+    /**
+     * Metodo para o utilizador escolher uma equipa
+     * @param message mensagem que muda dependendo do menu que chama este metodo
+     * @return equipa escolhida
+     */
     private FootballTeam chooseTeam(String message) {
         FootballTeam t = null;
         String name = "";
         boolean valid = false;
         while (!valid && !name.equals("-1")) {
-            messages.informationMessage("Write -1 to return");
             messages.normalMessage(footballState.printTeams());
+            messages.informationMessage("Write -1 to return");
             messages.informationMessage(message);
             name = scanner.nextLine();
             if(!name.equals("-1")) {
@@ -334,6 +390,9 @@ public class SPORTMController{
         return t;
     }
 
+    /**
+     * Metodo que executa a opcao de transferencia de um jogador entre equipas
+     */
     private void transferPlayer(){
         FootballPlayer p = choosePlayerToUpdate(null,true);
         if(p!=null) {
@@ -346,6 +405,12 @@ public class SPORTMController{
         }
     }
 
+    /**
+     * Menu de remocao de uma equipa do estado, permite remover apenas a equipa
+     * ou remover tambem os jogadores nela incluidos
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void removeTeam() throws IOException, ClassNotFoundException {
         SPORTMViewer menu = new SPORTMViewer(RemoveTeamMenu);
         FootballTeam t = chooseTeam("Choose the Team to remove");
@@ -356,19 +421,34 @@ public class SPORTMController{
         }
     }
 
+    /**
+     * Metodo de remocao de equipa
+     * @param menu  menu de remocao de equipa
+     * @param t equipa a remover
+     * @param removeAll booleano que indica se foi escolhido a remocao dos jogadores do estado
+     */
     private void removeTeam(SPORTMViewer menu, FootballTeam t,boolean removeAll){
         if(removeAll) footballState.removeTeam(t.getName());
         else footballState.removeOnlyTeam(t.getName());
         menu.returnMenu();
     }
 
+    /**
+     * Metodo de remocao de um jogador
+     */
     private void removePlayer(){
         FootballPlayer p = choosePlayerToUpdate(null,true);
         if(p!=null) footballState.removePlayer(p.getName(),p.getNumber(),p.getCurTeam());
     }
 
 
-
+    /**
+     * Metodo que executa uma nova partida
+     * @throws PlayerDoenstExist
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
     private void createGame() throws PlayerDoenstExist, IOException, ClassNotFoundException, InterruptedException {
         messages.titleMessage(
                 "--------------------------------------\n" +
@@ -447,6 +527,12 @@ public class SPORTMController{
         );
     }
 
+    /**
+     * Metodo usado para criar pausas dependendo das acoes retornadas pelo jogo a decorrer
+     * @param message
+     * @param speed
+     * @throws InterruptedException
+     */
     private void sleepDependingOnMessage(String message, int speed) throws InterruptedException {
         if (message.contains("steal")
                 || message.contains("pass")
@@ -460,7 +546,14 @@ public class SPORTMController{
     }
 
 
-
+    /**
+     * Menu de criacao de um plantel
+     * @param t equipa cujo plantel esta a ser criado
+     * @param home  booleano que indica se se trata da equipa que joga em casa
+     * @return a lienup criada
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private FootballLineup makeLineup(FootballTeam t,boolean home) throws IOException, ClassNotFoundException {
         SPORTMViewer lineupMenu = new SPORTMViewer(LineupMenu);
 
@@ -487,8 +580,11 @@ public class SPORTMController{
     }
 
 
-
-
+    /**
+     * Metodo que permite ao utilizador escolher os titulares de um plantel
+     * @param proto plantel escolhida no momento
+     * @param t equipa correspondente ao plantel
+     */
     private void setPlaying(AtomicReference<FootballLineup> proto, FootballTeam t){
         boolean saved = false;
         String line = "";
@@ -537,6 +633,11 @@ public class SPORTMController{
         }
     }
 
+    /**
+     * Metodo que permite ao utilizador escolher os suplentes
+     * @param proto plantel escolhido ate ao momento
+     * @param t equipa correspondente ao plantel
+     */
     private void setSubstitutes(AtomicReference<FootballLineup> proto, FootballTeam t){
         boolean saved = false;
         String line = "";
@@ -583,7 +684,12 @@ public class SPORTMController{
         }
     }
 
-
+    /**
+     * Metodo que permite ao utilizador realizar uma substituicao em um plantel
+     * @param lineup plantel em jogo
+     * @param home booleano que indica se o plantel corresponde a equipa da casa ou visitante
+     * @return plantel modificado
+     */
     private FootballLineup substitute(FootballLineup lineup,boolean home){
         String line = "";
         while(!line.equals("y") && !line.equals("n")) {
@@ -630,7 +736,11 @@ public class SPORTMController{
         return null;
     }
 
-
+    /**
+     * Metodo que indica que foi escolhido a gravacao da lineup
+     * @param saved booleano que indica se foi escolhido para gravar
+     * @param menu menu de criacao de lineup
+     */
     private void saveLineup(AtomicBoolean saved ,SPORTMViewer menu){
         saved.set(true);
         menu.returnMenu();
@@ -640,11 +750,21 @@ public class SPORTMController{
 
     /**------------------------General methods-----------------------------**/
 
+    /**
+     * Metodo que pede ao utilizador que indique um nome
+     * @return nome escolhido pelo utilizador
+     */
     private String getName(){
         messages.informationMessage("Insert a name");
         return scanner.nextLine();
     }
 
+    /**
+     * Metodo que pede ao utilizador que indique um numero de camisola para um dado jogador
+     * @param name nome do jogador em questao
+     * @param t equipa, caso exista do jogador
+     * @return numero de camisola
+     */
     private Integer getShirtNumber(String name, FootballTeam t){
         //caso de apenas adicionar jogador ao estado,
         //nao pode adicionar jogadores com o mesmo numero e nome
@@ -675,11 +795,25 @@ public class SPORTMController{
         return shirtNumber;
     }
 
+    /**
+     * Opcao de modificacao de uma habilidade de um jogador
+     * @param menu menu de edicao de um jogador
+     * @param currentValue valor atual da habilidade para comparacao
+     * @return novo valor, escolhido pelo utilizador
+     */
     private int getSkillValue(SPORTMViewer menu,String currentValue){
         messages.informationMessage(currentValue);
         return menu.readOptionBetween(0, 100, null);
     }
 
+    /**
+     * Metodo que atualiza ou grava um jogador no estado/equipa
+     * @param p jogador a gravar/atualizar
+     * @param t equipa do jogador
+     * @param viewer menu de edicao do jogador
+     * @param newPlayer booleano que indica se este e um jogador novo
+     * @param updateState booleano que indica se apenas se trata de uma atualizacao
+     */
     private void updatePlayerState(FootballPlayer p,FootballTeam t, SPORTMViewer viewer,boolean newPlayer,boolean updateState){
         if(!newPlayer){
             if(t != null) t.updatePlayer(p); //atualiza na equipa a ser modificada atualmente (apenas menu)
@@ -692,12 +826,22 @@ public class SPORTMController{
         if(viewer != null) viewer.returnMenu();
     }
 
+    /**
+     * Metodo de atualizacao/criacao de uma equipa
+     * @param t equipa a gravar/atualizar
+     * @param newTeam booleano que indica se se trata de uma nova equipa
+     * @param viewer menu de edicao de equipa
+     */
     private void updateTeamState(FootballTeam t, boolean newTeam,SPORTMViewer viewer){
         if(newTeam) footballState.addTeam(t);
         else footballState.updateTeam(t);
         if(viewer != null) viewer.returnMenu();
     }
 
+    /**
+     * Metodo que permite a remocao de um jogador de uma equipa
+     * @param t equipa do jogador
+     */
     private void removePlayerTeam(FootballTeam t){
         boolean removed = false; int op = -2;
         while(!removed && op!=-1){
@@ -721,6 +865,13 @@ public class SPORTMController{
     }
 
 
+    /**
+     * Metodo de escolha de um jogador para atualizar
+     * @param t equipa de onde se escolhe um jogador
+     * @param showTeam booleano que indica se juntamente ao nome do jogador, se deve mostrar a equipa
+     *                 a que pertence
+     * @return jogador escolhido pelo utilizador
+     */
     private FootballPlayer choosePlayerToUpdate(FootballTeam t,boolean showTeam){
         int shirtNumber = -2;
         String name = "";
@@ -775,13 +926,16 @@ public class SPORTMController{
         return p;
     }
 
+    /**
+     * Metodo que permite criar um jogador com as opcoes escolhidas ate ao momento pelo utilizador
+     * @param atributes atributos como definidos ate ao momento
+     * @param name nome do jogador
+     * @param t equipa do jogador
+     * @param background lista de equipas por onde o jogador passou
+     * @return novo jogador conforme os atributos escolhidos
+     */
     private FootballPlayer playerPrototype(int [] atributes, String name, FootballTeam t,List<String> background)
     {
-       /* for(int i:atributes){
-            System.out.println("\natributos"+i + " ");
-         }
-         */
-
         FootballPlayer p;
         String team = "None";
         if(t!= null) team = t.getName();
@@ -796,6 +950,11 @@ public class SPORTMController{
         return p;
     }
 
+    /**
+     * Metodo utilizador para descobrir o tipo de jogador
+     * @param p jogador a analisar
+     * @return inteiro correspondente ao tipo de jogador
+     */
     int typeOfPlayer(FootballPlayer p){
         int type = -1;
         if(p instanceof Goalkeeper) type = 0;
@@ -806,6 +965,11 @@ public class SPORTMController{
         return type;
     }
 
+    /**
+     * Metodo que retorna a habilidade especial dependendo do tipo de jogador
+     * @param p jogador cuja habilidade especial se pretende obter
+     * @return valor da habilidade
+     */
     int getSpecialSkill(FootballPlayer p){
         int type = typeOfPlayer(p);
         int skill = 0;
@@ -824,6 +988,10 @@ public class SPORTMController{
         return skill;
     }
 
+    /**
+     * Metodo que randomiza todos os atributos de um jogador
+     * @param atributes lista dos atributos a randomizar
+     */
     private void randomizeStats(AtomicInteger[] atributes){
         Random random = new Random();
         int i = 0;
@@ -834,11 +1002,17 @@ public class SPORTMController{
     }
 
     /**------------------------SIMPLE PRINTS-------------------------------**/
+    /**
+     * Metodo que imprime uma mensagem de despedida e termina o programa
+     */
     private void terminate(){
         showTermination();
         System.exit(0);
     }
 
+    /**
+     * Metodo que mostra uma mensagem de saudacao na entrada do programa
+     */
     private void showWelcome(){
         messages.titleMessage("Welcome to SPORTM!");
         messages.titleMessage("""
@@ -851,6 +1025,9 @@ public class SPORTMController{
 
     }
 
+    /**
+     * Mensagem de despedida
+     */
     private void showTermination(){
         messages.titleMessage("Closing the Game\nWe hope you've enjoyed your time.");
     }
