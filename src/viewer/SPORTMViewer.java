@@ -7,23 +7,27 @@ import java.util.List;
 import java.util.Scanner;
 
 public class SPORTMViewer {
-    // Interfaces auxiliares
 
-    /** Functional interface para handlers. */
-    public interface Handler {  // método de tratamento
+
+    /**
+     * Interface para execucao de opcoes
+     */
+    public interface Handler {
         public void execute() throws IOException, ClassNotFoundException;
     }
 
-    /** Functional interface para pré-condições. */
-    public interface PreCondition {  // Predicate ?
+    /**
+     * Interface para indicar pre-condicoes para opcoes
+     */
+    public interface PreCondition {
         public boolean validate();
     }
 
-    // Varíável de classe para suportar leitura
+
 
     private static Scanner is = new Scanner(System.in);
 
-    // Variáveis de instância
+
 
     public static final String RESET = "\u001B[0m";
     public static final String BLACK = "\u001B[30m";
@@ -41,6 +45,10 @@ public class SPORTMViewer {
     private List<Handler> handlers;         // Lista de handlers
     private boolean exit = false;
 
+    /**
+     * Construtor de SPORTMViewer
+     * @param options menu a ser imprimido e respetivas opcoes
+     */
     public SPORTMViewer(String[] options){
         this.options = Arrays.asList(options);
         this.available = new ArrayList<>();
@@ -51,6 +59,14 @@ public class SPORTMViewer {
         });
     }
 
+    /**
+     * Metodo de run simples, termina quando dado a opcao 0, ou caso
+     * o booleano de control torne falso
+     * Caso seja escolhido uma opcao valida e as pre-condicoes dessa opcao
+     * sejam cumpridas, executa o handler respetivo
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public void SimpleRun() throws IOException, ClassNotFoundException {
         int op;
         do {
@@ -67,33 +83,40 @@ public class SPORTMViewer {
     }
 
     /**
-     * Método que regista uma uma pré-condição numa opção do NewMenu.
+     * Método que regista uma uma pré-condição numa opção do menu
      *
-     * @param i índice da opção (começa em 1)
-     * @param b pré-condição a registar
+     * @param i índice da opção
+     * @param b pré-condição a registar para a opcao
      */
     public void setPreCondition(int i, PreCondition b) {
         this.available.set(i,b);
     }
 
+    /**
+     * Similar ao metodo anterior, mas coloca a mesma pre-condicao para
+     * varias opcoes ao mesmo tempo
+     * @param list lista das opcoes a abrangir
+     * @param b pre-condicao a registar nas opcoes
+     */
     public void setSamePreCondition(int[] list, PreCondition b) {
         for(int i:list) this.available.set(i,b);
 
     }
 
     /**
-     * Método para registar um handler numa opção do NewMenu.
+     * Método para registar um handler numa opção do menu
      *
-     * @param i indice da opção  (começa em 1)
+     * @param i indice da opção
      * @param h handlers a registar
      */
     public void setHandler(int i, Handler h) {
         this.handlers.set(i, h);
     }
 
-    // Métodos auxiliares
 
-    /** Apresentar o NewMenu */
+    /**
+     * Imprime as varias opcoes, verificando se as pre-condicoes estao a ser compridas
+     */
     private void SimpleShow() {
         System.out.println(YELLOW + this.options.get(0) + RESET);
         for (int i=1; i<this.options.size(); i++) {
@@ -104,7 +127,10 @@ public class SPORTMViewer {
         System.out.println("0 - Return");
     }
 
-    /** Ler uma opção válida */
+    /**
+     * Le uma opcao escolhida pelo user
+     * @return opcao escolhida
+     */
     private int readOption() {
         int op;
         //Scanner is = new Scanner(System.in);
@@ -124,6 +150,13 @@ public class SPORTMViewer {
         return op;
     }
 
+    /**
+     * Le uma opcao escolhida pelo user entre dois limites
+     * @param lower limite inferior
+     * @param higher limite superior
+     * @param options opcoes disponiveis
+     * @return input do utilizador
+     */
     public int readOptionBetween(int lower, int higher, String[] options) {
         int op = -1;
         //Scanner is = new Scanner(System.in);
@@ -150,38 +183,66 @@ public class SPORTMViewer {
         return op;
     }
 
+    /**
+     * Faz toString de um objeto dado
+     * @param o objeto a imprimir no ecra
+     */
     public void showInfo(Object o){
         System.out.println(o.toString());
         informationMessage("Press any key to continue");
         is.nextLine();
     }
 
-
+    /**
+     * Torna o booleano de controlo em falso, para encerrar o menu
+     */
     public void returnMenu(){
         exit = true;
     }
 
+    /**
+     * Imprime uma mensagem a amarelo
+     * @param message mensagem a imprimir
+     */
     public void titleMessage(String message){
         System.out.println(YELLOW +message+RESET);
     }
 
+    /**
+     * Imprime uma mensagem a verde
+     * @param message mensagem a imprimir
+     */
     public void confirmationMessage(String message){
         System.out.println(GREEN + message + RESET);
     }
 
+    /**
+     * Imprime mensagens a roxo
+     * @param message mensagem a imprimir
+     */
     public void informationMessage(String message){
         System.out.println(PURPLE + message + RESET);
     }
 
+    /**
+     * Imprime mensagens na cor natural do terminal
+     * @param message mensagem a imprimir
+     */
     public void normalMessage(String message){
         System.out.println(message);
     }
 
+    /**
+     * Imprime mensagem a vermelho
+     * @param error mensagem a imprimir
+     */
     public void errorMessage(String error){
         System.out.println(RED + error + RESET);
     }
 
-
+    /**
+     * Metodo que limpa o terminal
+     */
     public final static void clearConsole()
     {
         try
