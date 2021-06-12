@@ -124,7 +124,7 @@ public class ExecuteFootballGame {
         FootballPlayer p;
         p = adversary.getPlayer(getFootballPlayerOppositeClass(),true);
 
-        if(p != null) {
+        if(p != null && g.getBol() == true) {
             if (playerWithTheBall.getClass().equals(Striker.class)) { // se for um avancado tenta rematar
                 if(speedCheck(p) > 10) {
                     if (tryShoot());

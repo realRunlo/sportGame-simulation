@@ -397,7 +397,7 @@ public class SPORTMController{
         FootballPlayer p = choosePlayerToUpdate(null,true);
         if(p!=null) {
             FootballTeam teamToTransfer = chooseTeam(
-                    "Insert  a team to transfer the player to\n" +
+                    "Insert a team to transfer the player to\n" +
                             "Write -1 if you just wish to remove him from his team"
             );
             if(footballState.transferPlayer(p,teamToTransfer)) messages.confirmationMessage("Transfer successful");
@@ -515,7 +515,7 @@ public class SPORTMController{
                     messages.normalMessage("-------------\n"+play.getGame().toString()+"\n-----------------\n");
                     messages.informationMessage("Press enter to proceed");
                     scanner.nextLine();
-
+                    play.getGame().setBol(false);
                     footballState.addGame(play.getGame());
                 }else messages.errorMessage("Error with lineup, make sure there is at least 1 player of each type in the team");
             }else messages.errorMessage("Error with lineup, make sure there is at least 1 player of each type in the team");

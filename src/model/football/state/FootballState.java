@@ -401,7 +401,6 @@ public class FootballState implements Saveable,Serializable{
     public boolean transferPlayer(FootballPlayer p, FootballTeam teamToTransfer){
         boolean transfered = false;
         if(p!=null){
-
             int originalShirt = p.getNumber();
             if(teamToTransfer != null){
                 if(teamToTransfer.getNPlayers() < (MAX_PLAYER_TEAM-1) && !p.getCurTeam().equals(teamToTransfer.getName())) {
@@ -409,6 +408,10 @@ public class FootballState implements Saveable,Serializable{
                     addPlayer2Team(p, teamToTransfer.getName());
                     transfered = true;
                 }
+            }
+            else{
+                removePlayerFromTeam(p);
+                transfered = true;
             }
             if(originalShirt != p.getNumber()) playersList.remove(p.getName()+originalShirt);
             updatePlayer(p);

@@ -35,6 +35,7 @@ public abstract class Player implements Saveable,Serializable {
         this.setName(name);
         this.setNumber(number);
         this.setBackground(new ArrayList<>());
+        addBackground(team);
         this.setCurTeam(team);
         this.setOverallSkill(0);
     }
@@ -51,6 +52,7 @@ public abstract class Player implements Saveable,Serializable {
         this.setNumber(number);
         this.setCurTeam(team);
         this.setBackground(background);
+        if(!team.equals("None")) addBackground(team);
         this.setOverallSkill(0);
     }
 
@@ -165,7 +167,11 @@ public abstract class Player implements Saveable,Serializable {
      */
     public void addBackground(String team) {
         List<String> b = getBackground();
-        b.add(team);
+        if(b.size() > 0){
+            if(!b.get(b.size()-1).equals(team))
+                b.add(team);
+        }else b.add(team);
+
         setBackground(b);
     }
 
